@@ -1,4 +1,5 @@
 view: patient_1559757824302963 {
+  view_label: "Patient"
   sql_table_name: sampleFHIR.Patient_1559757824302963 ;;
 
   dimension: id {
@@ -118,10 +119,10 @@ view: patient_1559757824302963 {
   }
 }
 
-view: Patient_1559757824302963__identifier__period {
+view: patient_1559757824302963__identifier__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -130,7 +131,7 @@ view: Patient_1559757824302963__identifier__period {
   }
 }
 
-view: Patient_1559757824302963__identifier {
+view: patient_1559757824302963__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -162,7 +163,7 @@ view: Patient_1559757824302963__identifier {
   }
 }
 
-view: Patient_1559757824302963__identifier__assigner {
+view: patient_1559757824302963__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -184,10 +185,10 @@ view: Patient_1559757824302963__identifier__assigner {
   }
 }
 
-view: Patient_1559757824302963__identifier__assigner__identifier__period {
+view: patient_1559757824302963__identifier__assigner__identifier__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -196,7 +197,7 @@ view: Patient_1559757824302963__identifier__assigner__identifier__period {
   }
 }
 
-view: Patient_1559757824302963__identifier__assigner__identifier {
+view: patient_1559757824302963__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -228,7 +229,7 @@ view: Patient_1559757824302963__identifier__assigner__identifier {
   }
 }
 
-view: Patient_1559757824302963__identifier__assigner__identifier__assigner {
+view: patient_1559757824302963__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -250,10 +251,10 @@ view: Patient_1559757824302963__identifier__assigner__identifier__assigner {
   }
 }
 
-view: Patient_1559757824302963__identifier__assigner__identifier__assigner__identifier__period {
+view: patient_1559757824302963__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -262,7 +263,7 @@ view: Patient_1559757824302963__identifier__assigner__identifier__assigner__iden
   }
 }
 
-view: Patient_1559757824302963__identifier__assigner__identifier__assigner__identifier {
+view: patient_1559757824302963__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -294,7 +295,7 @@ view: Patient_1559757824302963__identifier__assigner__identifier__assigner__iden
   }
 }
 
-view: Patient_1559757824302963__identifier__assigner__identifier__assigner__identifier__assigner {
+view: patient_1559757824302963__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -311,7 +312,7 @@ view: Patient_1559757824302963__identifier__assigner__identifier__assigner__iden
   }
 }
 
-view: Patient_1559757824302963__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: patient_1559757824302963__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -338,7 +339,7 @@ view: Patient_1559757824302963__identifier__assigner__identifier__assigner__iden
   }
 }
 
-view: Patient_1559757824302963__identifier__assigner__identifier__assigner__identifier__type {
+view: patient_1559757824302963__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -350,7 +351,7 @@ view: Patient_1559757824302963__identifier__assigner__identifier__assigner__iden
   }
 }
 
-view: Patient_1559757824302963__identifier__assigner__identifier__type__coding {
+view: patient_1559757824302963__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -377,7 +378,7 @@ view: Patient_1559757824302963__identifier__assigner__identifier__type__coding {
   }
 }
 
-view: Patient_1559757824302963__identifier__assigner__identifier__type {
+view: patient_1559757824302963__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -389,7 +390,7 @@ view: Patient_1559757824302963__identifier__assigner__identifier__type {
   }
 }
 
-view: Patient_1559757824302963__identifier__type__coding {
+view: patient_1559757824302963__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -416,7 +417,7 @@ view: Patient_1559757824302963__identifier__type__coding {
   }
 }
 
-view: Patient_1559757824302963__identifier__type {
+view: patient_1559757824302963__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -428,7 +429,7 @@ view: Patient_1559757824302963__identifier__type {
   }
 }
 
-view: Patient_1559757824302963__deceased {
+view: patient_1559757824302963__deceased {
   dimension: boolean {
     type: yesno
     sql: ${TABLE}.boolean ;;
@@ -440,7 +441,7 @@ view: Patient_1559757824302963__deceased {
   }
 }
 
-view: Patient_1559757824302963__address {
+view: patient_1559757824302963__address {
   dimension: city {
     type: string
     sql: ${TABLE}.city ;;
@@ -493,10 +494,10 @@ view: Patient_1559757824302963__address {
   }
 }
 
-view: Patient_1559757824302963__address__period {
+view: patient_1559757824302963__address__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -505,7 +506,7 @@ view: Patient_1559757824302963__address__period {
   }
 }
 
-view: Patient_1559757824302963__link__other {
+view: patient_1559757824302963__link__other {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -532,10 +533,10 @@ view: Patient_1559757824302963__link__other {
   }
 }
 
-view: Patient_1559757824302963__link__other__identifier__period {
+view: patient_1559757824302963__link__other__identifier__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -544,7 +545,7 @@ view: Patient_1559757824302963__link__other__identifier__period {
   }
 }
 
-view: Patient_1559757824302963__link__other__identifier {
+view: patient_1559757824302963__link__other__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -576,7 +577,7 @@ view: Patient_1559757824302963__link__other__identifier {
   }
 }
 
-view: Patient_1559757824302963__link__other__identifier__assigner {
+view: patient_1559757824302963__link__other__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -598,10 +599,10 @@ view: Patient_1559757824302963__link__other__identifier__assigner {
   }
 }
 
-view: Patient_1559757824302963__link__other__identifier__assigner__identifier__period {
+view: patient_1559757824302963__link__other__identifier__assigner__identifier__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -610,7 +611,7 @@ view: Patient_1559757824302963__link__other__identifier__assigner__identifier__p
   }
 }
 
-view: Patient_1559757824302963__link__other__identifier__assigner__identifier {
+view: patient_1559757824302963__link__other__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -642,7 +643,7 @@ view: Patient_1559757824302963__link__other__identifier__assigner__identifier {
   }
 }
 
-view: Patient_1559757824302963__link__other__identifier__assigner__identifier__assigner {
+view: patient_1559757824302963__link__other__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -664,10 +665,10 @@ view: Patient_1559757824302963__link__other__identifier__assigner__identifier__a
   }
 }
 
-view: Patient_1559757824302963__link__other__identifier__assigner__identifier__assigner__identifier__period {
+view: patient_1559757824302963__link__other__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -676,7 +677,7 @@ view: Patient_1559757824302963__link__other__identifier__assigner__identifier__a
   }
 }
 
-view: Patient_1559757824302963__link__other__identifier__assigner__identifier__assigner__identifier {
+view: patient_1559757824302963__link__other__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -708,7 +709,7 @@ view: Patient_1559757824302963__link__other__identifier__assigner__identifier__a
   }
 }
 
-view: Patient_1559757824302963__link__other__identifier__assigner__identifier__assigner__identifier__assigner {
+view: patient_1559757824302963__link__other__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -725,7 +726,7 @@ view: Patient_1559757824302963__link__other__identifier__assigner__identifier__a
   }
 }
 
-view: Patient_1559757824302963__link__other__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: patient_1559757824302963__link__other__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -752,7 +753,7 @@ view: Patient_1559757824302963__link__other__identifier__assigner__identifier__a
   }
 }
 
-view: Patient_1559757824302963__link__other__identifier__assigner__identifier__assigner__identifier__type {
+view: patient_1559757824302963__link__other__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -764,7 +765,7 @@ view: Patient_1559757824302963__link__other__identifier__assigner__identifier__a
   }
 }
 
-view: Patient_1559757824302963__link__other__identifier__assigner__identifier__type__coding {
+view: patient_1559757824302963__link__other__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -791,7 +792,7 @@ view: Patient_1559757824302963__link__other__identifier__assigner__identifier__t
   }
 }
 
-view: Patient_1559757824302963__link__other__identifier__assigner__identifier__type {
+view: patient_1559757824302963__link__other__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -803,7 +804,7 @@ view: Patient_1559757824302963__link__other__identifier__assigner__identifier__t
   }
 }
 
-view: Patient_1559757824302963__link__other__identifier__type__coding {
+view: patient_1559757824302963__link__other__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -830,7 +831,7 @@ view: Patient_1559757824302963__link__other__identifier__type__coding {
   }
 }
 
-view: Patient_1559757824302963__link__other__identifier__type {
+view: patient_1559757824302963__link__other__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -842,7 +843,7 @@ view: Patient_1559757824302963__link__other__identifier__type {
   }
 }
 
-view: Patient_1559757824302963__link {
+view: patient_1559757824302963__link {
   dimension: other {
     hidden: yes
     sql: ${TABLE}.other ;;
@@ -854,7 +855,7 @@ view: Patient_1559757824302963__link {
   }
 }
 
-view: Patient_1559757824302963__photo {
+view: patient_1559757824302963__photo {
   dimension: content_type {
     type: string
     sql: ${TABLE}.contentType ;;
@@ -872,7 +873,7 @@ view: Patient_1559757824302963__photo {
 
   dimension: hash {
     type: string
-    sql: ${TABLE}.``hash`` ;;
+    sql: ${TABLE}.hash ;;
   }
 
   dimension: language {
@@ -896,7 +897,7 @@ view: Patient_1559757824302963__photo {
   }
 }
 
-view: Patient_1559757824302963__multiple_birth {
+view: patient_1559757824302963__multipleBirth {
   dimension: boolean {
     type: yesno
     sql: ${TABLE}.boolean ;;
@@ -908,7 +909,7 @@ view: Patient_1559757824302963__multiple_birth {
   }
 }
 
-view: Patient_1559757824302963__managing_organization {
+view: patient_1559757824302963__managingOrganization {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -930,10 +931,10 @@ view: Patient_1559757824302963__managing_organization {
   }
 }
 
-view: Patient_1559757824302963__managing_organization__identifier__period {
+view: patient_1559757824302963__managingOrganization__identifier__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -942,7 +943,7 @@ view: Patient_1559757824302963__managing_organization__identifier__period {
   }
 }
 
-view: Patient_1559757824302963__managing_organization__identifier {
+view: patient_1559757824302963__managingOrganization__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -974,7 +975,7 @@ view: Patient_1559757824302963__managing_organization__identifier {
   }
 }
 
-view: Patient_1559757824302963__managing_organization__identifier__assigner {
+view: patient_1559757824302963__managingOrganization__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -996,10 +997,10 @@ view: Patient_1559757824302963__managing_organization__identifier__assigner {
   }
 }
 
-view: Patient_1559757824302963__managing_organization__identifier__assigner__identifier__period {
+view: patient_1559757824302963__managingOrganization__identifier__assigner__identifier__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -1008,7 +1009,7 @@ view: Patient_1559757824302963__managing_organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__managing_organization__identifier__assigner__identifier {
+view: patient_1559757824302963__managingOrganization__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1040,7 +1041,7 @@ view: Patient_1559757824302963__managing_organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__managing_organization__identifier__assigner__identifier__assigner {
+view: patient_1559757824302963__managingOrganization__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1062,10 +1063,10 @@ view: Patient_1559757824302963__managing_organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__managing_organization__identifier__assigner__identifier__assigner__identifier__period {
+view: patient_1559757824302963__managingOrganization__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -1074,7 +1075,7 @@ view: Patient_1559757824302963__managing_organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__managing_organization__identifier__assigner__identifier__assigner__identifier {
+view: patient_1559757824302963__managingOrganization__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1106,7 +1107,7 @@ view: Patient_1559757824302963__managing_organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__managing_organization__identifier__assigner__identifier__assigner__identifier__assigner {
+view: patient_1559757824302963__managingOrganization__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1123,7 +1124,7 @@ view: Patient_1559757824302963__managing_organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__managing_organization__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: patient_1559757824302963__managingOrganization__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1150,7 +1151,7 @@ view: Patient_1559757824302963__managing_organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__managing_organization__identifier__assigner__identifier__assigner__identifier__type {
+view: patient_1559757824302963__managingOrganization__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1162,7 +1163,7 @@ view: Patient_1559757824302963__managing_organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__managing_organization__identifier__assigner__identifier__type__coding {
+view: patient_1559757824302963__managingOrganization__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1189,7 +1190,7 @@ view: Patient_1559757824302963__managing_organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__managing_organization__identifier__assigner__identifier__type {
+view: patient_1559757824302963__managingOrganization__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1201,7 +1202,7 @@ view: Patient_1559757824302963__managing_organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__managing_organization__identifier__type__coding {
+view: patient_1559757824302963__managingOrganization__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1228,7 +1229,7 @@ view: Patient_1559757824302963__managing_organization__identifier__type__coding 
   }
 }
 
-view: Patient_1559757824302963__managing_organization__identifier__type {
+view: patient_1559757824302963__managingOrganization__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1240,7 +1241,7 @@ view: Patient_1559757824302963__managing_organization__identifier__type {
   }
 }
 
-view: Patient_1559757824302963__meta {
+view: patient_1559757824302963__meta {
   dimension_group: last_updated {
     type: time
     timeframes: [
@@ -1276,7 +1277,7 @@ view: Patient_1559757824302963__meta {
   }
 }
 
-view: Patient_1559757824302963__meta__security {
+view: patient_1559757824302963__meta__security {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1303,7 +1304,7 @@ view: Patient_1559757824302963__meta__security {
   }
 }
 
-view: Patient_1559757824302963__meta__tag {
+view: patient_1559757824302963__meta__tag {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1330,10 +1331,10 @@ view: Patient_1559757824302963__meta__tag {
   }
 }
 
-view: Patient_1559757824302963__contact__period {
+view: patient_1559757824302963__contact__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -1342,7 +1343,7 @@ view: Patient_1559757824302963__contact__period {
   }
 }
 
-view: Patient_1559757824302963__contact__address {
+view: patient_1559757824302963__contact__address {
   dimension: city {
     type: string
     sql: ${TABLE}.city ;;
@@ -1395,10 +1396,10 @@ view: Patient_1559757824302963__contact__address {
   }
 }
 
-view: Patient_1559757824302963__contact__address__period {
+view: patient_1559757824302963__contact__address__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -1407,7 +1408,7 @@ view: Patient_1559757824302963__contact__address__period {
   }
 }
 
-view: Patient_1559757824302963__contact {
+view: patient_1559757824302963__contact {
   dimension: address {
     hidden: yes
     sql: ${TABLE}.address ;;
@@ -1444,7 +1445,7 @@ view: Patient_1559757824302963__contact {
   }
 }
 
-view: Patient_1559757824302963__contact__organization {
+view: patient_1559757824302963__contact__organization {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1466,10 +1467,10 @@ view: Patient_1559757824302963__contact__organization {
   }
 }
 
-view: Patient_1559757824302963__contact__organization__identifier__period {
+view: patient_1559757824302963__contact__organization__identifier__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -1478,7 +1479,7 @@ view: Patient_1559757824302963__contact__organization__identifier__period {
   }
 }
 
-view: Patient_1559757824302963__contact__organization__identifier {
+view: patient_1559757824302963__contact__organization__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1510,7 +1511,7 @@ view: Patient_1559757824302963__contact__organization__identifier {
   }
 }
 
-view: Patient_1559757824302963__contact__organization__identifier__assigner {
+view: patient_1559757824302963__contact__organization__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1532,10 +1533,10 @@ view: Patient_1559757824302963__contact__organization__identifier__assigner {
   }
 }
 
-view: Patient_1559757824302963__contact__organization__identifier__assigner__identifier__period {
+view: patient_1559757824302963__contact__organization__identifier__assigner__identifier__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -1544,7 +1545,7 @@ view: Patient_1559757824302963__contact__organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__contact__organization__identifier__assigner__identifier {
+view: patient_1559757824302963__contact__organization__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1576,7 +1577,7 @@ view: Patient_1559757824302963__contact__organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__contact__organization__identifier__assigner__identifier__assigner {
+view: patient_1559757824302963__contact__organization__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1598,10 +1599,10 @@ view: Patient_1559757824302963__contact__organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__contact__organization__identifier__assigner__identifier__assigner__identifier__period {
+view: patient_1559757824302963__contact__organization__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -1610,7 +1611,7 @@ view: Patient_1559757824302963__contact__organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__contact__organization__identifier__assigner__identifier__assigner__identifier {
+view: patient_1559757824302963__contact__organization__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1642,7 +1643,7 @@ view: Patient_1559757824302963__contact__organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__contact__organization__identifier__assigner__identifier__assigner__identifier__assigner {
+view: patient_1559757824302963__contact__organization__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1659,7 +1660,7 @@ view: Patient_1559757824302963__contact__organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__contact__organization__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: patient_1559757824302963__contact__organization__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1686,7 +1687,7 @@ view: Patient_1559757824302963__contact__organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__contact__organization__identifier__assigner__identifier__assigner__identifier__type {
+view: patient_1559757824302963__contact__organization__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1698,7 +1699,7 @@ view: Patient_1559757824302963__contact__organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__contact__organization__identifier__assigner__identifier__type__coding {
+view: patient_1559757824302963__contact__organization__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1725,7 +1726,7 @@ view: Patient_1559757824302963__contact__organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__contact__organization__identifier__assigner__identifier__type {
+view: patient_1559757824302963__contact__organization__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1737,7 +1738,7 @@ view: Patient_1559757824302963__contact__organization__identifier__assigner__ide
   }
 }
 
-view: Patient_1559757824302963__contact__organization__identifier__type__coding {
+view: patient_1559757824302963__contact__organization__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1764,7 +1765,7 @@ view: Patient_1559757824302963__contact__organization__identifier__type__coding 
   }
 }
 
-view: Patient_1559757824302963__contact__organization__identifier__type {
+view: patient_1559757824302963__contact__organization__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1776,7 +1777,7 @@ view: Patient_1559757824302963__contact__organization__identifier__type {
   }
 }
 
-view: Patient_1559757824302963__contact__name {
+view: patient_1559757824302963__contact__name {
   dimension: family {
     type: string
     sql: ${TABLE}.family ;;
@@ -1813,10 +1814,10 @@ view: Patient_1559757824302963__contact__name {
   }
 }
 
-view: Patient_1559757824302963__contact__name__period {
+view: patient_1559757824302963__contact__name__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -1825,10 +1826,10 @@ view: Patient_1559757824302963__contact__name__period {
   }
 }
 
-view: Patient_1559757824302963__contact__telecom__period {
+view: patient_1559757824302963__contact__telecom__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -1837,7 +1838,7 @@ view: Patient_1559757824302963__contact__telecom__period {
   }
 }
 
-view: Patient_1559757824302963__contact__telecom {
+view: patient_1559757824302963__contact__telecom {
   dimension: period {
     hidden: yes
     sql: ${TABLE}.period ;;
@@ -1864,7 +1865,7 @@ view: Patient_1559757824302963__contact__telecom {
   }
 }
 
-view: Patient_1559757824302963__contact__relationship__coding {
+view: patient_1559757824302963__contact__relationship__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1891,7 +1892,7 @@ view: Patient_1559757824302963__contact__relationship__coding {
   }
 }
 
-view: Patient_1559757824302963__contact__relationship {
+view: patient_1559757824302963__contact__relationship {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1903,7 +1904,7 @@ view: Patient_1559757824302963__contact__relationship {
   }
 }
 
-view: Patient_1559757824302963__general_practitioner {
+view: patient_1559757824302963__generalPractitioner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1930,10 +1931,10 @@ view: Patient_1559757824302963__general_practitioner {
   }
 }
 
-view: Patient_1559757824302963__general_practitioner__identifier__period {
+view: patient_1559757824302963__generalPractitioner__identifier__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -1942,7 +1943,7 @@ view: Patient_1559757824302963__general_practitioner__identifier__period {
   }
 }
 
-view: Patient_1559757824302963__general_practitioner__identifier {
+view: patient_1559757824302963__generalPractitioner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1974,7 +1975,7 @@ view: Patient_1559757824302963__general_practitioner__identifier {
   }
 }
 
-view: Patient_1559757824302963__general_practitioner__identifier__assigner {
+view: patient_1559757824302963__generalPractitioner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1996,10 +1997,10 @@ view: Patient_1559757824302963__general_practitioner__identifier__assigner {
   }
 }
 
-view: Patient_1559757824302963__general_practitioner__identifier__assigner__identifier__period {
+view: patient_1559757824302963__generalPractitioner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -2008,7 +2009,7 @@ view: Patient_1559757824302963__general_practitioner__identifier__assigner__iden
   }
 }
 
-view: Patient_1559757824302963__general_practitioner__identifier__assigner__identifier {
+view: patient_1559757824302963__generalPractitioner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2040,7 +2041,7 @@ view: Patient_1559757824302963__general_practitioner__identifier__assigner__iden
   }
 }
 
-view: Patient_1559757824302963__general_practitioner__identifier__assigner__identifier__assigner {
+view: patient_1559757824302963__generalPractitioner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2062,10 +2063,10 @@ view: Patient_1559757824302963__general_practitioner__identifier__assigner__iden
   }
 }
 
-view: Patient_1559757824302963__general_practitioner__identifier__assigner__identifier__assigner__identifier__period {
+view: patient_1559757824302963__generalPractitioner__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -2074,7 +2075,7 @@ view: Patient_1559757824302963__general_practitioner__identifier__assigner__iden
   }
 }
 
-view: Patient_1559757824302963__general_practitioner__identifier__assigner__identifier__assigner__identifier {
+view: patient_1559757824302963__generalPractitioner__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2106,7 +2107,7 @@ view: Patient_1559757824302963__general_practitioner__identifier__assigner__iden
   }
 }
 
-view: Patient_1559757824302963__general_practitioner__identifier__assigner__identifier__assigner__identifier__assigner {
+view: patient_1559757824302963__generalPractitioner__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2123,7 +2124,7 @@ view: Patient_1559757824302963__general_practitioner__identifier__assigner__iden
   }
 }
 
-view: Patient_1559757824302963__general_practitioner__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: patient_1559757824302963__generalPractitioner__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2150,7 +2151,7 @@ view: Patient_1559757824302963__general_practitioner__identifier__assigner__iden
   }
 }
 
-view: Patient_1559757824302963__general_practitioner__identifier__assigner__identifier__assigner__identifier__type {
+view: patient_1559757824302963__generalPractitioner__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2162,7 +2163,7 @@ view: Patient_1559757824302963__general_practitioner__identifier__assigner__iden
   }
 }
 
-view: Patient_1559757824302963__general_practitioner__identifier__assigner__identifier__type__coding {
+view: patient_1559757824302963__generalPractitioner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2189,7 +2190,7 @@ view: Patient_1559757824302963__general_practitioner__identifier__assigner__iden
   }
 }
 
-view: Patient_1559757824302963__general_practitioner__identifier__assigner__identifier__type {
+view: patient_1559757824302963__generalPractitioner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2201,7 +2202,7 @@ view: Patient_1559757824302963__general_practitioner__identifier__assigner__iden
   }
 }
 
-view: Patient_1559757824302963__general_practitioner__identifier__type__coding {
+view: patient_1559757824302963__generalPractitioner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2228,7 +2229,7 @@ view: Patient_1559757824302963__general_practitioner__identifier__type__coding {
   }
 }
 
-view: Patient_1559757824302963__general_practitioner__identifier__type {
+view: patient_1559757824302963__generalPractitioner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2240,7 +2241,7 @@ view: Patient_1559757824302963__general_practitioner__identifier__type {
   }
 }
 
-view: Patient_1559757824302963__name {
+view: patient_1559757824302963__name {
   dimension: family {
     type: string
     sql: ${TABLE}.family ;;
@@ -2277,10 +2278,10 @@ view: Patient_1559757824302963__name {
   }
 }
 
-view: Patient_1559757824302963__name__period {
+view: patient_1559757824302963__name__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -2289,7 +2290,7 @@ view: Patient_1559757824302963__name__period {
   }
 }
 
-view: Patient_1559757824302963__animal__species__coding {
+view: patient_1559757824302963__animal__species__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2316,7 +2317,7 @@ view: Patient_1559757824302963__animal__species__coding {
   }
 }
 
-view: Patient_1559757824302963__animal__species {
+view: patient_1559757824302963__animal__species {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2328,7 +2329,7 @@ view: Patient_1559757824302963__animal__species {
   }
 }
 
-view: Patient_1559757824302963__animal__breed__coding {
+view: patient_1559757824302963__animal__breed__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2355,7 +2356,7 @@ view: Patient_1559757824302963__animal__breed__coding {
   }
 }
 
-view: Patient_1559757824302963__animal__breed {
+view: patient_1559757824302963__animal__breed {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2367,7 +2368,7 @@ view: Patient_1559757824302963__animal__breed {
   }
 }
 
-view: Patient_1559757824302963__animal__gender_status__coding {
+view: patient_1559757824302963__animal__genderStatus__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2394,7 +2395,7 @@ view: Patient_1559757824302963__animal__gender_status__coding {
   }
 }
 
-view: Patient_1559757824302963__animal__gender_status {
+view: patient_1559757824302963__animal__genderStatus {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2406,10 +2407,10 @@ view: Patient_1559757824302963__animal__gender_status {
   }
 }
 
-view: Patient_1559757824302963__telecom__period {
+view: patient_1559757824302963__telecom__period {
   dimension: end {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.end ;;
   }
 
   dimension: start {
@@ -2418,7 +2419,7 @@ view: Patient_1559757824302963__telecom__period {
   }
 }
 
-view: Patient_1559757824302963__telecom {
+view: patient_1559757824302963__telecom {
   dimension: period {
     hidden: yes
     sql: ${TABLE}.period ;;
@@ -2445,7 +2446,7 @@ view: Patient_1559757824302963__telecom {
   }
 }
 
-view: Patient_1559757824302963__text {
+view: patient_1559757824302963__text {
   dimension: div {
     type: string
     sql: ${TABLE}.div ;;
@@ -2457,7 +2458,7 @@ view: Patient_1559757824302963__text {
   }
 }
 
-view: Patient_1559757824302963__communication__language__coding {
+view: patient_1559757824302963__communication__language__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2484,7 +2485,7 @@ view: Patient_1559757824302963__communication__language__coding {
   }
 }
 
-view: Patient_1559757824302963__communication__language {
+view: patient_1559757824302963__communication__language {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2496,7 +2497,7 @@ view: Patient_1559757824302963__communication__language {
   }
 }
 
-view: Patient_1559757824302963__communication {
+view: patient_1559757824302963__communication {
   dimension: language {
     hidden: yes
     sql: ${TABLE}.language ;;
@@ -2508,7 +2509,7 @@ view: Patient_1559757824302963__communication {
   }
 }
 
-view: Patient_1559757824302963__marital_status__coding {
+view: patient_1559757824302963__maritalStatus__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2535,7 +2536,7 @@ view: Patient_1559757824302963__marital_status__coding {
   }
 }
 
-view: Patient_1559757824302963__marital_status {
+view: patient_1559757824302963__maritalStatus {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2547,7 +2548,7 @@ view: Patient_1559757824302963__marital_status {
   }
 }
 
-view: Patient_1559757824302963__animal {
+view: patient_1559757824302963__animal {
   dimension: breed {
     hidden: yes
     sql: ${TABLE}.breed ;;
