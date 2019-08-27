@@ -1785,7 +1785,7 @@ view: patient_1559757824302963__contact__name {
 
   dimension: given {
     type: string
-    sql: ${TABLE}.given ;;
+    sql: array_to_string(${TABLE}.given," ") ;;
   }
 
   dimension: period {
@@ -2249,7 +2249,7 @@ view: patient_1559757824302963__name {
 
   dimension: given {
     type: string
-    sql: ${TABLE}.given ;;
+    sql: array_to_string(${TABLE}.given," ") ;;
   }
 
   dimension: period {

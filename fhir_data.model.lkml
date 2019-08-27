@@ -11,7 +11,7 @@ datagroup: fhir_data_default_datagroup {
 persist_with: fhir_data_default_datagroup
 
 explore: patient_1559757824302963 {
-
+  #cancel_grouping_fields: [patient_1559757824302963__name.given]
 #   joins:
       join: patient_1559757824302963__identifier__period {
        view_label: "Patient:  ID Period"
@@ -509,7 +509,7 @@ explore: patient_1559757824302963 {
       join: patient_1559757824302963__name {
        view_label: "Patient:  Name"
        sql: LEFT JOIN UNNEST(${patient_1559757824302963.name}) as patient_1559757824302963__name ;;
-       relationship: one_to_many
+       relationship: one_to_one
 }
 
      join:   patient_1559757824302963__name__period{
