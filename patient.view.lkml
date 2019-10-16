@@ -3,12 +3,14 @@ view: patient_1559757824302963 {
   sql_table_name: sampleFHIR.Patient_1559757824302963 ;;
 
   dimension: id {
+    #all valid
     primary_key: yes
     type: string
     sql: ${TABLE}.id ;;
   }
 
   dimension: active {
+    #currently all active
     type: yesno
     sql: ${TABLE}.active ;;
   }
@@ -24,6 +26,7 @@ view: patient_1559757824302963 {
   }
 
   dimension: birth_date {
+    #all valid
     type: string
     sql: ${TABLE}.birthDate ;;
   }
@@ -44,6 +47,7 @@ view: patient_1559757824302963 {
   }
 
   dimension: gender {
+    #all valid
     type: string
     sql: ${TABLE}.gender ;;
   }
@@ -59,11 +63,15 @@ view: patient_1559757824302963 {
   }
 
   dimension: implicit_rules {
+    hidden: yes
+    #no values
     type: string
     sql: ${TABLE}.implicitRules ;;
   }
 
   dimension: language {
+    hidden: yes
+    #no data
     type: string
     sql: ${TABLE}.language ;;
   }
@@ -454,11 +462,14 @@ view: patient_1559757824302963__address {
   }
 
   dimension: district {
+    hidden: yes
     type: string
     sql: ${TABLE}.district ;;
   }
 
   dimension: line {
+    hidden: yes
+    #is an array and cannot be rendered
     type: string
     sql: ${TABLE}.line ;;
   }
@@ -469,21 +480,25 @@ view: patient_1559757824302963__address {
   }
 
   dimension: postal_code {
-    type: string
+    type: zipcode
+    map_layer_name: us_zipcode_tabulation_areas
     sql: ${TABLE}.postalCode ;;
   }
 
   dimension: state {
     type: string
+    map_layer_name: us_states
     sql: ${TABLE}.state ;;
   }
 
   dimension: text {
+    hidden: yes
     type: string
     sql: ${TABLE}.text ;;
   }
 
   dimension: type {
+    hidden: yes
     type: string
     sql: ${TABLE}.type ;;
   }
@@ -495,12 +510,15 @@ view: patient_1559757824302963__address {
 }
 
 view: patient_1559757824302963__address__period {
+  #no values
   dimension: end {
+    hidden: yes
     type: string
     sql: ${TABLE}.end ;;
   }
 
   dimension: start {
+    hidden: yes
     type: string
     sql: ${TABLE}.start ;;
   }
@@ -1361,6 +1379,8 @@ view: patient_1559757824302963__contact__address {
   }
 
   dimension: line {
+    hidden: yes
+    #array
     type: string
     sql: ${TABLE}.line ;;
   }
@@ -1794,11 +1814,15 @@ view: patient_1559757824302963__contact__name {
   }
 
   dimension: prefix {
+    hidden: yes
+    #array
     type: string
     sql: ${TABLE}.prefix ;;
   }
 
   dimension: suffix {
+    hidden: yes
+    #array
     type: string
     sql: ${TABLE}.suffix ;;
   }
@@ -1921,6 +1945,7 @@ view: patient_1559757824302963__generalPractitioner {
   }
 
   dimension: practitioner_id {
+    description: "Has values."
     type: string
     sql: ${TABLE}.practitionerId ;;
   }
@@ -2292,16 +2317,19 @@ view: patient_1559757824302963__name__period {
 
 view: patient_1559757824302963__animal__species__coding {
   dimension: code {
+    hidden: yes
     type: string
     sql: ${TABLE}.code ;;
   }
 
   dimension: display {
+    hidden: yes
     type: string
     sql: ${TABLE}.display ;;
   }
 
   dimension: system {
+    hidden: yes
     type: string
     sql: ${TABLE}.system ;;
   }
@@ -2312,6 +2340,7 @@ view: patient_1559757824302963__animal__species__coding {
   }
 
   dimension: version {
+    hidden: yes
     type: string
     sql: ${TABLE}.version ;;
   }
@@ -2324,6 +2353,7 @@ view: patient_1559757824302963__animal__species {
   }
 
   dimension: text {
+    hidden: yes
     type: string
     sql: ${TABLE}.text ;;
   }
@@ -2331,16 +2361,19 @@ view: patient_1559757824302963__animal__species {
 
 view: patient_1559757824302963__animal__breed__coding {
   dimension: code {
+    hidden: yes
     type: string
     sql: ${TABLE}.code ;;
   }
 
   dimension: display {
+    hidden: yes
     type: string
     sql: ${TABLE}.display ;;
   }
 
   dimension: system {
+    hidden: yes
     type: string
     sql: ${TABLE}.system ;;
   }
@@ -2351,6 +2384,7 @@ view: patient_1559757824302963__animal__breed__coding {
   }
 
   dimension: version {
+    hidden: yes
     type: string
     sql: ${TABLE}.version ;;
   }
@@ -2363,6 +2397,7 @@ view: patient_1559757824302963__animal__breed {
   }
 
   dimension: text {
+    hidden: yes
     type: string
     sql: ${TABLE}.text ;;
   }
@@ -2370,16 +2405,19 @@ view: patient_1559757824302963__animal__breed {
 
 view: patient_1559757824302963__animal__genderStatus__coding {
   dimension: code {
+    hidden: yes
     type: string
     sql: ${TABLE}.code ;;
   }
 
   dimension: display {
+    hidden: yes
     type: string
     sql: ${TABLE}.display ;;
   }
 
   dimension: system {
+    hidden: yes
     type: string
     sql: ${TABLE}.system ;;
   }
@@ -2390,6 +2428,7 @@ view: patient_1559757824302963__animal__genderStatus__coding {
   }
 
   dimension: version {
+    hidden: yes
     type: string
     sql: ${TABLE}.version ;;
   }
@@ -2402,6 +2441,7 @@ view: patient_1559757824302963__animal__genderStatus {
   }
 
   dimension: text {
+    hidden: yes
     type: string
     sql: ${TABLE}.text ;;
   }
@@ -2538,11 +2578,12 @@ view: patient_1559757824302963__maritalStatus__coding {
 
 view: patient_1559757824302963__maritalStatus {
   dimension: coding {
-    hidden: yes
+    #hidden: yes
     sql: ${TABLE}.coding ;;
   }
 
   dimension: text {
+    hidden: yes
     type: string
     sql: ${TABLE}.text ;;
   }
