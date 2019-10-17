@@ -689,17 +689,17 @@ explore: patient_100_fh {
     relationship: one_to_many
   }
 
+  join: condition__subject {
+    view_label: "Condition: Subject"
+    relationship: one_to_many
+    sql: left join unnest(${condition_100_fh.subject}) as condition__subject ;;
+  }
+
   join: encounter_100_fh {
     view_label: "Encounter"
     type: left_outer
     sql_on: ${encounter_100_fh.id} = ${condition_100_fh.context}.encounterId ;;
     relationship: many_to_one
-  }
-
-  join: condition__subject {
-    view_label: "Condition: Subject"
-    relationship: one_to_many
-    sql: left join unnest(${condition_100_fh.subject}) as condition__subject ;;
   }
 
   join: observation_100_fh {
@@ -727,47 +727,6 @@ explore: patient_100_fh {
     sql: left join unnest(${observation_100_fh.code}) as observation__code ;;
   }
 
-#   #Throws the 'actually not nested' error
-#   join: observation__value {
-#     view_label: "Observation: Value"
-#     relationship: one_to_many
-#     sql: left join unnest(${observation_100_fh.value}) as observation__value ;;
-#   }
-
-#   #Throws the 'actually not nested' error
-#   join: observation__value__quantity {
-#     view_label: "Observation: Value Quantity"
-#     relationship: one_to_many
-#     sql: left join unnest(${observation__value.quantity}) as observation__value__quantity ;;
-#   }
-
-# ##Using to test issues
-#   join: observation__component {
-#     view_label: "Observation: Component"
-#     relationship: one_to_many
-#     sql: left join unnest(${observation_100_fh.component}) as observation__component ;;
-#   }
-#
-# ##Using to test issues
-#   join: observation__context {
-#     view_label: "Observation: Context"
-#     relationship: one_to_many
-#     sql: left join unnest(${observation_100_fh.context}) as observation__context ;;
-#   }
-#
-# ##Using to test issues
-#   join: observation__subject {
-#     view_label: "Observation: Subject"
-#     relationship: one_to_many
-#     sql: left join unnest(${observation_100_fh.subject}) as observation__subject ;;
-#   }
-
-#   join: observation__code__coding {
-#     view_label: "Observation: Code Coding"
-#     relationship: one_to_many
-#     sql: left join unnest(${observation__code.coding}) as observation_code__coding;;
-#   }
-
   join: encounter__type {
     view_label: "Encounter: Type"
     sql: left join unnest(${encounter_100_fh.type}) as encounter__type ;;
@@ -784,5 +743,26 @@ explore: patient_100_fh {
     view_label: "Encounter: Participant Individual"
     sql: left join unnest(${encounter__participant.individual}) as encounter__participant__individual;;
     relationship: one_to_many
+  }
+
+  join: medication_request_100_fh {
+    view_label: "Medication"
+    type: left_outer
+    relationship: one_to_many
+    sql_on: ${medication_request_100_fh.subject}.patientid = ${patient_100_fh.id}
+            and ${medication_request_100_fh.context}.encounterid = ${encounter_100_fh.id}
+            /*and ${medication_request_100_fh.reason_reference}.observationid = ${observation_100_fh.id}*/;;
+  }
+
+  join: medication_request__dosage_instruction {
+    view_label: "Medication Request: Instruction"
+    relationship: one_to_many
+    sql: left join unnest(${medication_request_100_fh.dosage_instruction}) as medication_request__dosage_instruction ;;
+  }
+
+  join: medication_request__reason_reference {
+    view_label: "Medication Request: Reason Reference"
+    relationship: one_to_many
+    sql: left join unnest(${medication_request_100_fh.reason_reference}) as medication_request__reason_reference ;;
   }
 }

@@ -158,6 +158,21 @@ view: observation_100_fh {
     type: number
     sql: ${TABLE}.value.quantity.value ;;
   }
+
+  measure: sum_quantity_value {
+    type: sum
+    sql: ${value_quantity_value} ;;
+  }
+
+  measure: weight {
+    type: average
+    sql: ${value_quantity_value} ;;
+    html: {{rendered_value}} || {{medication_request_100_fh.medication_type._rendered_value}} ;;
+    filters: {
+      field: observation_code_text
+      value: "Body Weight"
+    }
+  }
 ###End Append###
 
   measure: count {
