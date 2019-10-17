@@ -689,11 +689,11 @@ explore: patient_100_fh {
     relationship: one_to_many
   }
 
-  join: condition__subject {
-    view_label: "Condition: Subject"
-    relationship: one_to_many
-    sql: left join unnest(${condition_100_fh.subject}) as condition__subject ;;
-  }
+#   join: condition__subject {
+#     view_label: "Condition: Subject"
+#     relationship: one_to_many
+#     sql: left join unnest(${condition_100_fh.subject}) as condition__subject ;;
+#   }
 
   join: encounter_100_fh {
     view_label: "Encounter"
@@ -701,6 +701,24 @@ explore: patient_100_fh {
     sql_on: ${encounter_100_fh.id} = ${condition_100_fh.context}.encounterId ;;
     relationship: many_to_one
   }
+
+  join: encounter__type {
+    view_label: "Encounter: Type"
+    sql: left join unnest(${encounter_100_fh.type}) as encounter__type ;;
+    relationship: one_to_many
+  }
+
+  join: encounter__participant {
+    view_label: "Encounter: Participant"
+    sql: left join unnest(${encounter_100_fh.participant}) as encounter__participant ;;
+    relationship: one_to_many
+  }
+
+#   join: encounter__participant__individual {
+#     view_label: "Encounter: Participant Individual"
+#     sql: left join unnest(${encounter__participant.individual}) as encounter__participant__individual;;
+#     relationship: one_to_many
+#   }
 
   join: observation_100_fh {
     view_label: "Observation"
@@ -725,24 +743,6 @@ explore: patient_100_fh {
     view_label: "Observation: Code"
     relationship: one_to_many
     sql: left join unnest(${observation_100_fh.code}) as observation__code ;;
-  }
-
-  join: encounter__type {
-    view_label: "Encounter: Type"
-    sql: left join unnest(${encounter_100_fh.type}) as encounter__type ;;
-    relationship: one_to_many
-  }
-
-  join: encounter__participant {
-    view_label: "Encounter: Participant"
-    sql: left join unnest(${encounter_100_fh.participant}) as encounter__participant ;;
-    relationship: one_to_many
-  }
-
-  join: encounter__participant__individual {
-    view_label: "Encounter: Participant Individual"
-    sql: left join unnest(${encounter__participant.individual}) as encounter__participant__individual;;
-    relationship: one_to_many
   }
 
   join: medication_request_100_fh {

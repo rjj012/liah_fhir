@@ -4,6 +4,7 @@ view: medication_request_100_fh {
 
   dimension: based_on__medication_request_id {
     primary_key: yes
+    hidden: yes
     type: string
     sql: ${TABLE}.basedOn.medicationRequestId ;;
   }
@@ -79,6 +80,7 @@ view: medication_request_100_fh {
   }
 
   dimension: implicit_rules {
+    hidden: yes
     type: string
     sql: ${TABLE}.implicitRules ;;
   }
@@ -89,6 +91,7 @@ view: medication_request_100_fh {
   }
 
   dimension: language {
+    hidden: yes
     type: string
     sql: ${TABLE}.language ;;
   }
@@ -114,6 +117,7 @@ view: medication_request_100_fh {
   }
 
   dimension: priority {
+    hidden: yes
     type: string
     sql: ${TABLE}.priority ;;
   }
@@ -1290,6 +1294,7 @@ view: medication_request__reason_reference {
   }
 
   dimension: display {
+    hidden: yes
     type: string
     sql: ${TABLE}.display ;;
   }
@@ -1300,11 +1305,13 @@ view: medication_request__reason_reference {
   }
 
   dimension: observation_id {
+    hidden: yes
     type: string
     sql: ${TABLE}.observationId ;;
   }
 
   dimension: reference {
+    hidden: yes
     type: string
     sql: ${TABLE}.reference ;;
   }

@@ -59,11 +59,13 @@ view: condition_100_fh {
   }
 
   dimension: implicit_rules {
+    hidden: yes
     type: string
     sql: ${TABLE}.implicitRules ;;
   }
 
   dimension: language {
+    hidden: yes
     type: string
     sql: ${TABLE}.language ;;
   }
@@ -94,7 +96,7 @@ view: condition_100_fh {
   }
 
   dimension: subject {
-    #hidden: yes
+    hidden: yes
     sql: ${TABLE}.subject ;;
   }
 

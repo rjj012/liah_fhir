@@ -49,6 +49,7 @@ view: encounter_100_fh {
   }
 
   dimension: implicit_rules {
+    hidden: yes
     type: string
     sql: ${TABLE}.implicitRules ;;
   }
@@ -59,6 +60,7 @@ view: encounter_100_fh {
   }
 
   dimension: language {
+    hidden: yes
     type: string
     sql: ${TABLE}.language ;;
   }
@@ -5574,6 +5576,13 @@ view: encounter__participant {
     hidden: yes
     sql: ${TABLE}.type ;;
   }
+
+  ###Appended Dimensions###
+  dimension: encounter_practitioner_id {
+    type: string
+    sql: ${TABLE}.individual.practitionerid ;;
+  }
+  ###end###
 }
 
 view: encounter__class_history {

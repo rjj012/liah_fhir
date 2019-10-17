@@ -2503,7 +2503,7 @@ view: patient__name {
 
   dimension: given {
     type: string
-    sql:array_to_string(${TABLE}.given," ");;
+    sql: array_to_string(${TABLE}.given," ") ;;
   }
 
   dimension: period {
@@ -2513,12 +2513,12 @@ view: patient__name {
 
   dimension: prefix {
     type: string
-    sql: ${TABLE}.prefix ;;
+    sql: array_to_string(${TABLE}.prefix," ") ;;
   }
 
   dimension: suffix {
     type: string
-    sql: ${TABLE}.suffix ;;
+    sql: array_to_string(${TABLE}.suffix," ") ;;
   }
 
   dimension: text {

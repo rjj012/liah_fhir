@@ -34,6 +34,7 @@ view: observation_100_fh {
   }
 
   dimension: comment {
+    hidden: yes
     type: string
     sql: ${TABLE}.comment ;;
   }
@@ -69,6 +70,7 @@ view: observation_100_fh {
   }
 
   dimension: implicit_rules {
+    hidden: yes
     type: string
     sql: ${TABLE}.implicitRules ;;
   }
@@ -93,6 +95,7 @@ view: observation_100_fh {
   }
 
   dimension: language {
+    hidden: yes
     type: string
     sql: ${TABLE}.language ;;
   }
@@ -4098,6 +4101,7 @@ view: observation__category__coding {
   }
 
   dimension: version {
+    hidden: yes
     type: string
     sql: ${TABLE}.version ;;
   }
