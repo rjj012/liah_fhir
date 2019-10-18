@@ -176,6 +176,16 @@ view: observation_100_fh {
       value: "Body Weight"
     }
   }
+
+  measure: test_weight {
+    type: average
+    sql: ${value_quantity_value} ;;
+    html: {{rendered_value}} || {{medication_request_100_fh.test_medication_type._rendered_value}} ;;
+    filters: {
+      field: observation_code_text
+      value: "Body Weight"
+    }
+  }
 ###End Append###
 
   measure: count {
