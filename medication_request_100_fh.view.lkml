@@ -1,13 +1,13 @@
 view: medication_request_100_fh {
   sql_table_name: FHIR_100_FH.MedicationRequest ;;
-  drill_fields: [based_on__medication_request_id]
+#   drill_fields: [based_on__medication_request_id]
 
-  dimension: based_on__medication_request_id {
-    primary_key: yes
-    hidden: yes
-    type: string
-    sql: ${TABLE}.basedOn.medicationRequestId ;;
-  }
+#   dimension: based_on__medication_request_id {
+#     primary_key: yes
+#     hidden: yes
+#     type: string
+#     sql: ${TABLE}.basedOn.medicationRequestId ;;
+#   }
 
   dimension: authored_on {
     type: string
@@ -70,6 +70,7 @@ view: medication_request_100_fh {
   }
 
   dimension: id {
+    primary_key: yes
     type: string
     sql: ${TABLE}.id ;;
   }
@@ -197,7 +198,7 @@ view: medication_request_100_fh {
 
   measure: count {
     type: count
-    drill_fields: [based_on__medication_request_id]
+    drill_fields: [id]
   }
 }
 

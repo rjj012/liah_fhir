@@ -682,23 +682,10 @@ explore: patient_100_fh {
     relationship: one_to_many
   }
 
-  join: condition_100_fh {
-    view_label: "Condition"
-    type: left_outer
-    sql_on: ${condition_100_fh.subject}.patientid = ${patient_100_fh.id} ;;
-    relationship: one_to_many
-  }
-
-#   join: condition__subject {
-#     view_label: "Condition: Subject"
-#     relationship: one_to_many
-#     sql: left join unnest(${condition_100_fh.subject}) as condition__subject ;;
-#   }
-
   join: encounter_100_fh {
     view_label: "Encounter"
     type: left_outer
-    sql_on: ${encounter_100_fh.id} = ${condition_100_fh.context}.encounterId ;;
+    sql_on: ${encounter_100_fh.subject}.patientid = ${patient_100_fh.id};;
     relationship: many_to_one
   }
 
@@ -714,6 +701,19 @@ explore: patient_100_fh {
     relationship: one_to_many
   }
 
+  join: condition_100_fh {
+    view_label: "Condition"
+    type: left_outer
+    sql_on: ${encounter_100_fh.id} = ${condition_100_fh.context}.encounterId ;;
+    relationship: one_to_many
+  }
+
+#   join: condition__subject {
+#     view_label: "Condition: Subject"
+#     relationship: one_to_many
+#     sql: left join unnest(${condition_100_fh.subject}) as condition__subject ;;
+#   }
+
 #   join: encounter__participant__individual {
 #     view_label: "Encounter: Participant Individual"
 #     sql: left join unnest(${encounter__participant.individual}) as encounter__participant__individual;;
@@ -723,7 +723,8 @@ explore: patient_100_fh {
   join: observation_100_fh {
     view_label: "Observation"
     type: left_outer
-    sql_on: ${observation_100_fh.context}.encounterId = ${encounter_100_fh.id} ;;
+    sql_on: ${observation_100_fh.context}.encounterId = ${encounter_100_fh.id}
+            /*and ${observation_100_fh.subject}.patientid = ${patient_100_fh.id}*/;;
     relationship: one_to_many
   }
 
@@ -749,8 +750,8 @@ explore: patient_100_fh {
     view_label: "Medication"
     type: left_outer
     relationship: one_to_many
-    sql_on: ${medication_request_100_fh.subject}.patientid = ${patient_100_fh.id}
-            and ${medication_request_100_fh.context}.encounterid = ${encounter_100_fh.id}
+    sql_on: /*${medication_request_100_fh.subject}.patientid = ${patient_100_fh.id}
+            and*/ ${medication_request_100_fh.context}.encounterid = ${encounter_100_fh.id}
             /*and ${medication_request_100_fh.reason_reference}.observationid = ${observation_100_fh.id}*/;;
   }
 
