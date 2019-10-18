@@ -179,9 +179,9 @@ view: medication_request_100_fh {
     sql: ${TABLE}.medication.codeableconcept.text ;;
   }
 
-  dimension: test_medication_type {
+  measure: test_medication_type {
     type: string
-    sql: string_agg(${medication_type} order by ${medication_type} asc) ;;
+    sql: string_agg(distinct ${medication_type} order by ${medication_type} asc) ;;
   }
 
   dimension: requester_on_behalf_of_organization_id {
