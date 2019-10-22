@@ -143,6 +143,61 @@ view: condition_100_fh {
     sql: ${TABLE}.code.text ;;
   }
 
+  dimension: condition_grouping {
+    type: string
+    sql:
+      case
+        when ${condition_text} in ('Atrial Fibrillation','Cardiac Arrest','Chronic congestive heart failure (disorder)',
+            'Coronary Heart Disease','Myocardial Infarction')
+          then 'Heart Disease'
+        when ${condition_text} in ('Chronic kidney disease stage 1 (disorder)')
+          then 'Kidney Disease'
+        when ${condition_text} in ('Stroke')
+          then 'Stroke'
+        when ${condition_text} in ('Pulmonary emphysema (disorder)')
+          then 'Chronic Obstructive Pulmonary Disease'
+        when ${condition_text} in ('Diabetes','Diabetic renal disease (disorder)','Diabetic retinopathy associated with type II diabetes mellitus (disorder)')
+          then 'Diabetes'
+        when ${condition_text} in ('Hyperlipidemia')
+          then 'Cholesterol'
+        end
+      ;;
+  }
+
+  dimension: condition_grouping_2 {
+    type: string
+    sql:
+      case
+        when ${condition_text} in ('Acute allergic reaction','Perennial allergic rhinitis','Perennial allergic rhinitis with seasonal variation','Seasonal allergic rhinitis')
+          then 'Allergies'
+        when ${condition_text} in ('Body mass index 30+ - obesity (finding)','Body mass index 40+ - severely obese (finding)')
+          then 'Obesity'
+        when ${condition_text} in ('Concussion injury of brain','Concussion with loss of consciousness','Concussion with no loss of consciousness')
+          then 'Concussion'
+        when ${condition_text} in ('Closed fracture of hip','Fracture of ankle','Fracture of clavicle','Fracture of forearm','Fracture of rib','Fracture subluxation of wrist')
+          then 'Fracture'
+        when ${condition_text} in ('Laceration of foot','Laceration of forearm','Laceration of hand','Laceration of thigh','Facial laceration')
+          then 'Laceration'
+        when ${condition_text} in ('Localized, primary osteoarthritis of the hand','Osteoarthritis of hip','Osteoarthritis of knee','Rheumatoid arthritis')
+          then 'Arthritis'
+        when ${condition_text} in ('Major depression disorder','Major depression, single episode')
+          then 'Depression'
+        when ${condition_text} in ("Alzheimer's disease (disorder)")
+          then ${condition_text}
+        when ${condition_text} in ('Carcinoma in situ of prostate (disorder)','Malignant neoplasm of breast (disorder)','Neoplasm of prostate')
+          then 'Cancer'
+        when ${condition_text} in ('Sprain of ankle','Sprain of wrist')
+          then 'Sprain'
+        when ${condition_text} in ('Injury of anterior cruciate ligament','Injury of medial collateral ligament of knee','Injury of tendon of the rotator cuff of shoulder','Rupture of patellar tendon','Tear of meniscus of knee')
+          then 'Tendon, Ligament and Meniscus Injuries/Tears/Ruptures'
+        when ${condition_text} in ('First degree burn','Second degree burn','Third degree burn')
+          then 'Burn'
+        when ${condition_text} in ('Blighted ovum','Antepartum eclampsia','Fetus with unknown complication','Miscarriage in first trimester','Normal pregnancy','Tubal pregnancy')
+          then'Pregnancy'
+        else null
+      end;;
+  }
+
   dimension_group: condition_onset {
     type: time
     timeframes: [
