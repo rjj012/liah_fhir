@@ -139,6 +139,30 @@ view: encounter_100_fh {
     type: count
     drill_fields: [id]
   }
+
+###Appended Fields###
+  dimension_group: encounter_start {
+    type: time
+    timeframes: [
+      date
+      , week
+      , month
+      , year
+    ]
+    sql: substr(${TABLE}.period.start,1,10) ;;
+  }
+
+  dimension_group: encounter_end {
+    type: time
+    timeframes: [
+      date
+      , week
+      , month
+      , year
+    ]
+    sql: substr(${TABLE}.period.end,1,10) ;;
+  }
+###End appended###
 }
 
 view: encounter__part_of {
@@ -510,6 +534,9 @@ view: encounter__reason {
     type: string
     sql: ${TABLE}.text ;;
   }
+
+  ###Appended Fields###
+  ###Append End
 }
 
 view: encounter__subject {
@@ -1217,6 +1244,12 @@ view: encounter__type {
   dimension: text {
     type: string
     sql: ${TABLE}.text ;;
+  }
+
+  dimension: encounter_reason {
+    type: string
+    sql: ${TABLE}.text ;;
+    html: {{rendered_value}} || {{encounter__reason__coding.display._rendered_value}} ;;
   }
 }
 
@@ -4380,6 +4413,12 @@ view: encounter__diagnosis {
   dimension: role {
     hidden: yes
     sql: ${TABLE}.role ;;
+  }
+
+  ###Appended fields###
+  dimension: condition_id {
+    type: string
+    sql: ${TABLE}.condition.conditionId ;;
   }
 }
 

@@ -11,6 +11,7 @@ datagroup: fhir_data_default_datagroup {
 persist_with: fhir_data_default_datagroup
 
 explore: patient_1559757824302963 {
+  hidden: yes
   #cancel_grouping_fields: [patient_1559757824302963__name.given]
 #   joins:
       join: patient_1559757824302963__identifier__period {
@@ -701,6 +702,24 @@ explore: patient_100_fh {
     relationship: one_to_many
   }
 
+  join: encounter__diagnosis {
+    view_label: "Encounter: Diagnosis"
+    relationship: one_to_many
+    sql: left join unnest(${encounter_100_fh.diagnosis}) as encounter__diagnosis ;;
+  }
+
+  join: encounter__reason {
+    view_label: "Encounter: Reason"
+    relationship: one_to_many
+    sql: left join unnest(${encounter_100_fh.reason}) as encounter__reason ;;
+  }
+
+  join: encounter__reason__coding {
+    view_label: "Enounter: Reason Coding"
+    relationship: one_to_many
+    sql: left join unnest(${encounter__reason.coding}) as encounter__reason__coding ;;
+  }
+
   join: condition_100_fh {
     view_label: "Condition"
     type: left_outer
@@ -746,13 +765,18 @@ explore: patient_100_fh {
     sql: left join unnest(${observation_100_fh.code}) as observation__code ;;
   }
 
+  join: dt_condition_and_medication_link_rj {
+    type: left_outer
+    relationship: many_to_many
+    sql_on: ${dt_condition_and_medication_link_rj.condition_id} = ${condition_100_fh.id} ;;
+  }
+
   join: medication_request_100_fh {
     view_label: "Medication"
     type: left_outer
-    relationship: one_to_many
-    sql_on: /*${medication_request_100_fh.subject}.patientid = ${patient_100_fh.id}
-            and*/ ${medication_request_100_fh.context}.encounterid = ${encounter_100_fh.id}
-            /*and ${medication_request_100_fh.reason_reference}.observationid = ${observation_100_fh.id}*/;;
+    relationship: many_to_many
+    sql_on: ${medication_request_100_fh.context}.encounterid = ${encounter_100_fh.id}
+            and ${dt_condition_and_medication_link_rj.medication_id} = ${medication_request_100_fh.id};;
   }
 
   join: medication_request__dosage_instruction {

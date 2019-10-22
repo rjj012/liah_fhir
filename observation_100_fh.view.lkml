@@ -167,7 +167,8 @@ view: observation_100_fh {
     sql: ${value_quantity_value} ;;
   }
 
-  measure: weight {
+  measure: weight_and_medication {
+    #hidden: yes
     type: average
     sql: ${value_quantity_value} ;;
     html: {{rendered_value}} || {{medication_request_100_fh.medication_type._rendered_value}} ;;
@@ -177,15 +178,60 @@ view: observation_100_fh {
     }
   }
 
-  measure: test_weight {
+  measure: weight {
     type: average
     sql: ${value_quantity_value} ;;
-    html: {{rendered_value}} || {{medication_request_100_fh.test_medication_type._rendered_value}} ;;
     filters: {
       field: observation_code_text
       value: "Body Weight"
     }
   }
+
+  measure: height {
+    type: average
+    sql: ${value_quantity_value} ;;
+    filters: {
+      field: observation_code_text
+      value: "Body Height"
+    }
+  }
+
+  measure: body_mass_index {
+    type: average
+    sql: ${value_quantity_value} ;;
+    filters: {
+      field: observation_code_text
+      value: "Body Mass Index"
+    }
+  }
+
+  measure: blood_pressure {
+    type: average
+    sql: ${value_quantity_value} ;;
+    filters: {
+      field: observation_code_text
+      value: "Blood Pressure"
+    }
+  }
+
+  measure: glucose {
+    type: average
+    sql: ${value_quantity_value} ;;
+    filters: {
+      field: observation_code_text
+      value: "Glucose"
+    }
+  }
+
+  measure: cholesterol {
+    type: average
+    sql: ${value_quantity_value} ;;
+    filters: {
+      field: observation_code_text
+      value: "Total Cholesterol"
+    }
+  }
+
 ###End Append###
 
   measure: count {

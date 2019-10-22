@@ -1,5 +1,5 @@
-view: condition_100_fh {
-  sql_table_name: FHIR_100_FH.Condition ;;
+view: diagnostic_report {
+  sql_table_name: FHIR_100_FH.DiagnosticReport ;;
   drill_fields: [id]
 
   dimension: id {
@@ -8,30 +8,9 @@ view: condition_100_fh {
     sql: ${TABLE}.id ;;
   }
 
-  dimension: abatement {
+  dimension: based_on {
     hidden: yes
-    sql: ${TABLE}.abatement ;;
-  }
-
-  dimension_group: asserted_date {
-    type: time
-    timeframes: [
-      date
-      , week
-      , month
-      , year
-    ]
-    sql: substr(${TABLE}.assertedDate,1,10) ;;
-  }
-
-  dimension: asserter {
-    hidden: yes
-    sql: ${TABLE}.asserter ;;
-  }
-
-  dimension: body_site {
-    hidden: yes
-    sql: ${TABLE}.bodySite ;;
+    sql: ${TABLE}.basedOn ;;
   }
 
   dimension: category {
@@ -39,14 +18,19 @@ view: condition_100_fh {
     sql: ${TABLE}.category ;;
   }
 
-  dimension: clinical_status {
-    type: string
-    sql: ${TABLE}.clinicalStatus ;;
-  }
-
   dimension: code {
     hidden: yes
     sql: ${TABLE}.code ;;
+  }
+
+  dimension: coded_diagnosis {
+    hidden: yes
+    sql: ${TABLE}.codedDiagnosis ;;
+  }
+
+  dimension: conclusion {
+    type: string
+    sql: ${TABLE}.conclusion ;;
   }
 
   dimension: context {
@@ -54,9 +38,9 @@ view: condition_100_fh {
     sql: ${TABLE}.context ;;
   }
 
-  dimension: evidence {
+  dimension: effective {
     hidden: yes
-    sql: ${TABLE}.evidence ;;
+    sql: ${TABLE}.effective ;;
   }
 
   dimension: identifier {
@@ -64,14 +48,36 @@ view: condition_100_fh {
     sql: ${TABLE}.identifier ;;
   }
 
-  dimension: implicit_rules {
+  dimension: image {
     hidden: yes
+    sql: ${TABLE}.image ;;
+  }
+
+  dimension: imaging_study {
+    hidden: yes
+    sql: ${TABLE}.imagingStudy ;;
+  }
+
+  dimension: implicit_rules {
     type: string
     sql: ${TABLE}.implicitRules ;;
   }
 
+  dimension_group: issued {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.issued ;;
+  }
+
   dimension: language {
-    hidden: yes
     type: string
     sql: ${TABLE}.language ;;
   }
@@ -81,24 +87,29 @@ view: condition_100_fh {
     sql: ${TABLE}.meta ;;
   }
 
-  dimension: note {
+  dimension: performer {
     hidden: yes
-    sql: ${TABLE}.note ;;
+    sql: ${TABLE}.performer ;;
   }
 
-  dimension: onset {
+  dimension: presented_form {
     hidden: yes
-    sql: ${TABLE}.onset ;;
+    sql: ${TABLE}.presentedForm ;;
   }
 
-  dimension: severity {
+  dimension: result {
     hidden: yes
-    sql: ${TABLE}.severity ;;
+    sql: ${TABLE}.result ;;
   }
 
-  dimension: stage {
+  dimension: specimen {
     hidden: yes
-    sql: ${TABLE}.stage ;;
+    sql: ${TABLE}.specimen ;;
+  }
+
+  dimension: status {
+    type: string
+    sql: ${TABLE}.status ;;
   }
 
   dimension: subject {
@@ -111,96 +122,13 @@ view: condition_100_fh {
     sql: ${TABLE}.text ;;
   }
 
-  dimension: verification_status {
-    type: string
-    sql: ${TABLE}.verificationStatus ;;
-  }
-
-  ###Appended fields###
-  dimension_group: condition_abatement {
-    type: time
-    timeframes: [
-      date
-      , month
-      , week
-      , year
-    ]
-    sql: substr(${TABLE}.abatement.dateTime,1,10) ;;
-  }
-
-  dimension: condition_abatement_timeline {
-    type: date
-    sql:
-      case
-        when ${condition_abatement_date} is null
-          then current_date()
-        else ${condition_abatement_date}
-      end;;
-  }
-
-  dimension: condition_text {
-    type: string
-    sql: ${TABLE}.code.text ;;
-  }
-
-  dimension_group: condition_onset {
-    type: time
-    timeframes: [
-      date
-      , month
-      , week
-      , year
-    ]
-    sql: substr(${TABLE}.onset.dateTime,1,10) ;;
-  }
-###End of append###
-
   measure: count {
     type: count
     drill_fields: [id]
   }
 }
 
-view: condition__severity__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: condition__severity {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: condition__identifier__period {
+view: diagnostic_report__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -212,7 +140,7 @@ view: condition__identifier__period {
   }
 }
 
-view: condition__identifier {
+view: diagnostic_report__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -244,7 +172,7 @@ view: condition__identifier {
   }
 }
 
-view: condition__identifier__assigner {
+view: diagnostic_report__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -266,7 +194,7 @@ view: condition__identifier__assigner {
   }
 }
 
-view: condition__identifier__assigner__identifier__period {
+view: diagnostic_report__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -278,7 +206,7 @@ view: condition__identifier__assigner__identifier__period {
   }
 }
 
-view: condition__identifier__assigner__identifier {
+view: diagnostic_report__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -310,7 +238,7 @@ view: condition__identifier__assigner__identifier {
   }
 }
 
-view: condition__identifier__assigner__identifier__assigner {
+view: diagnostic_report__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -332,7 +260,7 @@ view: condition__identifier__assigner__identifier__assigner {
   }
 }
 
-view: condition__identifier__assigner__identifier__assigner__identifier__period {
+view: diagnostic_report__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -344,7 +272,7 @@ view: condition__identifier__assigner__identifier__assigner__identifier__period 
   }
 }
 
-view: condition__identifier__assigner__identifier__assigner__identifier {
+view: diagnostic_report__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -376,7 +304,7 @@ view: condition__identifier__assigner__identifier__assigner__identifier {
   }
 }
 
-view: condition__identifier__assigner__identifier__assigner__identifier__assigner {
+view: diagnostic_report__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -393,7 +321,7 @@ view: condition__identifier__assigner__identifier__assigner__identifier__assigne
   }
 }
 
-view: condition__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: diagnostic_report__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -420,7 +348,7 @@ view: condition__identifier__assigner__identifier__assigner__identifier__type__c
   }
 }
 
-view: condition__identifier__assigner__identifier__assigner__identifier__type {
+view: diagnostic_report__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -432,7 +360,7 @@ view: condition__identifier__assigner__identifier__assigner__identifier__type {
   }
 }
 
-view: condition__identifier__assigner__identifier__type__coding {
+view: diagnostic_report__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -459,7 +387,7 @@ view: condition__identifier__assigner__identifier__type__coding {
   }
 }
 
-view: condition__identifier__assigner__identifier__type {
+view: diagnostic_report__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -471,7 +399,7 @@ view: condition__identifier__assigner__identifier__type {
   }
 }
 
-view: condition__identifier__type__coding {
+view: diagnostic_report__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -498,7 +426,7 @@ view: condition__identifier__type__coding {
   }
 }
 
-view: condition__identifier__type {
+view: diagnostic_report__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -510,7 +438,7 @@ view: condition__identifier__type {
   }
 }
 
-view: condition__note__author__reference {
+view: diagnostic_report__image__link {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -521,9 +449,353 @@ view: condition__note__author__reference {
     sql: ${TABLE}.identifier ;;
   }
 
-  dimension: patient_id {
+  dimension: media_id {
     type: string
-    sql: ${TABLE}.patientId ;;
+    sql: ${TABLE}.mediaId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: diagnostic_report__image__link__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: diagnostic_report__image__link__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: diagnostic_report__image__link__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: diagnostic_report__image__link__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: diagnostic_report__image__link__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: diagnostic_report__image__link__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: diagnostic_report__image__link__identifier__assigner__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: diagnostic_report__image__link__identifier__assigner__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: diagnostic_report__image__link__identifier__assigner__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: diagnostic_report__image__link__identifier__assigner__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: diagnostic_report__image__link__identifier__assigner__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: diagnostic_report__image__link__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: diagnostic_report__image__link__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: diagnostic_report__image__link__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: diagnostic_report__image__link__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: diagnostic_report__image {
+  dimension: comment {
+    type: string
+    sql: ${TABLE}.comment ;;
+  }
+
+  dimension: link {
+    hidden: yes
+    sql: ${TABLE}.link ;;
+  }
+}
+
+view: diagnostic_report__performer__actor {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
   }
 
   dimension: practitioner_id {
@@ -535,14 +807,9 @@ view: condition__note__author__reference {
     type: string
     sql: ${TABLE}.reference ;;
   }
-
-  dimension: related_person_id {
-    type: string
-    sql: ${TABLE}.relatedPersonId ;;
-  }
 }
 
-view: condition__note__author__reference__identifier__period {
+view: diagnostic_report__performer__actor__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -554,7 +821,7 @@ view: condition__note__author__reference__identifier__period {
   }
 }
 
-view: condition__note__author__reference__identifier {
+view: diagnostic_report__performer__actor__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -586,7 +853,7 @@ view: condition__note__author__reference__identifier {
   }
 }
 
-view: condition__note__author__reference__identifier__assigner {
+view: diagnostic_report__performer__actor__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -608,7 +875,7 @@ view: condition__note__author__reference__identifier__assigner {
   }
 }
 
-view: condition__note__author__reference__identifier__assigner__identifier__period {
+view: diagnostic_report__performer__actor__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -620,7 +887,7 @@ view: condition__note__author__reference__identifier__assigner__identifier__peri
   }
 }
 
-view: condition__note__author__reference__identifier__assigner__identifier {
+view: diagnostic_report__performer__actor__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -652,7 +919,7 @@ view: condition__note__author__reference__identifier__assigner__identifier {
   }
 }
 
-view: condition__note__author__reference__identifier__assigner__identifier__assigner {
+view: diagnostic_report__performer__actor__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -674,7 +941,7 @@ view: condition__note__author__reference__identifier__assigner__identifier__assi
   }
 }
 
-view: condition__note__author__reference__identifier__assigner__identifier__assigner__identifier__period {
+view: diagnostic_report__performer__actor__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -686,7 +953,7 @@ view: condition__note__author__reference__identifier__assigner__identifier__assi
   }
 }
 
-view: condition__note__author__reference__identifier__assigner__identifier__assigner__identifier {
+view: diagnostic_report__performer__actor__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -718,7 +985,7 @@ view: condition__note__author__reference__identifier__assigner__identifier__assi
   }
 }
 
-view: condition__note__author__reference__identifier__assigner__identifier__assigner__identifier__assigner {
+view: diagnostic_report__performer__actor__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -735,7 +1002,7 @@ view: condition__note__author__reference__identifier__assigner__identifier__assi
   }
 }
 
-view: condition__note__author__reference__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: diagnostic_report__performer__actor__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -762,7 +1029,7 @@ view: condition__note__author__reference__identifier__assigner__identifier__assi
   }
 }
 
-view: condition__note__author__reference__identifier__assigner__identifier__assigner__identifier__type {
+view: diagnostic_report__performer__actor__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -774,7 +1041,7 @@ view: condition__note__author__reference__identifier__assigner__identifier__assi
   }
 }
 
-view: condition__note__author__reference__identifier__assigner__identifier__type__coding {
+view: diagnostic_report__performer__actor__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -801,7 +1068,7 @@ view: condition__note__author__reference__identifier__assigner__identifier__type
   }
 }
 
-view: condition__note__author__reference__identifier__assigner__identifier__type {
+view: diagnostic_report__performer__actor__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -813,7 +1080,7 @@ view: condition__note__author__reference__identifier__assigner__identifier__type
   }
 }
 
-view: condition__note__author__reference__identifier__type__coding {
+view: diagnostic_report__performer__actor__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -840,7 +1107,7 @@ view: condition__note__author__reference__identifier__type__coding {
   }
 }
 
-view: condition__note__author__reference__identifier__type {
+view: diagnostic_report__performer__actor__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -852,36 +1119,7 @@ view: condition__note__author__reference__identifier__type {
   }
 }
 
-view: condition__note__author {
-  dimension: reference {
-    hidden: yes
-    sql: ${TABLE}.reference ;;
-  }
-
-  dimension: string {
-    type: string
-    sql: ${TABLE}.string ;;
-  }
-}
-
-view: condition__note {
-  dimension: author {
-    hidden: yes
-    sql: ${TABLE}.author ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-
-  dimension: time {
-    type: string
-    sql: ${TABLE}.time ;;
-  }
-}
-
-view: condition__code__coding {
+view: diagnostic_report__performer__role__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -908,7 +1146,7 @@ view: condition__code__coding {
   }
 }
 
-view: condition__code {
+view: diagnostic_report__performer__role {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -920,7 +1158,7 @@ view: condition__code {
   }
 }
 
-view: condition__evidence__code__coding {
+view: diagnostic_report__code__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -947,7 +1185,7 @@ view: condition__evidence__code__coding {
   }
 }
 
-view: condition__evidence__code {
+view: diagnostic_report__code {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -959,339 +1197,12 @@ view: condition__evidence__code {
   }
 }
 
-view: condition__evidence__detail {
-  dimension: display {
+view: diagnostic_report__subject {
+  dimension: device_id {
     type: string
-    sql: ${TABLE}.display ;;
+    sql: ${TABLE}.deviceId ;;
   }
 
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-
-  dimension: resource_id {
-    type: string
-    sql: ${TABLE}.resourceId ;;
-  }
-}
-
-view: condition__evidence__detail__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: condition__evidence__detail__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: condition__evidence__detail__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: condition__evidence__detail__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: condition__evidence__detail__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: condition__evidence__detail__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: condition__evidence__detail__identifier__assigner__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: condition__evidence__detail__identifier__assigner__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: condition__evidence__detail__identifier__assigner__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: condition__evidence__detail__identifier__assigner__identifier__assigner__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: condition__evidence__detail__identifier__assigner__identifier__assigner__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: condition__evidence__detail__identifier__assigner__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: condition__evidence__detail__identifier__assigner__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: condition__evidence__detail__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: condition__evidence__detail__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: condition__subject {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1307,6 +1218,11 @@ view: condition__subject {
     sql: ${TABLE}.identifier ;;
   }
 
+  dimension: location_id {
+    type: string
+    sql: ${TABLE}.locationId ;;
+  }
+
   dimension: patient_id {
     type: string
     sql: ${TABLE}.patientId ;;
@@ -1318,7 +1234,7 @@ view: condition__subject {
   }
 }
 
-view: condition__subject__identifier__period {
+view: diagnostic_report__subject__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -1330,7 +1246,7 @@ view: condition__subject__identifier__period {
   }
 }
 
-view: condition__subject__identifier {
+view: diagnostic_report__subject__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1362,7 +1278,7 @@ view: condition__subject__identifier {
   }
 }
 
-view: condition__subject__identifier__assigner {
+view: diagnostic_report__subject__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1384,7 +1300,7 @@ view: condition__subject__identifier__assigner {
   }
 }
 
-view: condition__subject__identifier__assigner__identifier__period {
+view: diagnostic_report__subject__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -1396,7 +1312,7 @@ view: condition__subject__identifier__assigner__identifier__period {
   }
 }
 
-view: condition__subject__identifier__assigner__identifier {
+view: diagnostic_report__subject__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1428,7 +1344,7 @@ view: condition__subject__identifier__assigner__identifier {
   }
 }
 
-view: condition__subject__identifier__assigner__identifier__assigner {
+view: diagnostic_report__subject__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1450,7 +1366,7 @@ view: condition__subject__identifier__assigner__identifier__assigner {
   }
 }
 
-view: condition__subject__identifier__assigner__identifier__assigner__identifier__period {
+view: diagnostic_report__subject__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -1462,7 +1378,7 @@ view: condition__subject__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: condition__subject__identifier__assigner__identifier__assigner__identifier {
+view: diagnostic_report__subject__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1494,7 +1410,7 @@ view: condition__subject__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: condition__subject__identifier__assigner__identifier__assigner__identifier__assigner {
+view: diagnostic_report__subject__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1511,7 +1427,7 @@ view: condition__subject__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: condition__subject__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: diagnostic_report__subject__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1538,7 +1454,7 @@ view: condition__subject__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: condition__subject__identifier__assigner__identifier__assigner__identifier__type {
+view: diagnostic_report__subject__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1550,7 +1466,7 @@ view: condition__subject__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: condition__subject__identifier__assigner__identifier__type__coding {
+view: diagnostic_report__subject__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1577,7 +1493,7 @@ view: condition__subject__identifier__assigner__identifier__type__coding {
   }
 }
 
-view: condition__subject__identifier__assigner__identifier__type {
+view: diagnostic_report__subject__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1589,7 +1505,7 @@ view: condition__subject__identifier__assigner__identifier__type {
   }
 }
 
-view: condition__subject__identifier__type__coding {
+view: diagnostic_report__subject__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1616,7 +1532,7 @@ view: condition__subject__identifier__type__coding {
   }
 }
 
-view: condition__subject__identifier__type {
+view: diagnostic_report__subject__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1628,547 +1544,49 @@ view: condition__subject__identifier__type {
   }
 }
 
-view: condition__onset {
-  dimension: age {
-    hidden: yes
-    sql: ${TABLE}.age ;;
-  }
-
-  dimension: date_time {
+view: diagnostic_report__presented_form {
+  dimension: content_type {
     type: string
-    sql: ${TABLE}.dateTime ;;
+    sql: ${TABLE}.contentType ;;
   }
 
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: range {
-    hidden: yes
-    sql: ${TABLE}.``range`` ;;
-  }
-
-  dimension: string {
+  dimension: creation {
     type: string
-    sql: ${TABLE}.string ;;
+    sql: ${TABLE}.creation ;;
   }
-}
 
-view: condition__onset__period {
-  dimension: end {
+  dimension: data {
     type: string
-    sql: ${TABLE}.``end`` ;;
+    sql: ${TABLE}.data ;;
   }
 
-  dimension: start {
+  dimension: hash {
     type: string
-    sql: ${TABLE}.start ;;
+    sql: ${TABLE}.``hash`` ;;
   }
-}
 
-view: condition__onset__range__high {
-  dimension: code {
+  dimension: language {
     type: string
-    sql: ${TABLE}.code ;;
+    sql: ${TABLE}.language ;;
   }
 
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: unit {
-    type: string
-    sql: ${TABLE}.unit ;;
-  }
-
-  dimension: value {
+  dimension: size {
     type: number
-    sql: ${TABLE}.value ;;
+    sql: ${TABLE}.size ;;
+  }
+
+  dimension: title {
+    type: string
+    sql: ${TABLE}.title ;;
+  }
+
+  dimension: url {
+    type: string
+    sql: ${TABLE}.url ;;
   }
 }
 
-view: condition__onset__range__low {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: unit {
-    type: string
-    sql: ${TABLE}.unit ;;
-  }
-
-  dimension: value {
-    type: number
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: condition__onset__age {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: comparator {
-    type: string
-    sql: ${TABLE}.comparator ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: unit {
-    type: string
-    sql: ${TABLE}.unit ;;
-  }
-
-  dimension: value {
-    type: number
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: condition__body_site__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: condition__body_site {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: condition__asserter {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: patient_id {
-    type: string
-    sql: ${TABLE}.patientId ;;
-  }
-
-  dimension: practitioner_id {
-    type: string
-    sql: ${TABLE}.practitionerId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-
-  dimension: related_person_id {
-    type: string
-    sql: ${TABLE}.relatedPersonId ;;
-  }
-}
-
-view: condition__asserter__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: condition__asserter__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: condition__asserter__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: condition__asserter__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: condition__asserter__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: condition__asserter__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: condition__asserter__identifier__assigner__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: condition__asserter__identifier__assigner__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: condition__asserter__identifier__assigner__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: condition__asserter__identifier__assigner__identifier__assigner__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: condition__asserter__identifier__assigner__identifier__assigner__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: condition__asserter__identifier__assigner__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: condition__asserter__identifier__assigner__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: condition__asserter__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: condition__asserter__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: condition__stage__summary__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: condition__stage__summary {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: condition__stage__assessment {
-  dimension: clinical_impression_id {
-    type: string
-    sql: ${TABLE}.clinicalImpressionId ;;
-  }
-
-  dimension: diagnostic_report_id {
-    type: string
-    sql: ${TABLE}.diagnosticReportId ;;
-  }
-
+view: diagnostic_report__result {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2190,7 +1608,7 @@ view: condition__stage__assessment {
   }
 }
 
-view: condition__stage__assessment__identifier__period {
+view: diagnostic_report__result__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -2202,7 +1620,7 @@ view: condition__stage__assessment__identifier__period {
   }
 }
 
-view: condition__stage__assessment__identifier {
+view: diagnostic_report__result__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2234,7 +1652,7 @@ view: condition__stage__assessment__identifier {
   }
 }
 
-view: condition__stage__assessment__identifier__assigner {
+view: diagnostic_report__result__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2256,7 +1674,7 @@ view: condition__stage__assessment__identifier__assigner {
   }
 }
 
-view: condition__stage__assessment__identifier__assigner__identifier__period {
+view: diagnostic_report__result__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -2268,7 +1686,7 @@ view: condition__stage__assessment__identifier__assigner__identifier__period {
   }
 }
 
-view: condition__stage__assessment__identifier__assigner__identifier {
+view: diagnostic_report__result__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2300,7 +1718,7 @@ view: condition__stage__assessment__identifier__assigner__identifier {
   }
 }
 
-view: condition__stage__assessment__identifier__assigner__identifier__assigner {
+view: diagnostic_report__result__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2322,7 +1740,7 @@ view: condition__stage__assessment__identifier__assigner__identifier__assigner {
   }
 }
 
-view: condition__stage__assessment__identifier__assigner__identifier__assigner__identifier__period {
+view: diagnostic_report__result__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -2334,7 +1752,7 @@ view: condition__stage__assessment__identifier__assigner__identifier__assigner__
   }
 }
 
-view: condition__stage__assessment__identifier__assigner__identifier__assigner__identifier {
+view: diagnostic_report__result__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2366,7 +1784,7 @@ view: condition__stage__assessment__identifier__assigner__identifier__assigner__
   }
 }
 
-view: condition__stage__assessment__identifier__assigner__identifier__assigner__identifier__assigner {
+view: diagnostic_report__result__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2383,7 +1801,7 @@ view: condition__stage__assessment__identifier__assigner__identifier__assigner__
   }
 }
 
-view: condition__stage__assessment__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: diagnostic_report__result__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2410,7 +1828,7 @@ view: condition__stage__assessment__identifier__assigner__identifier__assigner__
   }
 }
 
-view: condition__stage__assessment__identifier__assigner__identifier__assigner__identifier__type {
+view: diagnostic_report__result__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2422,7 +1840,7 @@ view: condition__stage__assessment__identifier__assigner__identifier__assigner__
   }
 }
 
-view: condition__stage__assessment__identifier__assigner__identifier__type__coding {
+view: diagnostic_report__result__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2449,7 +1867,7 @@ view: condition__stage__assessment__identifier__assigner__identifier__type__codi
   }
 }
 
-view: condition__stage__assessment__identifier__assigner__identifier__type {
+view: diagnostic_report__result__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2461,7 +1879,7 @@ view: condition__stage__assessment__identifier__assigner__identifier__type {
   }
 }
 
-view: condition__stage__assessment__identifier__type__coding {
+view: diagnostic_report__result__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2488,7 +1906,7 @@ view: condition__stage__assessment__identifier__type__coding {
   }
 }
 
-view: condition__stage__assessment__identifier__type {
+view: diagnostic_report__result__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2500,7 +1918,70 @@ view: condition__stage__assessment__identifier__type {
   }
 }
 
-view: condition__meta {
+view: diagnostic_report__effective {
+  dimension: date_time {
+    type: string
+    sql: ${TABLE}.dateTime ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+}
+
+view: diagnostic_report__effective__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: diagnostic_report__coded_diagnosis__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: diagnostic_report__coded_diagnosis {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: diagnostic_report__meta {
   dimension_group: last_updated {
     type: time
     timeframes: [
@@ -2536,7 +2017,7 @@ view: condition__meta {
   }
 }
 
-view: condition__meta__security {
+view: diagnostic_report__meta__security {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2563,7 +2044,7 @@ view: condition__meta__security {
   }
 }
 
-view: condition__meta__tag {
+view: diagnostic_report__meta__tag {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2590,7 +2071,339 @@ view: condition__meta__tag {
   }
 }
 
-view: condition__context {
+view: diagnostic_report__specimen {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+
+  dimension: specimen_id {
+    type: string
+    sql: ${TABLE}.specimenId ;;
+  }
+}
+
+view: diagnostic_report__specimen__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: diagnostic_report__specimen__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: diagnostic_report__specimen__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: diagnostic_report__specimen__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: diagnostic_report__specimen__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: diagnostic_report__specimen__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: diagnostic_report__specimen__identifier__assigner__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: diagnostic_report__specimen__identifier__assigner__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: diagnostic_report__specimen__identifier__assigner__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: diagnostic_report__specimen__identifier__assigner__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: diagnostic_report__specimen__identifier__assigner__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: diagnostic_report__specimen__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: diagnostic_report__specimen__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: diagnostic_report__specimen__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: diagnostic_report__specimen__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: diagnostic_report__context {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2617,7 +2430,7 @@ view: condition__context {
   }
 }
 
-view: condition__context__identifier__period {
+view: diagnostic_report__context__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -2629,7 +2442,7 @@ view: condition__context__identifier__period {
   }
 }
 
-view: condition__context__identifier {
+view: diagnostic_report__context__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2661,7 +2474,7 @@ view: condition__context__identifier {
   }
 }
 
-view: condition__context__identifier__assigner {
+view: diagnostic_report__context__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2683,7 +2496,7 @@ view: condition__context__identifier__assigner {
   }
 }
 
-view: condition__context__identifier__assigner__identifier__period {
+view: diagnostic_report__context__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -2695,7 +2508,7 @@ view: condition__context__identifier__assigner__identifier__period {
   }
 }
 
-view: condition__context__identifier__assigner__identifier {
+view: diagnostic_report__context__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2727,7 +2540,7 @@ view: condition__context__identifier__assigner__identifier {
   }
 }
 
-view: condition__context__identifier__assigner__identifier__assigner {
+view: diagnostic_report__context__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2749,7 +2562,7 @@ view: condition__context__identifier__assigner__identifier__assigner {
   }
 }
 
-view: condition__context__identifier__assigner__identifier__assigner__identifier__period {
+view: diagnostic_report__context__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -2761,7 +2574,7 @@ view: condition__context__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: condition__context__identifier__assigner__identifier__assigner__identifier {
+view: diagnostic_report__context__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2793,7 +2606,7 @@ view: condition__context__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: condition__context__identifier__assigner__identifier__assigner__identifier__assigner {
+view: diagnostic_report__context__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2810,7 +2623,7 @@ view: condition__context__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: condition__context__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: diagnostic_report__context__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2837,7 +2650,7 @@ view: condition__context__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: condition__context__identifier__assigner__identifier__assigner__identifier__type {
+view: diagnostic_report__context__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2849,7 +2662,7 @@ view: condition__context__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: condition__context__identifier__assigner__identifier__type__coding {
+view: diagnostic_report__context__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2876,7 +2689,7 @@ view: condition__context__identifier__assigner__identifier__type__coding {
   }
 }
 
-view: condition__context__identifier__assigner__identifier__type {
+view: diagnostic_report__context__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2888,7 +2701,7 @@ view: condition__context__identifier__assigner__identifier__type {
   }
 }
 
-view: condition__context__identifier__type__coding {
+view: diagnostic_report__context__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2915,7 +2728,7 @@ view: condition__context__identifier__type__coding {
   }
 }
 
-view: condition__context__identifier__type {
+view: diagnostic_report__context__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2927,7 +2740,7 @@ view: condition__context__identifier__type {
   }
 }
 
-view: condition__text {
+view: diagnostic_report__text {
   dimension: div {
     type: string
     sql: ${TABLE}.div ;;
@@ -2939,7 +2752,7 @@ view: condition__text {
   }
 }
 
-view: condition__category__coding {
+view: diagnostic_report__category__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2966,7 +2779,7 @@ view: condition__category__coding {
   }
 }
 
-view: condition__category {
+view: diagnostic_report__category {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2978,39 +2791,34 @@ view: condition__category {
   }
 }
 
-view: condition__abatement {
-  dimension: age {
-    hidden: yes
-    sql: ${TABLE}.age ;;
-  }
-
-  dimension: boolean {
-    type: yesno
-    sql: ${TABLE}.boolean ;;
-  }
-
-  dimension: date_time {
+view: diagnostic_report__imaging_study {
+  dimension: display {
     type: string
-    sql: ${TABLE}.dateTime ;;
+    sql: ${TABLE}.display ;;
   }
 
-  dimension: period {
+  dimension: identifier {
     hidden: yes
-    sql: ${TABLE}.period ;;
+    sql: ${TABLE}.identifier ;;
   }
 
-  dimension: range {
-    hidden: yes
-    sql: ${TABLE}.``range`` ;;
-  }
-
-  dimension: string {
+  dimension: imaging_manifest_id {
     type: string
-    sql: ${TABLE}.string ;;
+    sql: ${TABLE}.imagingManifestId ;;
+  }
+
+  dimension: imaging_study_id {
+    type: string
+    sql: ${TABLE}.imagingStudyId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
   }
 }
 
-view: condition__abatement__period {
+view: diagnostic_report__imaging_study__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -3022,10 +2830,15 @@ view: condition__abatement__period {
   }
 }
 
-view: condition__abatement__range__high {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
+view: diagnostic_report__imaging_study__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
   }
 
   dimension: system {
@@ -3033,21 +2846,65 @@ view: condition__abatement__range__high {
     sql: ${TABLE}.system ;;
   }
 
-  dimension: unit {
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
     type: string
-    sql: ${TABLE}.unit ;;
+    sql: ${TABLE}.use ;;
   }
 
   dimension: value {
-    type: number
+    type: string
     sql: ${TABLE}.value ;;
   }
 }
 
-view: condition__abatement__range__low {
-  dimension: code {
+view: diagnostic_report__imaging_study__identifier__assigner {
+  dimension: display {
     type: string
-    sql: ${TABLE}.code ;;
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: diagnostic_report__imaging_study__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: diagnostic_report__imaging_study__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
   }
 
   dimension: system {
@@ -3055,26 +2912,65 @@ view: condition__abatement__range__low {
     sql: ${TABLE}.system ;;
   }
 
-  dimension: unit {
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
     type: string
-    sql: ${TABLE}.unit ;;
+    sql: ${TABLE}.use ;;
   }
 
   dimension: value {
-    type: number
+    type: string
     sql: ${TABLE}.value ;;
   }
 }
 
-view: condition__abatement__age {
-  dimension: code {
+view: diagnostic_report__imaging_study__identifier__assigner__identifier__assigner {
+  dimension: display {
     type: string
-    sql: ${TABLE}.code ;;
+    sql: ${TABLE}.display ;;
   }
 
-  dimension: comparator {
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
     type: string
-    sql: ${TABLE}.comparator ;;
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: diagnostic_report__imaging_study__identifier__assigner__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: diagnostic_report__imaging_study__identifier__assigner__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
   }
 
   dimension: system {
@@ -3082,61 +2978,521 @@ view: condition__abatement__age {
     sql: ${TABLE}.system ;;
   }
 
-  dimension: unit {
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
     type: string
-    sql: ${TABLE}.unit ;;
+    sql: ${TABLE}.use ;;
   }
 
   dimension: value {
-    type: number
+    type: string
     sql: ${TABLE}.value ;;
   }
 }
 
-view: condition__evidence {
+view: diagnostic_report__imaging_study__identifier__assigner__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: diagnostic_report__imaging_study__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
-    hidden: yes
+    type: string
     sql: ${TABLE}.code ;;
   }
 
-  dimension: detail {
-    hidden: yes
-    sql: ${TABLE}.detail ;;
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
   }
 }
 
-view: condition__onset__range {
-  dimension: high {
+view: diagnostic_report__imaging_study__identifier__assigner__identifier__assigner__identifier__type {
+  dimension: coding {
     hidden: yes
-    sql: ${TABLE}.high ;;
+    sql: ${TABLE}.coding ;;
   }
 
-  dimension: low {
-    hidden: yes
-    sql: ${TABLE}.low ;;
-  }
-}
-
-view: condition__stage {
-  dimension: assessment {
-    hidden: yes
-    sql: ${TABLE}.assessment ;;
-  }
-
-  dimension: summary {
-    hidden: yes
-    sql: ${TABLE}.summary ;;
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
   }
 }
 
-view: condition__abatement__range {
-  dimension: high {
-    hidden: yes
-    sql: ${TABLE}.high ;;
+view: diagnostic_report__imaging_study__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
   }
 
-  dimension: low {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: diagnostic_report__imaging_study__identifier__assigner__identifier__type {
+  dimension: coding {
     hidden: yes
-    sql: ${TABLE}.low ;;
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: diagnostic_report__imaging_study__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: diagnostic_report__imaging_study__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: diagnostic_report__based_on {
+  dimension: care_plan_id {
+    type: string
+    sql: ${TABLE}.carePlanId ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: immunization_recommendation_id {
+    type: string
+    sql: ${TABLE}.immunizationRecommendationId ;;
+  }
+
+  dimension: medication_request_id {
+    type: string
+    sql: ${TABLE}.medicationRequestId ;;
+  }
+
+  dimension: nutrition_order_id {
+    type: string
+    sql: ${TABLE}.nutritionOrderId ;;
+  }
+
+  dimension: procedure_request_id {
+    type: string
+    sql: ${TABLE}.procedureRequestId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+
+  dimension: referral_request_id {
+    type: string
+    sql: ${TABLE}.referralRequestId ;;
+  }
+}
+
+view: diagnostic_report__based_on__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: diagnostic_report__based_on__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: diagnostic_report__based_on__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: diagnostic_report__based_on__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: diagnostic_report__based_on__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: diagnostic_report__based_on__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: diagnostic_report__based_on__identifier__assigner__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: diagnostic_report__based_on__identifier__assigner__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: diagnostic_report__based_on__identifier__assigner__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: diagnostic_report__based_on__identifier__assigner__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: diagnostic_report__based_on__identifier__assigner__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: diagnostic_report__based_on__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: diagnostic_report__based_on__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: diagnostic_report__based_on__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: diagnostic_report__based_on__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: diagnostic_report__performer {
+  dimension: actor {
+    hidden: yes
+    sql: ${TABLE}.actor ;;
+  }
+
+  dimension: role {
+    hidden: yes
+    sql: ${TABLE}.role ;;
   }
 }
