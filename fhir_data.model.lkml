@@ -791,9 +791,66 @@ explore: patient_100_fh {
     sql: left join unnest(${medication_request_100_fh.reason_reference}) as medication_request__reason_reference ;;
   }
 
-  join: procedure {
+  join: procedure_100_fh {
     type: left_outer
     relationship: one_to_many
-    sql_on: ${encounter_100_fh.id} = ${procedure.context}.encounterid ;;
+    sql_on: ${encounter_100_fh.id} = ${procedure_100_fh.context}.encounterid ;;
+  }
+
+  join: procedure__reason_reference {
+    view_label: "Procedure: Reason Reference"
+    relationship: one_to_many
+    sql: left join unnest(${procedure_100_fh.reason_reference}) as procedure__reason_reference  ;;
+  }
+
+  join: procedure__complication_detail {
+    view_label: "Procedure: Complication"
+    relationship: one_to_many
+    sql: left join unnest(${procedure_100_fh.complication_detail}) as procedure__complication_detail ;;
+  }
+}
+
+explore: procedure_100_fh {
+  label: "Procedure"
+
+  join: procedure__reason_reference {
+    view_label: "Procedure: Reason Reference"
+    relationship: one_to_many
+    sql: left join unnest(${procedure_100_fh.reason_reference}) as procedure__reason_reference  ;;
+  }
+
+  join: procedure__complication_detail {
+    view_label: "Procedure: Complication"
+    relationship: one_to_many
+    sql: left join unnest(${procedure_100_fh.complication_detail}) as procedure__complication_detail ;;
+  }
+
+  join: condition_reason_for_procedure {
+    from: condition_100_fh
+    view_label: "Condition: Reason for Procedure"
+    type: left_outer
+    relationship: many_to_many
+    sql_on: ${condition_reason_for_procedure.id} = ${procedure__reason_reference.condition_id} ;;
+  }
+
+  join: condition_procedure_complications {
+    from: condition_100_fh
+    view_label: "Condition: Complication in Procedure"
+    type: left_outer
+    relationship: many_to_many
+    sql_on: ${condition_procedure_complications.id} = ${procedure__complication_detail.condition_id} ;;
+  }
+
+  join: patient_100_fh {
+    view_label: "Patient"
+    type: left_outer
+    relationship: many_to_many
+    sql_on: ${patient_100_fh.id} = ${procedure_100_fh.subject}.patientid ;;
+  }
+
+  join: patient__name {
+    view_label: "Patient: Name"
+    sql: left join unnest(${patient_100_fh.name}) as patient__name ;;
+    relationship: one_to_many
   }
 }

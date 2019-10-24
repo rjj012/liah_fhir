@@ -24,9 +24,19 @@ view: patient_100_fh {
     sql: ${TABLE}.animal ;;
   }
 
-  dimension: birth_date {
+  dimension_group: birth {
+    type: time
+    timeframes: [
+      date
+      , month
+      , year
+    ]
+    sql: cast(parse_date('%Y%m%d',regexp_replace(birthdate, "-","")) as date);;
+  }
+
+  dimension: test_birth_date {
     type: string
-    sql: ${TABLE}.birthDate ;;
+    sql: ${TABLE}.birthdate ;;
   }
 
   dimension: birth_place {
@@ -2504,6 +2514,11 @@ view: patient__name {
   dimension: given {
     type: string
     sql: array_to_string(${TABLE}.given," ") ;;
+  }
+
+  dimension: full_name {
+    type: string
+    sql: concat(${given}," ",${family}) ;;
   }
 
   dimension: period {

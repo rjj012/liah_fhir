@@ -1,4 +1,4 @@
-view: procedure {
+view: procedure_100_fh {
   sql_table_name: FHIR_100_FH.Procedure ;;
   drill_fields: [id]
 
