@@ -790,4 +790,10 @@ explore: patient_100_fh {
     relationship: one_to_many
     sql: left join unnest(${medication_request_100_fh.reason_reference}) as medication_request__reason_reference ;;
   }
+
+  join: procedure {
+    type: left_outer
+    relationship: one_to_many
+    sql_on: ${encounter_100_fh.id} = ${procedure.context}.encounterid ;;
+  }
 }
