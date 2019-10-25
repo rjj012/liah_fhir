@@ -596,83 +596,83 @@ explore: patient_1559757824302963 {
 # END OF EXPLORE
  }
 
-# explore: immunization {
-#
-#   join: immunization__note {
-#     view_label: "Immunization: Note"
-#     sql: left join unnest(${immunization.note}) as immunization__note;;
-#     relationship: one_to_many
-#   }
-#
-#   join: immunization__note__author {
-#     view_label: "Immunization: Note Author"
-#     sql: left join unnest(${immunization__note.author} as immunization__note__author ;;
-#     relationship: one_to_many
-#   }
-#
-#   join: immunization__note__author__reference {
-#     view_label: "Immunization: Note Author Reference"
-#     sql: left join unnest(${immunization__note__author.reference}) as immunization__note__author__reference ;;
-#     relationship: one_to_many
-#   }
-#
-#   join: immunization__note__author__reference__identifier {
-#     view_label: "Immunization: Note Author Reference ID"
-#     sql: left join unnest(${immunization__note__author__reference.identifier}) as immunization__note__author__reference__identifier ;;
-#     relationship: one_to_many
-#   }
-#
-#   join: immunization__note__author__reference__identifier__assigner {
-#     view_label: "Immunization: Note Author Reference ID Assigner"
-#     sql: left join unnest(${immunization__note__author__reference__identifier.assigner}) as immunization__note__author__reference__identifier__assigner ;;
-#     relationship: one_to_many
-#   }
-#
-#   join: immunization__note__author__reference__identifier__assigner__identifier {
-#     sql: left join unnest(${immunization__note__author__reference__identifier__assigner.identifier}) as immunization__note__author__reference__identifier__assigner__identifier ;;
-#     relationship: one_to_many
-#   }
-#
-#   join: immunization__note__author__reference__identifier__assigner__identifier__assigner {
-#     sql: left join unnest(${immunization__note__author__reference__identifier__assigner__identifier.assigner}) as immunization__note__author__reference__identifier__assigner__identifier__assigner ;;
-#     relationship: one_to_many
-#   }
-#
-#   join: immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier {
-#     sql: left join unnest(${immunization__note__author__reference__identifier__assigner__identifier__assigner.identifier}) as immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier ;;
-#     relationship: one_to_many
-#   }
-#
-#   join: immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier__type {
-#     sql: left join unnest(${immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier.type}) as immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier__type ;;
-#     relationship: one_to_many
-#   }
-#
-#   join: immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier__type__coding {
-#     sql: left join unnest(${immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier__type.coding}) as immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier__type__coding ;;
-#     relationship: one_to_many
-#   }
-#
-#   join: immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier__assigner {
-#     sql: left join unnest([${immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier.assigner}]) as immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier__assigner ;;
-#     relationship: one_to_one
-#   }
-#
-#   join: immunization__note__author__reference__identifier__period {
-#     sql: left join unnest(${immunization__note__author__reference__identifier.period}) as immunization__note__author__reference__identifier__period ;;
-#     relationship: one_to_many
-#   }
-#
-#   join: immunization__note__author__reference__identifier__assigner__identifier__period  {
-#     sql: left join unnest(${immunization__note__author__reference__identifier__assigner__identifier.period}) as immunization__note__author__reference__identifier__assigner__identifier__period ;;
-#     relationship: one_to_many
-#   }
-#
-#   join: immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier__period {
-#     sql: left join unnest(${immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier.period}) as immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier__period ;;
-#     relationship: one_to_many
-#   }
-# }
+explore: immunization {
+
+  join: immunization__note {
+    view_label: "Immunization: Note"
+    sql: left join unnest(${immunization.note}) as immunization__note;;
+    relationship: one_to_many
+  }
+
+  join: immunization__note__author {
+    view_label: "Immunization: Note Author"
+    sql: left join unnest(${immunization__note.author} as immunization__note__author ;;
+    relationship: one_to_many
+  }
+
+  join: immunization__note__author__reference {
+    view_label: "Immunization: Note Author Reference"
+    sql: left join unnest(${immunization__note__author.reference}) as immunization__note__author__reference ;;
+    relationship: one_to_many
+  }
+
+  join: immunization__note__author__reference__identifier {
+    view_label: "Immunization: Note Author Reference ID"
+    sql: left join unnest(${immunization__note__author__reference.identifier}) as immunization__note__author__reference__identifier ;;
+    relationship: one_to_many
+  }
+
+  join: immunization__note__author__reference__identifier__assigner {
+    view_label: "Immunization: Note Author Reference ID Assigner"
+    sql: left join unnest(${immunization__note__author__reference__identifier.assigner}) as immunization__note__author__reference__identifier__assigner ;;
+    relationship: one_to_many
+  }
+
+  join: immunization__note__author__reference__identifier__assigner__identifier {
+    sql: left join unnest(${immunization__note__author__reference__identifier__assigner.identifier}) as immunization__note__author__reference__identifier__assigner__identifier ;;
+    relationship: one_to_many
+  }
+
+  join: immunization__note__author__reference__identifier__assigner__identifier__assigner {
+    sql: left join unnest(${immunization__note__author__reference__identifier__assigner__identifier.assigner}) as immunization__note__author__reference__identifier__assigner__identifier__assigner ;;
+    relationship: one_to_many
+  }
+
+  join: immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier {
+    sql: left join unnest(${immunization__note__author__reference__identifier__assigner__identifier__assigner.identifier}) as immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier ;;
+    relationship: one_to_many
+  }
+
+  join: immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier__type {
+    sql: left join unnest(${immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier.type}) as immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier__type ;;
+    relationship: one_to_many
+  }
+
+  join: immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier__type__coding {
+    sql: left join unnest(${immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier__type.coding}) as immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier__type__coding ;;
+    relationship: one_to_many
+  }
+
+  join: immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier__assigner {
+    sql: left join unnest([${immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier.assigner}]) as immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier__assigner ;;
+    relationship: one_to_one
+  }
+
+  join: immunization__note__author__reference__identifier__period {
+    sql: left join unnest(${immunization__note__author__reference__identifier.period}) as immunization__note__author__reference__identifier__period ;;
+    relationship: one_to_many
+  }
+
+  join: immunization__note__author__reference__identifier__assigner__identifier__period  {
+    sql: left join unnest(${immunization__note__author__reference__identifier__assigner__identifier.period}) as immunization__note__author__reference__identifier__assigner__identifier__period ;;
+    relationship: one_to_many
+  }
+
+  join: immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier__period {
+    sql: left join unnest(${immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier.period}) as immunization__note__author__reference__identifier__assigner__identifier__assigner__identifier__period ;;
+    relationship: one_to_many
+  }
+}
 
 explore: patient_100_fh {
   label: "Patient Full History"
