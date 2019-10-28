@@ -598,6 +598,8 @@ explore: patient_1559757824302963 {
 
 explore: immunization_1000_fh {
 
+  hidden: yes
+
   join: immunization__note {
     view_label: "Immunization: Note"
     sql: left join unnest(${immunization_1000_fh.note}) as immunization__note;;
