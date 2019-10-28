@@ -1,5 +1,5 @@
-view: immunization {
-  sql_table_name: FHIR_100_FH.Immunization ;;
+view: immunization_1000_fh {
+  sql_table_name: FHIR_1000_FH.Immunization ;;
   drill_fields: [id]
 
   dimension: id {

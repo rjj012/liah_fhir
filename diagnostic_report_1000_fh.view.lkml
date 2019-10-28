@@ -1,5 +1,5 @@
-view: diagnostic_report {
-  sql_table_name: FHIR_100_FH.DiagnosticReport ;;
+view: diagnostic_report_1000_fh {
+  sql_table_name: FHIR_1000_FH.DiagnosticReport ;;
   drill_fields: [id]
 
   dimension: id {

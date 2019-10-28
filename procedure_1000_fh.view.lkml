@@ -1,5 +1,6 @@
-view: encounter_100_fh {
-  sql_table_name: FHIR_100_FH.Encounter ;;
+view: procedure_1000_fh {
+  label: "Procedure"
+  sql_table_name: FHIR_1000_FH.Procedure ;;
   drill_fields: [id]
 
   dimension: id {
@@ -8,39 +9,54 @@ view: encounter_100_fh {
     sql: ${TABLE}.id ;;
   }
 
-  dimension: account {
+  dimension: based_on {
     hidden: yes
-    sql: ${TABLE}.account ;;
+    sql: ${TABLE}.basedOn ;;
   }
 
-  dimension: appointment {
+  dimension: body_site {
     hidden: yes
-    sql: ${TABLE}.appointment ;;
+    sql: ${TABLE}.bodySite ;;
   }
 
-  dimension: class {
+  dimension: category {
     hidden: yes
-    sql: ${TABLE}.class ;;
+    sql: ${TABLE}.category ;;
   }
 
-  dimension: class_history {
+  dimension: code {
     hidden: yes
-    sql: ${TABLE}.classHistory ;;
+    sql: ${TABLE}.code ;;
   }
 
-  dimension: diagnosis {
+  dimension: complication {
     hidden: yes
-    sql: ${TABLE}.diagnosis ;;
+    sql: ${TABLE}.complication ;;
   }
 
-  dimension: episode_of_care {
+  dimension: complication_detail {
     hidden: yes
-    sql: ${TABLE}.episodeOfCare ;;
+    sql: ${TABLE}.complicationDetail ;;
   }
 
-  dimension: hospitalization {
+  dimension: context {
     hidden: yes
-    sql: ${TABLE}.hospitalization ;;
+    sql: ${TABLE}.context ;;
+  }
+
+  dimension: definition {
+    hidden: yes
+    sql: ${TABLE}.definition ;;
+  }
+
+  dimension: focal_device {
+    hidden: yes
+    sql: ${TABLE}.focalDevice ;;
+  }
+
+  dimension: follow_up {
+    hidden: yes
+    sql: ${TABLE}.followUp ;;
   }
 
   dimension: identifier {
@@ -49,25 +65,13 @@ view: encounter_100_fh {
   }
 
   dimension: implicit_rules {
-    hidden: yes
     type: string
     sql: ${TABLE}.implicitRules ;;
   }
 
-  dimension: incoming_referral {
-    hidden: yes
-    sql: ${TABLE}.incomingReferral ;;
-  }
-
   dimension: language {
-    hidden: yes
     type: string
     sql: ${TABLE}.language ;;
-  }
-
-  dimension: length {
-    hidden: yes
-    sql: ${TABLE}.length ;;
   }
 
   dimension: location {
@@ -80,44 +84,59 @@ view: encounter_100_fh {
     sql: ${TABLE}.meta ;;
   }
 
+  dimension: not_done {
+    type: yesno
+    sql: ${TABLE}.notDone ;;
+  }
+
+  dimension: not_done_reason {
+    hidden: yes
+    sql: ${TABLE}.notDoneReason ;;
+  }
+
+  dimension: note {
+    hidden: yes
+    sql: ${TABLE}.note ;;
+  }
+
+  dimension: outcome {
+    hidden: yes
+    sql: ${TABLE}.outcome ;;
+  }
+
   dimension: part_of {
     hidden: yes
     sql: ${TABLE}.partOf ;;
   }
 
-  dimension: participant {
+  dimension: performed {
     hidden: yes
-    sql: ${TABLE}.participant ;;
+    sql: ${TABLE}.performed ;;
   }
 
-  dimension: period {
+  dimension: performer {
     hidden: yes
-    sql: ${TABLE}.period ;;
+    sql: ${TABLE}.performer ;;
   }
 
-  dimension: priority {
+  dimension: reason_code {
     hidden: yes
-    sql: ${TABLE}.priority ;;
+    sql: ${TABLE}.reasonCode ;;
   }
 
-  dimension: reason {
+  dimension: reason_reference {
     hidden: yes
-    sql: ${TABLE}.reason ;;
+    sql: ${TABLE}.reasonReference ;;
   }
 
-  dimension: service_provider {
+  dimension: report {
     hidden: yes
-    sql: ${TABLE}.serviceProvider ;;
+    sql: ${TABLE}.report ;;
   }
 
   dimension: status {
     type: string
     sql: ${TABLE}.status ;;
-  }
-
-  dimension: status_history {
-    hidden: yes
-    sql: ${TABLE}.statusHistory ;;
   }
 
   dimension: subject {
@@ -130,9 +149,14 @@ view: encounter_100_fh {
     sql: ${TABLE}.text ;;
   }
 
-  dimension: type {
+  dimension: used_code {
     hidden: yes
-    sql: ${TABLE}.type ;;
+    sql: ${TABLE}.usedCode ;;
+  }
+
+  dimension: used_reference {
+    hidden: yes
+    sql: ${TABLE}.usedReference ;;
   }
 
   measure: count {
@@ -140,406 +164,846 @@ view: encounter_100_fh {
     drill_fields: [id]
   }
 
-###Appended Fields###
-  dimension_group: encounter_start {
-    type: time
-    timeframes: [
-      date
-      , week
-      , month
-      , year
-    ]
-    sql: substr(${TABLE}.period.start,1,10) ;;
-  }
-
-  dimension_group: encounter_end {
-    type: time
-    timeframes: [
-      date
-      , week
-      , month
-      , year
-    ]
-    sql: substr(${TABLE}.period.end,1,10) ;;
-  }
-###End appended###
-}
-
-view: encounter__part_of {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: encounter_id {
-    type: string
-    sql: ${TABLE}.encounterId ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__part_of__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__part_of__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__part_of__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__part_of__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__part_of__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__part_of__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__part_of__identifier__assigner__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__part_of__identifier__assigner__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__part_of__identifier__assigner__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__part_of__identifier__assigner__identifier__assigner__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__part_of__identifier__assigner__identifier__assigner__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__part_of__identifier__assigner__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__part_of__identifier__assigner__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__part_of__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__part_of__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__reason__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__reason {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-
   ###Appended Fields###
-  ###Append End
+  dimension_group: procedure_start {
+    type: time
+    timeframes: [
+      date
+      , month
+      , year
+    ]
+    sql: substr(${TABLE}.performed.period.start,1,10) ;;
+    #substr(regexp_replace(${TABLE}.performed.period.end, "T"," "),1,19)
+  }
+
+  dimension_group: prodedure_end {
+    type: time
+    timeframes: [
+      date
+      , month
+      , year
+    ]
+    sql: substr(${TABLE}.performed.period.start,1,10) ;;
+  }
+
+  dimension: procedure_name {
+    type: string
+    sql: ${TABLE}.code.text ;;
+  }
+
+  #PARSE_TIMESTAMP(format_string, string[, time_zone])
+#   dimension: test3 {
+#     type: date_time
+#     sql: parse_timestamp("%c",${TABLE}.performed.period.end) ;;
+#   }
+#
+#   dimension: test2 {
+#     type: string
+#     sql: substr(regexp_replace(${TABLE}.performed.period.end, "T"," "),1,19) ;;
+#   }
+#
+#   dimension_group: test {
+#     type: time
+#     timeframes: [
+#       date
+#       , time
+#     ]
+#     sql: current_timestamp() ;;
+#   }
 }
 
-view: encounter__subject {
+view: procedure__note__author__reference {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: patient_id {
+    type: string
+    sql: ${TABLE}.patientId ;;
+  }
+
+  dimension: practitioner_id {
+    type: string
+    sql: ${TABLE}.practitionerId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+
+  dimension: related_person_id {
+    type: string
+    sql: ${TABLE}.relatedPersonId ;;
+  }
+}
+
+view: procedure__note__author__reference__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__note__author__reference__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__note__author__reference__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__note__author__reference__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__note__author__reference__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__note__author__reference__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__note__author__reference__identifier__assigner__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__note__author__reference__identifier__assigner__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__note__author__reference__identifier__assigner__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__note__author__reference__identifier__assigner__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__note__author__reference__identifier__assigner__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__note__author__reference__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__note__author__reference__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__note__author__reference__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__note__author__reference__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__note__author {
+  dimension: reference {
+    hidden: yes
+    sql: ${TABLE}.reference ;;
+  }
+
+  dimension: string {
+    type: string
+    sql: ${TABLE}.string ;;
+  }
+}
+
+view: procedure__note {
+  dimension: author {
+    hidden: yes
+    sql: ${TABLE}.author ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+
+  dimension: time {
+    type: string
+    sql: ${TABLE}.time ;;
+  }
+}
+
+view: procedure__part_of {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: medication_administration_id {
+    type: string
+    sql: ${TABLE}.medicationAdministrationId ;;
+  }
+
+  dimension: observation_id {
+    type: string
+    sql: ${TABLE}.observationId ;;
+  }
+
+  dimension: procedure_id {
+    type: string
+    sql: ${TABLE}.procedureId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__part_of__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__part_of__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__part_of__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__part_of__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__part_of__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__part_of__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__part_of__identifier__assigner__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__part_of__identifier__assigner__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__part_of__identifier__assigner__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__part_of__identifier__assigner__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__part_of__identifier__assigner__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__part_of__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__part_of__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__part_of__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__part_of__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__complication__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__complication {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__code__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__code {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__subject {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -566,7 +1030,7 @@ view: encounter__subject {
   }
 }
 
-view: encounter__subject__identifier__period {
+view: procedure__subject__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -578,7 +1042,7 @@ view: encounter__subject__identifier__period {
   }
 }
 
-view: encounter__subject__identifier {
+view: procedure__subject__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -610,7 +1074,7 @@ view: encounter__subject__identifier {
   }
 }
 
-view: encounter__subject__identifier__assigner {
+view: procedure__subject__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -632,7 +1096,7 @@ view: encounter__subject__identifier__assigner {
   }
 }
 
-view: encounter__subject__identifier__assigner__identifier__period {
+view: procedure__subject__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -644,7 +1108,7 @@ view: encounter__subject__identifier__assigner__identifier__period {
   }
 }
 
-view: encounter__subject__identifier__assigner__identifier {
+view: procedure__subject__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -676,7 +1140,7 @@ view: encounter__subject__identifier__assigner__identifier {
   }
 }
 
-view: encounter__subject__identifier__assigner__identifier__assigner {
+view: procedure__subject__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -698,7 +1162,7 @@ view: encounter__subject__identifier__assigner__identifier__assigner {
   }
 }
 
-view: encounter__subject__identifier__assigner__identifier__assigner__identifier__period {
+view: procedure__subject__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -710,7 +1174,7 @@ view: encounter__subject__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: encounter__subject__identifier__assigner__identifier__assigner__identifier {
+view: procedure__subject__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -742,7 +1206,7 @@ view: encounter__subject__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: encounter__subject__identifier__assigner__identifier__assigner__identifier__assigner {
+view: procedure__subject__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -759,7 +1223,7 @@ view: encounter__subject__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: encounter__subject__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: procedure__subject__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -786,7 +1250,7 @@ view: encounter__subject__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: encounter__subject__identifier__assigner__identifier__assigner__identifier__type {
+view: procedure__subject__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -798,7 +1262,7 @@ view: encounter__subject__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: encounter__subject__identifier__assigner__identifier__type__coding {
+view: procedure__subject__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -825,7 +1289,7 @@ view: encounter__subject__identifier__assigner__identifier__type__coding {
   }
 }
 
-view: encounter__subject__identifier__assigner__identifier__type {
+view: procedure__subject__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -837,7 +1301,7 @@ view: encounter__subject__identifier__assigner__identifier__type {
   }
 }
 
-view: encounter__subject__identifier__type__coding {
+view: procedure__subject__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -864,7 +1328,7 @@ view: encounter__subject__identifier__type__coding {
   }
 }
 
-view: encounter__subject__identifier__type {
+view: procedure__subject__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -876,10 +1340,10 @@ view: encounter__subject__identifier__type {
   }
 }
 
-view: encounter__appointment {
-  dimension: appointment_id {
+view: procedure__reason_reference {
+  dimension: condition_id {
     type: string
-    sql: ${TABLE}.appointmentId ;;
+    sql: ${TABLE}.conditionId ;;
   }
 
   dimension: display {
@@ -892,13 +1356,18 @@ view: encounter__appointment {
     sql: ${TABLE}.identifier ;;
   }
 
+  dimension: observation_id {
+    type: string
+    sql: ${TABLE}.observationId ;;
+  }
+
   dimension: reference {
     type: string
     sql: ${TABLE}.reference ;;
   }
 }
 
-view: encounter__appointment__identifier__period {
+view: procedure__reason_reference__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -910,7 +1379,7 @@ view: encounter__appointment__identifier__period {
   }
 }
 
-view: encounter__appointment__identifier {
+view: procedure__reason_reference__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -942,73 +1411,7 @@ view: encounter__appointment__identifier {
   }
 }
 
-view: encounter__appointment__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__appointment__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__appointment__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__appointment__identifier__assigner__identifier__assigner {
+view: procedure__reason_reference__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1030,7 +1433,7 @@ view: encounter__appointment__identifier__assigner__identifier__assigner {
   }
 }
 
-view: encounter__appointment__identifier__assigner__identifier__assigner__identifier__period {
+view: procedure__reason_reference__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -1042,7 +1445,7 @@ view: encounter__appointment__identifier__assigner__identifier__assigner__identi
   }
 }
 
-view: encounter__appointment__identifier__assigner__identifier__assigner__identifier {
+view: procedure__reason_reference__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1074,269 +1477,7 @@ view: encounter__appointment__identifier__assigner__identifier__assigner__identi
   }
 }
 
-view: encounter__appointment__identifier__assigner__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__appointment__identifier__assigner__identifier__assigner__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__appointment__identifier__assigner__identifier__assigner__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__appointment__identifier__assigner__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__appointment__identifier__assigner__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__appointment__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__appointment__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-
-  dimension: encounter_reason {
-    type: string
-    sql: ${TABLE}.text ;;
-    html: {{rendered_value}} || {{encounter__reason__coding.display._rendered_value}} ;;
-  }
-}
-
-view: encounter__participant__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__participant__individual {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: practitioner_id {
-    type: string
-    sql: ${TABLE}.practitionerId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-
-  dimension: related_person_id {
-    type: string
-    sql: ${TABLE}.relatedPersonId ;;
-  }
-}
-
-view: encounter__participant__individual__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__participant__individual__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__participant__individual__identifier__assigner {
+view: procedure__reason_reference__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1358,7 +1499,7 @@ view: encounter__participant__individual__identifier__assigner {
   }
 }
 
-view: encounter__participant__individual__identifier__assigner__identifier__period {
+view: procedure__reason_reference__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -1370,7 +1511,7 @@ view: encounter__participant__individual__identifier__assigner__identifier__peri
   }
 }
 
-view: encounter__participant__individual__identifier__assigner__identifier {
+view: procedure__reason_reference__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1402,73 +1543,7 @@ view: encounter__participant__individual__identifier__assigner__identifier {
   }
 }
 
-view: encounter__participant__individual__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__participant__individual__identifier__assigner__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__participant__individual__identifier__assigner__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__participant__individual__identifier__assigner__identifier__assigner__identifier__assigner {
+view: procedure__reason_reference__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1485,7 +1560,7 @@ view: encounter__participant__individual__identifier__assigner__identifier__assi
   }
 }
 
-view: encounter__participant__individual__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: procedure__reason_reference__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1512,7 +1587,7 @@ view: encounter__participant__individual__identifier__assigner__identifier__assi
   }
 }
 
-view: encounter__participant__individual__identifier__assigner__identifier__assigner__identifier__type {
+view: procedure__reason_reference__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1524,7 +1599,7 @@ view: encounter__participant__individual__identifier__assigner__identifier__assi
   }
 }
 
-view: encounter__participant__individual__identifier__assigner__identifier__type__coding {
+view: procedure__reason_reference__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1551,7 +1626,7 @@ view: encounter__participant__individual__identifier__assigner__identifier__type
   }
 }
 
-view: encounter__participant__individual__identifier__assigner__identifier__type {
+view: procedure__reason_reference__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1563,7 +1638,7 @@ view: encounter__participant__individual__identifier__assigner__identifier__type
   }
 }
 
-view: encounter__participant__individual__identifier__type__coding {
+view: procedure__reason_reference__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1590,7 +1665,7 @@ view: encounter__participant__individual__identifier__type__coding {
   }
 }
 
-view: encounter__participant__individual__identifier__type {
+view: procedure__reason_reference__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1602,7 +1677,7 @@ view: encounter__participant__individual__identifier__type {
   }
 }
 
-view: encounter__participant__type__coding {
+view: procedure__follow_up__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1629,7 +1704,7 @@ view: encounter__participant__type__coding {
   }
 }
 
-view: encounter__participant__type {
+view: procedure__follow_up {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1641,10 +1716,15 @@ view: encounter__participant__type {
   }
 }
 
-view: encounter__episode_of_care {
+view: procedure__context {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
+  }
+
+  dimension: encounter_id {
+    type: string
+    sql: ${TABLE}.encounterId ;;
   }
 
   dimension: episode_of_care_id {
@@ -1663,7 +1743,7 @@ view: encounter__episode_of_care {
   }
 }
 
-view: encounter__episode_of_care__identifier__period {
+view: procedure__context__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -1675,7 +1755,7 @@ view: encounter__episode_of_care__identifier__period {
   }
 }
 
-view: encounter__episode_of_care__identifier {
+view: procedure__context__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1707,7 +1787,7 @@ view: encounter__episode_of_care__identifier {
   }
 }
 
-view: encounter__episode_of_care__identifier__assigner {
+view: procedure__context__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1729,7 +1809,7 @@ view: encounter__episode_of_care__identifier__assigner {
   }
 }
 
-view: encounter__episode_of_care__identifier__assigner__identifier__period {
+view: procedure__context__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -1741,7 +1821,7 @@ view: encounter__episode_of_care__identifier__assigner__identifier__period {
   }
 }
 
-view: encounter__episode_of_care__identifier__assigner__identifier {
+view: procedure__context__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1773,7 +1853,7 @@ view: encounter__episode_of_care__identifier__assigner__identifier {
   }
 }
 
-view: encounter__episode_of_care__identifier__assigner__identifier__assigner {
+view: procedure__context__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1795,7 +1875,7 @@ view: encounter__episode_of_care__identifier__assigner__identifier__assigner {
   }
 }
 
-view: encounter__episode_of_care__identifier__assigner__identifier__assigner__identifier__period {
+view: procedure__context__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -1807,7 +1887,7 @@ view: encounter__episode_of_care__identifier__assigner__identifier__assigner__id
   }
 }
 
-view: encounter__episode_of_care__identifier__assigner__identifier__assigner__identifier {
+view: procedure__context__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1839,7 +1919,7 @@ view: encounter__episode_of_care__identifier__assigner__identifier__assigner__id
   }
 }
 
-view: encounter__episode_of_care__identifier__assigner__identifier__assigner__identifier__assigner {
+view: procedure__context__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1856,7 +1936,7 @@ view: encounter__episode_of_care__identifier__assigner__identifier__assigner__id
   }
 }
 
-view: encounter__episode_of_care__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: procedure__context__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1883,7 +1963,7 @@ view: encounter__episode_of_care__identifier__assigner__identifier__assigner__id
   }
 }
 
-view: encounter__episode_of_care__identifier__assigner__identifier__assigner__identifier__type {
+view: procedure__context__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1895,7 +1975,7 @@ view: encounter__episode_of_care__identifier__assigner__identifier__assigner__id
   }
 }
 
-view: encounter__episode_of_care__identifier__assigner__identifier__type__coding {
+view: procedure__context__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1922,7 +2002,7 @@ view: encounter__episode_of_care__identifier__assigner__identifier__type__coding
   }
 }
 
-view: encounter__episode_of_care__identifier__assigner__identifier__type {
+view: procedure__context__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1934,7 +2014,7 @@ view: encounter__episode_of_care__identifier__assigner__identifier__type {
   }
 }
 
-view: encounter__episode_of_care__identifier__type__coding {
+view: procedure__context__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1961,7 +2041,7 @@ view: encounter__episode_of_care__identifier__type__coding {
   }
 }
 
-view: encounter__episode_of_care__identifier__type {
+view: procedure__context__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1973,7 +2053,427 @@ view: encounter__episode_of_care__identifier__type {
   }
 }
 
-view: encounter__text {
+view: procedure__definition {
+  dimension: activity_definition_id {
+    type: string
+    sql: ${TABLE}.activityDefinitionId ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: healthcare_service_id {
+    type: string
+    sql: ${TABLE}.healthcareServiceId ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: plan_definition_id {
+    type: string
+    sql: ${TABLE}.planDefinitionId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__definition__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__definition__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__definition__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__definition__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__definition__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__definition__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__definition__identifier__assigner__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__definition__identifier__assigner__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__definition__identifier__assigner__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__definition__identifier__assigner__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__definition__identifier__assigner__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__definition__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__definition__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__definition__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__definition__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__used_code__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__used_code {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__reason_code__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__reason_code {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__text {
   dimension: div {
     type: string
     sql: ${TABLE}.div ;;
@@ -1985,78 +2485,12 @@ view: encounter__text {
   }
 }
 
-view: encounter__class {
-  dimension: code {
+view: procedure__based_on {
+  dimension: care_plan_id {
     type: string
-    sql: ${TABLE}.code ;;
+    sql: ${TABLE}.carePlanId ;;
   }
 
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2067,270 +2501,9 @@ view: encounter__identifier__assigner {
     sql: ${TABLE}.identifier ;;
   }
 
-  dimension: organization_id {
+  dimension: procedure_request_id {
     type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__identifier__assigner__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__identifier__assigner__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__identifier__assigner__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__identifier__assigner__identifier__assigner__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__identifier__assigner__identifier__assigner__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__identifier__assigner__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__identifier__assigner__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__incoming_referral {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
+    sql: ${TABLE}.procedureRequestId ;;
   }
 
   dimension: reference {
@@ -2344,7 +2517,7 @@ view: encounter__incoming_referral {
   }
 }
 
-view: encounter__incoming_referral__identifier__period {
+view: procedure__based_on__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -2356,7 +2529,7 @@ view: encounter__incoming_referral__identifier__period {
   }
 }
 
-view: encounter__incoming_referral__identifier {
+view: procedure__based_on__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2388,7 +2561,7 @@ view: encounter__incoming_referral__identifier {
   }
 }
 
-view: encounter__incoming_referral__identifier__assigner {
+view: procedure__based_on__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2410,7 +2583,7 @@ view: encounter__incoming_referral__identifier__assigner {
   }
 }
 
-view: encounter__incoming_referral__identifier__assigner__identifier__period {
+view: procedure__based_on__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -2422,7 +2595,7 @@ view: encounter__incoming_referral__identifier__assigner__identifier__period {
   }
 }
 
-view: encounter__incoming_referral__identifier__assigner__identifier {
+view: procedure__based_on__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2454,7 +2627,7 @@ view: encounter__incoming_referral__identifier__assigner__identifier {
   }
 }
 
-view: encounter__incoming_referral__identifier__assigner__identifier__assigner {
+view: procedure__based_on__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2476,7 +2649,7 @@ view: encounter__incoming_referral__identifier__assigner__identifier__assigner {
   }
 }
 
-view: encounter__incoming_referral__identifier__assigner__identifier__assigner__identifier__period {
+view: procedure__based_on__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -2488,7 +2661,7 @@ view: encounter__incoming_referral__identifier__assigner__identifier__assigner__
   }
 }
 
-view: encounter__incoming_referral__identifier__assigner__identifier__assigner__identifier {
+view: procedure__based_on__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2520,7 +2693,7 @@ view: encounter__incoming_referral__identifier__assigner__identifier__assigner__
   }
 }
 
-view: encounter__incoming_referral__identifier__assigner__identifier__assigner__identifier__assigner {
+view: procedure__based_on__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2537,7 +2710,7 @@ view: encounter__incoming_referral__identifier__assigner__identifier__assigner__
   }
 }
 
-view: encounter__incoming_referral__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: procedure__based_on__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2564,7 +2737,7 @@ view: encounter__incoming_referral__identifier__assigner__identifier__assigner__
   }
 }
 
-view: encounter__incoming_referral__identifier__assigner__identifier__assigner__identifier__type {
+view: procedure__based_on__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2576,7 +2749,7 @@ view: encounter__incoming_referral__identifier__assigner__identifier__assigner__
   }
 }
 
-view: encounter__incoming_referral__identifier__assigner__identifier__type__coding {
+view: procedure__based_on__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2603,7 +2776,7 @@ view: encounter__incoming_referral__identifier__assigner__identifier__type__codi
   }
 }
 
-view: encounter__incoming_referral__identifier__assigner__identifier__type {
+view: procedure__based_on__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2615,7 +2788,7 @@ view: encounter__incoming_referral__identifier__assigner__identifier__type {
   }
 }
 
-view: encounter__incoming_referral__identifier__type__coding {
+view: procedure__based_on__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2642,7 +2815,7 @@ view: encounter__incoming_referral__identifier__type__coding {
   }
 }
 
-view: encounter__incoming_referral__identifier__type {
+view: procedure__based_on__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2654,7 +2827,46 @@ view: encounter__incoming_referral__identifier__type {
   }
 }
 
-view: encounter__period {
+view: procedure__outcome__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__outcome {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -2666,158 +2878,7 @@ view: encounter__period {
   }
 }
 
-view: encounter__class_history__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__class_history__class {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__hospitalization__special_arrangement__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__hospitalization__special_arrangement {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__hospitalization__re_admission__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__hospitalization__re_admission {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__hospitalization__origin {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: location_id {
-    type: string
-    sql: ${TABLE}.locationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__hospitalization__origin__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__hospitalization__origin__identifier {
+view: procedure__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2849,7 +2910,7 @@ view: encounter__hospitalization__origin__identifier {
   }
 }
 
-view: encounter__hospitalization__origin__identifier__assigner {
+view: procedure__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2871,7 +2932,7 @@ view: encounter__hospitalization__origin__identifier__assigner {
   }
 }
 
-view: encounter__hospitalization__origin__identifier__assigner__identifier__period {
+view: procedure__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -2883,7 +2944,7 @@ view: encounter__hospitalization__origin__identifier__assigner__identifier__peri
   }
 }
 
-view: encounter__hospitalization__origin__identifier__assigner__identifier {
+view: procedure__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2915,7 +2976,7 @@ view: encounter__hospitalization__origin__identifier__assigner__identifier {
   }
 }
 
-view: encounter__hospitalization__origin__identifier__assigner__identifier__assigner {
+view: procedure__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2937,7 +2998,7 @@ view: encounter__hospitalization__origin__identifier__assigner__identifier__assi
   }
 }
 
-view: encounter__hospitalization__origin__identifier__assigner__identifier__assigner__identifier__period {
+view: procedure__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -2949,7 +3010,7 @@ view: encounter__hospitalization__origin__identifier__assigner__identifier__assi
   }
 }
 
-view: encounter__hospitalization__origin__identifier__assigner__identifier__assigner__identifier {
+view: procedure__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2981,7 +3042,7 @@ view: encounter__hospitalization__origin__identifier__assigner__identifier__assi
   }
 }
 
-view: encounter__hospitalization__origin__identifier__assigner__identifier__assigner__identifier__assigner {
+view: procedure__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2998,7 +3059,7 @@ view: encounter__hospitalization__origin__identifier__assigner__identifier__assi
   }
 }
 
-view: encounter__hospitalization__origin__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: procedure__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -3025,7 +3086,7 @@ view: encounter__hospitalization__origin__identifier__assigner__identifier__assi
   }
 }
 
-view: encounter__hospitalization__origin__identifier__assigner__identifier__assigner__identifier__type {
+view: procedure__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -3037,7 +3098,7 @@ view: encounter__hospitalization__origin__identifier__assigner__identifier__assi
   }
 }
 
-view: encounter__hospitalization__origin__identifier__assigner__identifier__type__coding {
+view: procedure__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -3064,7 +3125,7 @@ view: encounter__hospitalization__origin__identifier__assigner__identifier__type
   }
 }
 
-view: encounter__hospitalization__origin__identifier__assigner__identifier__type {
+view: procedure__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -3076,7 +3137,7 @@ view: encounter__hospitalization__origin__identifier__assigner__identifier__type
   }
 }
 
-view: encounter__hospitalization__origin__identifier__type__coding {
+view: procedure__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -3103,7 +3164,7 @@ view: encounter__hospitalization__origin__identifier__type__coding {
   }
 }
 
-view: encounter__hospitalization__origin__identifier__type {
+view: procedure__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -3115,915 +3176,7 @@ view: encounter__hospitalization__origin__identifier__type {
   }
 }
 
-view: encounter__hospitalization__destination {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: location_id {
-    type: string
-    sql: ${TABLE}.locationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__hospitalization__destination__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__hospitalization__destination__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__hospitalization__destination__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__hospitalization__destination__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__hospitalization__destination__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__hospitalization__destination__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__hospitalization__destination__identifier__assigner__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__hospitalization__destination__identifier__assigner__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__hospitalization__destination__identifier__assigner__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__hospitalization__destination__identifier__assigner__identifier__assigner__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__hospitalization__destination__identifier__assigner__identifier__assigner__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__hospitalization__destination__identifier__assigner__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__hospitalization__destination__identifier__assigner__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__hospitalization__destination__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__hospitalization__destination__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__hospitalization__diet_preference__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__hospitalization__diet_preference {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__hospitalization__pre_admission_identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__hospitalization__pre_admission_identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__hospitalization__pre_admission_identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__hospitalization__pre_admission_identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__hospitalization__pre_admission_identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__hospitalization__pre_admission_identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__hospitalization__pre_admission_identifier__assigner__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__hospitalization__pre_admission_identifier__assigner__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__hospitalization__pre_admission_identifier__assigner__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__hospitalization__pre_admission_identifier__assigner__identifier__assigner__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__hospitalization__pre_admission_identifier__assigner__identifier__assigner__identifier__assigner__identifier {
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__hospitalization__pre_admission_identifier__assigner__identifier__assigner__identifier__assigner__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__hospitalization__pre_admission_identifier__assigner__identifier__assigner__identifier__assigner__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__hospitalization__pre_admission_identifier__assigner__identifier__assigner__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__hospitalization__pre_admission_identifier__assigner__identifier__assigner__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__hospitalization__pre_admission_identifier__assigner__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__hospitalization__pre_admission_identifier__assigner__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__hospitalization__pre_admission_identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__hospitalization__pre_admission_identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__hospitalization__special_courtesy__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__hospitalization__special_courtesy {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__hospitalization__discharge_disposition__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__hospitalization__discharge_disposition {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__hospitalization__admit_source__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__hospitalization__admit_source {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__length {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: comparator {
-    type: string
-    sql: ${TABLE}.comparator ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: unit {
-    type: string
-    sql: ${TABLE}.unit ;;
-  }
-
-  dimension: value {
-    type: number
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__diagnosis__condition {
+view: procedure__complication_detail {
   dimension: condition_id {
     type: string
     sql: ${TABLE}.conditionId ;;
@@ -4039,18 +3192,13 @@ view: encounter__diagnosis__condition {
     sql: ${TABLE}.identifier ;;
   }
 
-  dimension: procedure_id {
-    type: string
-    sql: ${TABLE}.procedureId ;;
-  }
-
   dimension: reference {
     type: string
     sql: ${TABLE}.reference ;;
   }
 }
 
-view: encounter__diagnosis__condition__identifier__period {
+view: procedure__complication_detail__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -4062,7 +3210,7 @@ view: encounter__diagnosis__condition__identifier__period {
   }
 }
 
-view: encounter__diagnosis__condition__identifier {
+view: procedure__complication_detail__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -4094,7 +3242,7 @@ view: encounter__diagnosis__condition__identifier {
   }
 }
 
-view: encounter__diagnosis__condition__identifier__assigner {
+view: procedure__complication_detail__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -4116,7 +3264,7 @@ view: encounter__diagnosis__condition__identifier__assigner {
   }
 }
 
-view: encounter__diagnosis__condition__identifier__assigner__identifier__period {
+view: procedure__complication_detail__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -4128,7 +3276,7 @@ view: encounter__diagnosis__condition__identifier__assigner__identifier__period 
   }
 }
 
-view: encounter__diagnosis__condition__identifier__assigner__identifier {
+view: procedure__complication_detail__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -4160,7 +3308,7 @@ view: encounter__diagnosis__condition__identifier__assigner__identifier {
   }
 }
 
-view: encounter__diagnosis__condition__identifier__assigner__identifier__assigner {
+view: procedure__complication_detail__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -4182,7 +3330,7 @@ view: encounter__diagnosis__condition__identifier__assigner__identifier__assigne
   }
 }
 
-view: encounter__diagnosis__condition__identifier__assigner__identifier__assigner__identifier__period {
+view: procedure__complication_detail__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -4194,7 +3342,7 @@ view: encounter__diagnosis__condition__identifier__assigner__identifier__assigne
   }
 }
 
-view: encounter__diagnosis__condition__identifier__assigner__identifier__assigner__identifier {
+view: procedure__complication_detail__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -4226,7 +3374,7 @@ view: encounter__diagnosis__condition__identifier__assigner__identifier__assigne
   }
 }
 
-view: encounter__diagnosis__condition__identifier__assigner__identifier__assigner__identifier__assigner {
+view: procedure__complication_detail__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -4243,7 +3391,7 @@ view: encounter__diagnosis__condition__identifier__assigner__identifier__assigne
   }
 }
 
-view: encounter__diagnosis__condition__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: procedure__complication_detail__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -4270,7 +3418,7 @@ view: encounter__diagnosis__condition__identifier__assigner__identifier__assigne
   }
 }
 
-view: encounter__diagnosis__condition__identifier__assigner__identifier__assigner__identifier__type {
+view: procedure__complication_detail__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -4282,7 +3430,7 @@ view: encounter__diagnosis__condition__identifier__assigner__identifier__assigne
   }
 }
 
-view: encounter__diagnosis__condition__identifier__assigner__identifier__type__coding {
+view: procedure__complication_detail__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -4309,7 +3457,7 @@ view: encounter__diagnosis__condition__identifier__assigner__identifier__type__c
   }
 }
 
-view: encounter__diagnosis__condition__identifier__assigner__identifier__type {
+view: procedure__complication_detail__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -4321,7 +3469,7 @@ view: encounter__diagnosis__condition__identifier__assigner__identifier__type {
   }
 }
 
-view: encounter__diagnosis__condition__identifier__type__coding {
+view: procedure__complication_detail__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -4348,7 +3496,7 @@ view: encounter__diagnosis__condition__identifier__type__coding {
   }
 }
 
-view: encounter__diagnosis__condition__identifier__type {
+view: procedure__complication_detail__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -4360,10 +3508,10 @@ view: encounter__diagnosis__condition__identifier__type {
   }
 }
 
-view: encounter__diagnosis__role__coding {
-  dimension: code {
+view: procedure__performer__actor {
+  dimension: device_id {
     type: string
-    sql: ${TABLE}.code ;;
+    sql: ${TABLE}.deviceId ;;
   }
 
   dimension: display {
@@ -4371,97 +3519,38 @@ view: encounter__diagnosis__role__coding {
     sql: ${TABLE}.display ;;
   }
 
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__diagnosis__role {
-  dimension: coding {
+  dimension: identifier {
     hidden: yes
-    sql: ${TABLE}.coding ;;
+    sql: ${TABLE}.identifier ;;
   }
 
-  dimension: text {
+  dimension: organization_id {
     type: string
-    sql: ${TABLE}.text ;;
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: patient_id {
+    type: string
+    sql: ${TABLE}.patientId ;;
+  }
+
+  dimension: practitioner_id {
+    type: string
+    sql: ${TABLE}.practitionerId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+
+  dimension: related_person_id {
+    type: string
+    sql: ${TABLE}.relatedPersonId ;;
   }
 }
 
-view: encounter__diagnosis {
-  dimension: condition {
-    hidden: yes
-    sql: ${TABLE}.condition ;;
-  }
-
-  dimension: rank {
-    type: number
-    sql: ${TABLE}.rank ;;
-  }
-
-  dimension: role {
-    hidden: yes
-    sql: ${TABLE}.role ;;
-  }
-
-  ###Appended fields###
-  dimension: condition_id {
-    type: string
-    sql: ${TABLE}.condition.conditionId ;;
-  }
-}
-
-view: encounter__priority__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: encounter__priority {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__status_history__period {
+view: procedure__performer__actor__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -4473,19 +3562,1452 @@ view: encounter__status_history__period {
   }
 }
 
-view: encounter__status_history {
+view: procedure__performer__actor__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
   dimension: period {
     hidden: yes
     sql: ${TABLE}.period ;;
   }
 
-  dimension: status {
+  dimension: system {
     type: string
-    sql: ${TABLE}.status ;;
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
   }
 }
 
-view: encounter__meta {
+view: procedure__performer__actor__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__performer__actor__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__performer__actor__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__performer__actor__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__performer__actor__identifier__assigner__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__performer__actor__identifier__assigner__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__performer__actor__identifier__assigner__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__performer__actor__identifier__assigner__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__performer__actor__identifier__assigner__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__performer__actor__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__performer__actor__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__performer__actor__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__performer__actor__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__performer__role__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__performer__role {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__performer__on_behalf_of {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__performer__on_behalf_of__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__performer__on_behalf_of__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__performer__on_behalf_of__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__performer__on_behalf_of__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__performer__on_behalf_of__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__performer__on_behalf_of__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__performer__on_behalf_of__identifier__assigner__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__performer__on_behalf_of__identifier__assigner__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__performer__on_behalf_of__identifier__assigner__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__performer__on_behalf_of__identifier__assigner__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__performer__on_behalf_of__identifier__assigner__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__performer__on_behalf_of__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__performer__on_behalf_of__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__performer__on_behalf_of__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__performer__on_behalf_of__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__used_reference {
+  dimension: device_id {
+    type: string
+    sql: ${TABLE}.deviceId ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: medication_id {
+    type: string
+    sql: ${TABLE}.medicationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+
+  dimension: substance_id {
+    type: string
+    sql: ${TABLE}.substanceId ;;
+  }
+}
+
+view: procedure__used_reference__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__used_reference__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__used_reference__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__used_reference__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__used_reference__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__used_reference__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__used_reference__identifier__assigner__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__used_reference__identifier__assigner__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__used_reference__identifier__assigner__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__used_reference__identifier__assigner__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__used_reference__identifier__assigner__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__used_reference__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__used_reference__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__used_reference__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__used_reference__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__focal_device__action__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__focal_device__action {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__focal_device__manipulated {
+  dimension: device_id {
+    type: string
+    sql: ${TABLE}.deviceId ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__focal_device__manipulated__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__focal_device__manipulated__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__focal_device__manipulated__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__focal_device__manipulated__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__focal_device__manipulated__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__focal_device__manipulated__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__focal_device__manipulated__identifier__assigner__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__focal_device__manipulated__identifier__assigner__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: procedure__focal_device__manipulated__identifier__assigner__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: procedure__focal_device__manipulated__identifier__assigner__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__focal_device__manipulated__identifier__assigner__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__focal_device__manipulated__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__focal_device__manipulated__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__focal_device__manipulated__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__focal_device__manipulated__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__performed {
+  dimension: date_time {
+    type: string
+    sql: ${TABLE}.dateTime ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+}
+
+view: procedure__performed__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: procedure__body_site__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: procedure__body_site {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: procedure__meta {
   dimension_group: last_updated {
     type: time
     timeframes: [
@@ -4521,7 +5043,7 @@ view: encounter__meta {
   }
 }
 
-view: encounter__meta__security {
+view: procedure__meta__security {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -4548,7 +5070,7 @@ view: encounter__meta__security {
   }
 }
 
-view: encounter__meta__tag {
+view: procedure__meta__tag {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -4575,7 +5097,12 @@ view: encounter__meta__tag {
   }
 }
 
-view: encounter__service_provider {
+view: procedure__report {
+  dimension: diagnostic_report_id {
+    type: string
+    sql: ${TABLE}.diagnosticReportId ;;
+  }
+
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -4586,18 +5113,13 @@ view: encounter__service_provider {
     sql: ${TABLE}.identifier ;;
   }
 
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
   dimension: reference {
     type: string
     sql: ${TABLE}.reference ;;
   }
 }
 
-view: encounter__service_provider__identifier__period {
+view: procedure__report__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -4609,7 +5131,7 @@ view: encounter__service_provider__identifier__period {
   }
 }
 
-view: encounter__service_provider__identifier {
+view: procedure__report__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -4641,7 +5163,7 @@ view: encounter__service_provider__identifier {
   }
 }
 
-view: encounter__service_provider__identifier__assigner {
+view: procedure__report__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -4663,7 +5185,7 @@ view: encounter__service_provider__identifier__assigner {
   }
 }
 
-view: encounter__service_provider__identifier__assigner__identifier__period {
+view: procedure__report__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -4675,7 +5197,7 @@ view: encounter__service_provider__identifier__assigner__identifier__period {
   }
 }
 
-view: encounter__service_provider__identifier__assigner__identifier {
+view: procedure__report__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -4707,7 +5229,7 @@ view: encounter__service_provider__identifier__assigner__identifier {
   }
 }
 
-view: encounter__service_provider__identifier__assigner__identifier__assigner {
+view: procedure__report__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -4729,7 +5251,7 @@ view: encounter__service_provider__identifier__assigner__identifier__assigner {
   }
 }
 
-view: encounter__service_provider__identifier__assigner__identifier__assigner__identifier__period {
+view: procedure__report__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -4741,7 +5263,7 @@ view: encounter__service_provider__identifier__assigner__identifier__assigner__i
   }
 }
 
-view: encounter__service_provider__identifier__assigner__identifier__assigner__identifier {
+view: procedure__report__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -4773,7 +5295,7 @@ view: encounter__service_provider__identifier__assigner__identifier__assigner__i
   }
 }
 
-view: encounter__service_provider__identifier__assigner__identifier__assigner__identifier__assigner {
+view: procedure__report__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -4790,7 +5312,7 @@ view: encounter__service_provider__identifier__assigner__identifier__assigner__i
   }
 }
 
-view: encounter__service_provider__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: procedure__report__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -4817,7 +5339,7 @@ view: encounter__service_provider__identifier__assigner__identifier__assigner__i
   }
 }
 
-view: encounter__service_provider__identifier__assigner__identifier__assigner__identifier__type {
+view: procedure__report__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -4829,7 +5351,7 @@ view: encounter__service_provider__identifier__assigner__identifier__assigner__i
   }
 }
 
-view: encounter__service_provider__identifier__assigner__identifier__type__coding {
+view: procedure__report__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -4856,7 +5378,7 @@ view: encounter__service_provider__identifier__assigner__identifier__type__codin
   }
 }
 
-view: encounter__service_provider__identifier__assigner__identifier__type {
+view: procedure__report__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -4868,7 +5390,7 @@ view: encounter__service_provider__identifier__assigner__identifier__type {
   }
 }
 
-view: encounter__service_provider__identifier__type__coding {
+view: procedure__report__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -4895,7 +5417,7 @@ view: encounter__service_provider__identifier__type__coding {
   }
 }
 
-view: encounter__service_provider__identifier__type {
+view: procedure__report__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -4907,19 +5429,7 @@ view: encounter__service_provider__identifier__type {
   }
 }
 
-view: encounter__location__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__location__location {
+view: procedure__location {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -4941,7 +5451,7 @@ view: encounter__location__location {
   }
 }
 
-view: encounter__location__location__identifier__period {
+view: procedure__location__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -4953,7 +5463,7 @@ view: encounter__location__location__identifier__period {
   }
 }
 
-view: encounter__location__location__identifier {
+view: procedure__location__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -4985,7 +5495,7 @@ view: encounter__location__location__identifier {
   }
 }
 
-view: encounter__location__location__identifier__assigner {
+view: procedure__location__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -5007,7 +5517,7 @@ view: encounter__location__location__identifier__assigner {
   }
 }
 
-view: encounter__location__location__identifier__assigner__identifier__period {
+view: procedure__location__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -5019,7 +5529,7 @@ view: encounter__location__location__identifier__assigner__identifier__period {
   }
 }
 
-view: encounter__location__location__identifier__assigner__identifier {
+view: procedure__location__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -5051,7 +5561,7 @@ view: encounter__location__location__identifier__assigner__identifier {
   }
 }
 
-view: encounter__location__location__identifier__assigner__identifier__assigner {
+view: procedure__location__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -5073,7 +5583,7 @@ view: encounter__location__location__identifier__assigner__identifier__assigner 
   }
 }
 
-view: encounter__location__location__identifier__assigner__identifier__assigner__identifier__period {
+view: procedure__location__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -5085,7 +5595,7 @@ view: encounter__location__location__identifier__assigner__identifier__assigner_
   }
 }
 
-view: encounter__location__location__identifier__assigner__identifier__assigner__identifier {
+view: procedure__location__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -5117,7 +5627,7 @@ view: encounter__location__location__identifier__assigner__identifier__assigner_
   }
 }
 
-view: encounter__location__location__identifier__assigner__identifier__assigner__identifier__assigner {
+view: procedure__location__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -5134,7 +5644,7 @@ view: encounter__location__location__identifier__assigner__identifier__assigner_
   }
 }
 
-view: encounter__location__location__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: procedure__location__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -5161,7 +5671,7 @@ view: encounter__location__location__identifier__assigner__identifier__assigner_
   }
 }
 
-view: encounter__location__location__identifier__assigner__identifier__assigner__identifier__type {
+view: procedure__location__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -5173,7 +5683,7 @@ view: encounter__location__location__identifier__assigner__identifier__assigner_
   }
 }
 
-view: encounter__location__location__identifier__assigner__identifier__type__coding {
+view: procedure__location__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -5200,7 +5710,7 @@ view: encounter__location__location__identifier__assigner__identifier__type__cod
   }
 }
 
-view: encounter__location__location__identifier__assigner__identifier__type {
+view: procedure__location__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -5212,7 +5722,7 @@ view: encounter__location__location__identifier__assigner__identifier__type {
   }
 }
 
-view: encounter__location__location__identifier__type__coding {
+view: procedure__location__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -5239,7 +5749,7 @@ view: encounter__location__location__identifier__type__coding {
   }
 }
 
-view: encounter__location__location__identifier__type {
+view: procedure__location__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -5251,239 +5761,7 @@ view: encounter__location__location__identifier__type {
   }
 }
 
-view: encounter__location {
-  dimension: location {
-    hidden: yes
-    sql: ${TABLE}.location ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: status {
-    type: string
-    sql: ${TABLE}.status ;;
-  }
-}
-
-view: encounter__account {
-  dimension: account_id {
-    type: string
-    sql: ${TABLE}.accountId ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__account__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__account__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__account__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__account__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__account__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__account__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__account__identifier__assigner__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: encounter__account__identifier__assigner__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: encounter__account__identifier__assigner__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: encounter__account__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: procedure__not_done_reason__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -5510,7 +5788,7 @@ view: encounter__account__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: encounter__account__identifier__assigner__identifier__assigner__identifier__type {
+view: procedure__not_done_reason {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -5522,7 +5800,7 @@ view: encounter__account__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: encounter__account__identifier__assigner__identifier__type__coding {
+view: procedure__category__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -5549,7 +5827,7 @@ view: encounter__account__identifier__assigner__identifier__type__coding {
   }
 }
 
-view: encounter__account__identifier__assigner__identifier__type {
+view: procedure__category {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -5561,124 +5839,31 @@ view: encounter__account__identifier__assigner__identifier__type {
   }
 }
 
-view: encounter__account__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
+view: procedure__performer {
+  dimension: actor {
+    hidden: yes
+    sql: ${TABLE}.actor ;;
   }
 
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
+  dimension: on_behalf_of {
+    hidden: yes
+    sql: ${TABLE}.onBehalfOf ;;
   }
 
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
+  dimension: role {
+    hidden: yes
+    sql: ${TABLE}.role ;;
   }
 }
 
-view: encounter__account__identifier__type {
-  dimension: coding {
+view: procedure__focal_device {
+  dimension: action {
     hidden: yes
-    sql: ${TABLE}.coding ;;
+    sql: ${TABLE}.action ;;
   }
 
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: encounter__participant {
-  dimension: individual {
+  dimension: manipulated {
     hidden: yes
-    sql: ${TABLE}.individual ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  ###Appended Dimensions###
-  dimension: encounter_practitioner_id {
-    type: string
-    sql: ${TABLE}.individual.practitionerid ;;
-  }
-  ###end###
-}
-
-view: encounter__class_history {
-  dimension: class {
-    hidden: yes
-    sql: ${TABLE}.class ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-}
-
-view: encounter__hospitalization {
-  dimension: admit_source {
-    hidden: yes
-    sql: ${TABLE}.admitSource ;;
-  }
-
-  dimension: destination {
-    hidden: yes
-    sql: ${TABLE}.destination ;;
-  }
-
-  dimension: diet_preference {
-    hidden: yes
-    sql: ${TABLE}.dietPreference ;;
-  }
-
-  dimension: discharge_disposition {
-    hidden: yes
-    sql: ${TABLE}.dischargeDisposition ;;
-  }
-
-  dimension: origin {
-    hidden: yes
-    sql: ${TABLE}.origin ;;
-  }
-
-  dimension: pre_admission_identifier {
-    hidden: yes
-    sql: ${TABLE}.preAdmissionIdentifier ;;
-  }
-
-  dimension: re_admission {
-    hidden: yes
-    sql: ${TABLE}.reAdmission ;;
-  }
-
-  dimension: special_arrangement {
-    hidden: yes
-    sql: ${TABLE}.specialArrangement ;;
-  }
-
-  dimension: special_courtesy {
-    hidden: yes
-    sql: ${TABLE}.specialCourtesy ;;
+    sql: ${TABLE}.manipulated ;;
   }
 }

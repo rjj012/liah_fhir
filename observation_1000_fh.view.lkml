@@ -1,5 +1,5 @@
-view: observation_100_fh {
-  sql_table_name: FHIR_100_FH.Observation ;;
+view: observation_1000_fh {
+  sql_table_name: FHIR_1000_FH.Observation ;;
   drill_fields: [id]
 
   dimension: id {

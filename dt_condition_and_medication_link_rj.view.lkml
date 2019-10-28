@@ -7,11 +7,11 @@ view: dt_condition_and_medication_link_rj {
         rr.conditionId as condition_id
         , m.id as medication_id
       from
-        `healthtest.FHIR_100_FH.MedicationRequest` as m
+        `healthtest.FHIR_1000_FH.MedicationRequest` as m
       left join
         unnest(reasonreference) as rr
       left join
-        `healthtest.FHIR_100_FH.Condition` as c
+        `healthtest.FHIR_1000_FH.Condition` as c
           on c.id = rr.conditionid
        ;;
   }

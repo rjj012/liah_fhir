@@ -1,6 +1,6 @@
-view: patient_100_fh {
+view: patient_1000_fh {
   view_label: "Patient"
-  sql_table_name: FHIR_100_FH.Patient ;;
+  sql_table_name: FHIR_1000_FH.Patient ;;
   drill_fields: [id]
 
   dimension: id {
@@ -31,7 +31,13 @@ view: patient_100_fh {
       , month
       , year
     ]
-    sql: cast(parse_date('%Y%m%d',regexp_replace(birthdate, "-","")) as date);;
+    sql: timestamp (concat(birthdate," ",'11:11:11')) ;;
+    #cast(parse_datetime('%Y-%m-%d %H:%M:%S', concat(birthdate," ",'11:11:11')) as time)
+  }
+
+  dimension: age {
+    type: number
+    sql: date_diff(current_date(), ${birth_date}, year)  ;;
   }
 
   dimension: test_birth_date {

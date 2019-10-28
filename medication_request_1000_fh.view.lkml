@@ -1,11 +1,27 @@
-view: procedure_100_fh {
-  sql_table_name: FHIR_100_FH.Procedure ;;
-  drill_fields: [id]
+view: medication_request_1000_fh {
+  sql_table_name: FHIR_1000_FH.MedicationRequest ;;
+#   drill_fields: [based_on__medication_request_id]
 
-  dimension: id {
-    primary_key: yes
+#   dimension: based_on__medication_request_id {
+#     primary_key: yes
+#     hidden: yes
+#     type: string
+#     sql: ${TABLE}.basedOn.medicationRequestId ;;
+#   }
+
+  dimension: authored_on {
     type: string
-    sql: ${TABLE}.id ;;
+#     type: time
+#     timeframes: [
+#       raw,
+#       time,
+#       date,
+#       week,
+#       month,
+#       quarter,
+#       year
+#     ]
+    sql: ${TABLE}.authoredOn ;;
   }
 
   dimension: based_on {
@@ -13,29 +29,9 @@ view: procedure_100_fh {
     sql: ${TABLE}.basedOn ;;
   }
 
-  dimension: body_site {
-    hidden: yes
-    sql: ${TABLE}.bodySite ;;
-  }
-
   dimension: category {
     hidden: yes
     sql: ${TABLE}.category ;;
-  }
-
-  dimension: code {
-    hidden: yes
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: complication {
-    hidden: yes
-    sql: ${TABLE}.complication ;;
-  }
-
-  dimension: complication_detail {
-    hidden: yes
-    sql: ${TABLE}.complicationDetail ;;
   }
 
   dimension: context {
@@ -48,14 +44,35 @@ view: procedure_100_fh {
     sql: ${TABLE}.definition ;;
   }
 
-  dimension: focal_device {
+  dimension: detected_issue {
     hidden: yes
-    sql: ${TABLE}.focalDevice ;;
+    sql: ${TABLE}.detectedIssue ;;
   }
 
-  dimension: follow_up {
+  dimension: dispense_request {
     hidden: yes
-    sql: ${TABLE}.followUp ;;
+    sql: ${TABLE}.dispenseRequest ;;
+  }
+
+  dimension: dosage_instruction {
+    hidden: yes
+    sql: ${TABLE}.dosageInstruction ;;
+  }
+
+  dimension: event_history {
+    hidden: yes
+    sql: ${TABLE}.eventHistory ;;
+  }
+
+  dimension: group_identifier {
+    hidden: yes
+    sql: ${TABLE}.groupIdentifier ;;
+  }
+
+  dimension: id {
+    primary_key: yes
+    type: string
+    sql: ${TABLE}.id ;;
   }
 
   dimension: identifier {
@@ -64,18 +81,25 @@ view: procedure_100_fh {
   }
 
   dimension: implicit_rules {
+    hidden: yes
     type: string
     sql: ${TABLE}.implicitRules ;;
   }
 
+  dimension: intent {
+    type: string
+    sql: ${TABLE}.intent ;;
+  }
+
   dimension: language {
+    hidden: yes
     type: string
     sql: ${TABLE}.language ;;
   }
 
-  dimension: location {
+  dimension: medication {
     hidden: yes
-    sql: ${TABLE}.location ;;
+    sql: ${TABLE}.medication ;;
   }
 
   dimension: meta {
@@ -83,39 +107,20 @@ view: procedure_100_fh {
     sql: ${TABLE}.meta ;;
   }
 
-  dimension: not_done {
-    type: yesno
-    sql: ${TABLE}.notDone ;;
-  }
-
-  dimension: not_done_reason {
-    hidden: yes
-    sql: ${TABLE}.notDoneReason ;;
-  }
-
   dimension: note {
     hidden: yes
     sql: ${TABLE}.note ;;
   }
 
-  dimension: outcome {
+  dimension: prior_prescription {
     hidden: yes
-    sql: ${TABLE}.outcome ;;
+    sql: ${TABLE}.priorPrescription ;;
   }
 
-  dimension: part_of {
+  dimension: priority {
     hidden: yes
-    sql: ${TABLE}.partOf ;;
-  }
-
-  dimension: performed {
-    hidden: yes
-    sql: ${TABLE}.performed ;;
-  }
-
-  dimension: performer {
-    hidden: yes
-    sql: ${TABLE}.performer ;;
+    type: string
+    sql: ${TABLE}.priority ;;
   }
 
   dimension: reason_code {
@@ -128,9 +133,14 @@ view: procedure_100_fh {
     sql: ${TABLE}.reasonReference ;;
   }
 
-  dimension: report {
+  dimension: recorder {
     hidden: yes
-    sql: ${TABLE}.report ;;
+    sql: ${TABLE}.recorder ;;
+  }
+
+  dimension: requester {
+    hidden: yes
+    sql: ${TABLE}.requester ;;
   }
 
   dimension: status {
@@ -143,75 +153,56 @@ view: procedure_100_fh {
     sql: ${TABLE}.subject ;;
   }
 
+  dimension: substitution {
+    hidden: yes
+    sql: ${TABLE}.substitution ;;
+  }
+
+  dimension: supporting_information {
+    hidden: yes
+    sql: ${TABLE}.supportingInformation ;;
+  }
+
   dimension: text {
     hidden: yes
     sql: ${TABLE}.text ;;
   }
 
-  dimension: used_code {
-    hidden: yes
-    sql: ${TABLE}.usedCode ;;
+  ###Appended fields###
+  dimension: subject_patient_id {
+    label: "Patient ID"
+    type: string
+    sql: ${TABLE}.subject.patientid ;;
   }
 
-  dimension: used_reference {
-    hidden: yes
-    sql: ${TABLE}.usedReference ;;
+  dimension: medication_type {
+    type: string
+    sql: ${TABLE}.medication.codeableconcept.text ;;
   }
+
+  measure: test_medication_type {
+    type: string
+    sql: string_agg(distinct ${medication_type} order by ${medication_type} asc) ;;
+  }
+
+  dimension: requester_on_behalf_of_organization_id {
+    type: string
+    sql: ${TABLE}.requester.onbehalfof.organizationId ;;
+  }
+
+  dimension: requester_practitioner_id {
+    type: string
+    sql: ${TABLE}.requester.agent.practitionerId ;;
+  }
+  ###Appended fields end###
 
   measure: count {
     type: count
     drill_fields: [id]
   }
-
-  ###Appended Fields###
-  dimension_group: procedure_start {
-    type: time
-    timeframes: [
-      date
-      , month
-      , year
-    ]
-    sql: substr(${TABLE}.performed.period.start,1,10) ;;
-    #substr(regexp_replace(${TABLE}.performed.period.end, "T"," "),1,19)
-  }
-
-  dimension_group: prodedure_end {
-    type: time
-    timeframes: [
-      date
-      , month
-      , year
-    ]
-    sql: substr(${TABLE}.performed.period.start,1,10) ;;
-  }
-
-  dimension: procedure_name {
-    type: string
-    sql: ${TABLE}.code.text ;;
-  }
-
-  #PARSE_TIMESTAMP(format_string, string[, time_zone])
-#   dimension: test3 {
-#     type: date_time
-#     sql: parse_timestamp("%c",${TABLE}.performed.period.end) ;;
-#   }
-#
-#   dimension: test2 {
-#     type: string
-#     sql: substr(regexp_replace(${TABLE}.performed.period.end, "T"," "),1,19) ;;
-#   }
-#
-#   dimension_group: test {
-#     type: time
-#     timeframes: [
-#       date
-#       , time
-#     ]
-#     sql: current_timestamp() ;;
-#   }
 }
 
-view: procedure__note__author__reference {
+view: medication_request__note__author__reference {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -243,7 +234,7 @@ view: procedure__note__author__reference {
   }
 }
 
-view: procedure__note__author__reference__identifier__period {
+view: medication_request__note__author__reference__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -255,7 +246,7 @@ view: procedure__note__author__reference__identifier__period {
   }
 }
 
-view: procedure__note__author__reference__identifier {
+view: medication_request__note__author__reference__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -287,7 +278,7 @@ view: procedure__note__author__reference__identifier {
   }
 }
 
-view: procedure__note__author__reference__identifier__assigner {
+view: medication_request__note__author__reference__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -309,7 +300,7 @@ view: procedure__note__author__reference__identifier__assigner {
   }
 }
 
-view: procedure__note__author__reference__identifier__assigner__identifier__period {
+view: medication_request__note__author__reference__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -321,7 +312,7 @@ view: procedure__note__author__reference__identifier__assigner__identifier__peri
   }
 }
 
-view: procedure__note__author__reference__identifier__assigner__identifier {
+view: medication_request__note__author__reference__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -353,7 +344,7 @@ view: procedure__note__author__reference__identifier__assigner__identifier {
   }
 }
 
-view: procedure__note__author__reference__identifier__assigner__identifier__assigner {
+view: medication_request__note__author__reference__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -375,7 +366,7 @@ view: procedure__note__author__reference__identifier__assigner__identifier__assi
   }
 }
 
-view: procedure__note__author__reference__identifier__assigner__identifier__assigner__identifier__period {
+view: medication_request__note__author__reference__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -387,7 +378,7 @@ view: procedure__note__author__reference__identifier__assigner__identifier__assi
   }
 }
 
-view: procedure__note__author__reference__identifier__assigner__identifier__assigner__identifier {
+view: medication_request__note__author__reference__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -419,7 +410,7 @@ view: procedure__note__author__reference__identifier__assigner__identifier__assi
   }
 }
 
-view: procedure__note__author__reference__identifier__assigner__identifier__assigner__identifier__assigner {
+view: medication_request__note__author__reference__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -436,7 +427,7 @@ view: procedure__note__author__reference__identifier__assigner__identifier__assi
   }
 }
 
-view: procedure__note__author__reference__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: medication_request__note__author__reference__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -463,7 +454,7 @@ view: procedure__note__author__reference__identifier__assigner__identifier__assi
   }
 }
 
-view: procedure__note__author__reference__identifier__assigner__identifier__assigner__identifier__type {
+view: medication_request__note__author__reference__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -475,7 +466,7 @@ view: procedure__note__author__reference__identifier__assigner__identifier__assi
   }
 }
 
-view: procedure__note__author__reference__identifier__assigner__identifier__type__coding {
+view: medication_request__note__author__reference__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -502,7 +493,7 @@ view: procedure__note__author__reference__identifier__assigner__identifier__type
   }
 }
 
-view: procedure__note__author__reference__identifier__assigner__identifier__type {
+view: medication_request__note__author__reference__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -514,7 +505,7 @@ view: procedure__note__author__reference__identifier__assigner__identifier__type
   }
 }
 
-view: procedure__note__author__reference__identifier__type__coding {
+view: medication_request__note__author__reference__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -541,7 +532,7 @@ view: procedure__note__author__reference__identifier__type__coding {
   }
 }
 
-view: procedure__note__author__reference__identifier__type {
+view: medication_request__note__author__reference__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -553,7 +544,7 @@ view: procedure__note__author__reference__identifier__type {
   }
 }
 
-view: procedure__note__author {
+view: medication_request__note__author {
   dimension: reference {
     hidden: yes
     sql: ${TABLE}.reference ;;
@@ -565,7 +556,7 @@ view: procedure__note__author {
   }
 }
 
-view: procedure__note {
+view: medication_request__note {
   dimension: author {
     hidden: yes
     sql: ${TABLE}.author ;;
@@ -582,7 +573,58 @@ view: procedure__note {
   }
 }
 
-view: procedure__part_of {
+view: medication_request__substitution__reason__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: medication_request__substitution__reason {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: medication_request__substitution {
+  dimension: allowed {
+    type: yesno
+    sql: ${TABLE}.allowed ;;
+  }
+
+  dimension: reason {
+    hidden: yes
+    sql: ${TABLE}.reason ;;
+  }
+}
+
+view: medication_request__prior_prescription {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -593,19 +635,9 @@ view: procedure__part_of {
     sql: ${TABLE}.identifier ;;
   }
 
-  dimension: medication_administration_id {
+  dimension: medication_request_id {
     type: string
-    sql: ${TABLE}.medicationAdministrationId ;;
-  }
-
-  dimension: observation_id {
-    type: string
-    sql: ${TABLE}.observationId ;;
-  }
-
-  dimension: procedure_id {
-    type: string
-    sql: ${TABLE}.procedureId ;;
+    sql: ${TABLE}.medicationRequestId ;;
   }
 
   dimension: reference {
@@ -614,7 +646,7 @@ view: procedure__part_of {
   }
 }
 
-view: procedure__part_of__identifier__period {
+view: medication_request__prior_prescription__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -626,7 +658,7 @@ view: procedure__part_of__identifier__period {
   }
 }
 
-view: procedure__part_of__identifier {
+view: medication_request__prior_prescription__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -658,7 +690,7 @@ view: procedure__part_of__identifier {
   }
 }
 
-view: procedure__part_of__identifier__assigner {
+view: medication_request__prior_prescription__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -680,7 +712,7 @@ view: procedure__part_of__identifier__assigner {
   }
 }
 
-view: procedure__part_of__identifier__assigner__identifier__period {
+view: medication_request__prior_prescription__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -692,7 +724,7 @@ view: procedure__part_of__identifier__assigner__identifier__period {
   }
 }
 
-view: procedure__part_of__identifier__assigner__identifier {
+view: medication_request__prior_prescription__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -724,7 +756,7 @@ view: procedure__part_of__identifier__assigner__identifier {
   }
 }
 
-view: procedure__part_of__identifier__assigner__identifier__assigner {
+view: medication_request__prior_prescription__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -746,7 +778,7 @@ view: procedure__part_of__identifier__assigner__identifier__assigner {
   }
 }
 
-view: procedure__part_of__identifier__assigner__identifier__assigner__identifier__period {
+view: medication_request__prior_prescription__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -758,7 +790,7 @@ view: procedure__part_of__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: procedure__part_of__identifier__assigner__identifier__assigner__identifier {
+view: medication_request__prior_prescription__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -790,7 +822,7 @@ view: procedure__part_of__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: procedure__part_of__identifier__assigner__identifier__assigner__identifier__assigner {
+view: medication_request__prior_prescription__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -807,7 +839,7 @@ view: procedure__part_of__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: procedure__part_of__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: medication_request__prior_prescription__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -834,7 +866,7 @@ view: procedure__part_of__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: procedure__part_of__identifier__assigner__identifier__assigner__identifier__type {
+view: medication_request__prior_prescription__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -846,7 +878,7 @@ view: procedure__part_of__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: procedure__part_of__identifier__assigner__identifier__type__coding {
+view: medication_request__prior_prescription__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -873,7 +905,7 @@ view: procedure__part_of__identifier__assigner__identifier__type__coding {
   }
 }
 
-view: procedure__part_of__identifier__assigner__identifier__type {
+view: medication_request__prior_prescription__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -885,7 +917,7 @@ view: procedure__part_of__identifier__assigner__identifier__type {
   }
 }
 
-view: procedure__part_of__identifier__type__coding {
+view: medication_request__prior_prescription__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -912,7 +944,7 @@ view: procedure__part_of__identifier__type__coding {
   }
 }
 
-view: procedure__part_of__identifier__type {
+view: medication_request__prior_prescription__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -924,85 +956,7 @@ view: procedure__part_of__identifier__type {
   }
 }
 
-view: procedure__complication__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: procedure__complication {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: procedure__code__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: procedure__code {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: procedure__subject {
+view: medication_request__subject {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1029,7 +983,7 @@ view: procedure__subject {
   }
 }
 
-view: procedure__subject__identifier__period {
+view: medication_request__subject__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -1041,7 +995,7 @@ view: procedure__subject__identifier__period {
   }
 }
 
-view: procedure__subject__identifier {
+view: medication_request__subject__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1073,7 +1027,7 @@ view: procedure__subject__identifier {
   }
 }
 
-view: procedure__subject__identifier__assigner {
+view: medication_request__subject__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1095,7 +1049,7 @@ view: procedure__subject__identifier__assigner {
   }
 }
 
-view: procedure__subject__identifier__assigner__identifier__period {
+view: medication_request__subject__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -1107,7 +1061,7 @@ view: procedure__subject__identifier__assigner__identifier__period {
   }
 }
 
-view: procedure__subject__identifier__assigner__identifier {
+view: medication_request__subject__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1139,7 +1093,7 @@ view: procedure__subject__identifier__assigner__identifier {
   }
 }
 
-view: procedure__subject__identifier__assigner__identifier__assigner {
+view: medication_request__subject__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1161,7 +1115,7 @@ view: procedure__subject__identifier__assigner__identifier__assigner {
   }
 }
 
-view: procedure__subject__identifier__assigner__identifier__assigner__identifier__period {
+view: medication_request__subject__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -1173,7 +1127,7 @@ view: procedure__subject__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: procedure__subject__identifier__assigner__identifier__assigner__identifier {
+view: medication_request__subject__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1205,7 +1159,7 @@ view: procedure__subject__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: procedure__subject__identifier__assigner__identifier__assigner__identifier__assigner {
+view: medication_request__subject__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1222,7 +1176,7 @@ view: procedure__subject__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: procedure__subject__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: medication_request__subject__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1249,7 +1203,7 @@ view: procedure__subject__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: procedure__subject__identifier__assigner__identifier__assigner__identifier__type {
+view: medication_request__subject__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1261,7 +1215,7 @@ view: procedure__subject__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: procedure__subject__identifier__assigner__identifier__type__coding {
+view: medication_request__subject__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1288,7 +1242,7 @@ view: procedure__subject__identifier__assigner__identifier__type__coding {
   }
 }
 
-view: procedure__subject__identifier__assigner__identifier__type {
+view: medication_request__subject__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1300,7 +1254,7 @@ view: procedure__subject__identifier__assigner__identifier__type {
   }
 }
 
-view: procedure__subject__identifier__type__coding {
+view: medication_request__subject__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1327,7 +1281,7 @@ view: procedure__subject__identifier__type__coding {
   }
 }
 
-view: procedure__subject__identifier__type {
+view: medication_request__subject__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1339,13 +1293,14 @@ view: procedure__subject__identifier__type {
   }
 }
 
-view: procedure__reason_reference {
+view: medication_request__reason_reference {
   dimension: condition_id {
     type: string
     sql: ${TABLE}.conditionId ;;
   }
 
   dimension: display {
+    hidden: yes
     type: string
     sql: ${TABLE}.display ;;
   }
@@ -1356,17 +1311,19 @@ view: procedure__reason_reference {
   }
 
   dimension: observation_id {
+    hidden: yes
     type: string
     sql: ${TABLE}.observationId ;;
   }
 
   dimension: reference {
+    hidden: yes
     type: string
     sql: ${TABLE}.reference ;;
   }
 }
 
-view: procedure__reason_reference__identifier__period {
+view: medication_request__reason_reference__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -1378,7 +1335,7 @@ view: procedure__reason_reference__identifier__period {
   }
 }
 
-view: procedure__reason_reference__identifier {
+view: medication_request__reason_reference__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1410,7 +1367,7 @@ view: procedure__reason_reference__identifier {
   }
 }
 
-view: procedure__reason_reference__identifier__assigner {
+view: medication_request__reason_reference__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1432,7 +1389,7 @@ view: procedure__reason_reference__identifier__assigner {
   }
 }
 
-view: procedure__reason_reference__identifier__assigner__identifier__period {
+view: medication_request__reason_reference__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -1444,7 +1401,7 @@ view: procedure__reason_reference__identifier__assigner__identifier__period {
   }
 }
 
-view: procedure__reason_reference__identifier__assigner__identifier {
+view: medication_request__reason_reference__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1476,7 +1433,7 @@ view: procedure__reason_reference__identifier__assigner__identifier {
   }
 }
 
-view: procedure__reason_reference__identifier__assigner__identifier__assigner {
+view: medication_request__reason_reference__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1498,7 +1455,7 @@ view: procedure__reason_reference__identifier__assigner__identifier__assigner {
   }
 }
 
-view: procedure__reason_reference__identifier__assigner__identifier__assigner__identifier__period {
+view: medication_request__reason_reference__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -1510,7 +1467,7 @@ view: procedure__reason_reference__identifier__assigner__identifier__assigner__i
   }
 }
 
-view: procedure__reason_reference__identifier__assigner__identifier__assigner__identifier {
+view: medication_request__reason_reference__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1542,7 +1499,7 @@ view: procedure__reason_reference__identifier__assigner__identifier__assigner__i
   }
 }
 
-view: procedure__reason_reference__identifier__assigner__identifier__assigner__identifier__assigner {
+view: medication_request__reason_reference__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1559,7 +1516,7 @@ view: procedure__reason_reference__identifier__assigner__identifier__assigner__i
   }
 }
 
-view: procedure__reason_reference__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: medication_request__reason_reference__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1586,7 +1543,7 @@ view: procedure__reason_reference__identifier__assigner__identifier__assigner__i
   }
 }
 
-view: procedure__reason_reference__identifier__assigner__identifier__assigner__identifier__type {
+view: medication_request__reason_reference__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1598,7 +1555,7 @@ view: procedure__reason_reference__identifier__assigner__identifier__assigner__i
   }
 }
 
-view: procedure__reason_reference__identifier__assigner__identifier__type__coding {
+view: medication_request__reason_reference__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1625,7 +1582,7 @@ view: procedure__reason_reference__identifier__assigner__identifier__type__codin
   }
 }
 
-view: procedure__reason_reference__identifier__assigner__identifier__type {
+view: medication_request__reason_reference__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1637,7 +1594,7 @@ view: procedure__reason_reference__identifier__assigner__identifier__type {
   }
 }
 
-view: procedure__reason_reference__identifier__type__coding {
+view: medication_request__reason_reference__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1664,7 +1621,7 @@ view: procedure__reason_reference__identifier__type__coding {
   }
 }
 
-view: procedure__reason_reference__identifier__type {
+view: medication_request__reason_reference__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1676,7 +1633,256 @@ view: procedure__reason_reference__identifier__type {
   }
 }
 
-view: procedure__follow_up__coding {
+view: medication_request__dispense_request__validity_period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: medication_request__dispense_request__quantity {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: unit {
+    type: string
+    sql: ${TABLE}.unit ;;
+  }
+
+  dimension: value {
+    type: number
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__dispense_request__performer {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: medication_request__dispense_request__performer__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: medication_request__dispense_request__performer__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__dispense_request__performer__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: medication_request__dispense_request__performer__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: medication_request__dispense_request__performer__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__dispense_request__performer__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: medication_request__dispense_request__performer__identifier__assigner__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: medication_request__dispense_request__performer__identifier__assigner__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__dispense_request__performer__identifier__assigner__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: medication_request__dispense_request__performer__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1703,7 +1909,7 @@ view: procedure__follow_up__coding {
   }
 }
 
-view: procedure__follow_up {
+view: medication_request__dispense_request__performer__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1715,7 +1921,139 @@ view: procedure__follow_up {
   }
 }
 
-view: procedure__context {
+view: medication_request__dispense_request__performer__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: medication_request__dispense_request__performer__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: medication_request__dispense_request__performer__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: medication_request__dispense_request__performer__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: medication_request__dispense_request {
+  dimension: expected_supply_duration {
+    hidden: yes
+    sql: ${TABLE}.expectedSupplyDuration ;;
+  }
+
+  dimension: number_of_repeats_allowed {
+    type: number
+    sql: ${TABLE}.numberOfRepeatsAllowed ;;
+  }
+
+  dimension: performer {
+    hidden: yes
+    sql: ${TABLE}.performer ;;
+  }
+
+  dimension: quantity {
+    hidden: yes
+    sql: ${TABLE}.quantity ;;
+  }
+
+  dimension: validity_period {
+    hidden: yes
+    sql: ${TABLE}.validityPeriod ;;
+  }
+}
+
+view: medication_request__dispense_request__expected_supply_duration {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: comparator {
+    type: string
+    sql: ${TABLE}.comparator ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: unit {
+    type: string
+    sql: ${TABLE}.unit ;;
+  }
+
+  dimension: value {
+    type: number
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__context {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1742,7 +2080,7 @@ view: procedure__context {
   }
 }
 
-view: procedure__context__identifier__period {
+view: medication_request__context__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -1754,7 +2092,7 @@ view: procedure__context__identifier__period {
   }
 }
 
-view: procedure__context__identifier {
+view: medication_request__context__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1786,7 +2124,7 @@ view: procedure__context__identifier {
   }
 }
 
-view: procedure__context__identifier__assigner {
+view: medication_request__context__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1808,7 +2146,7 @@ view: procedure__context__identifier__assigner {
   }
 }
 
-view: procedure__context__identifier__assigner__identifier__period {
+view: medication_request__context__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -1820,7 +2158,7 @@ view: procedure__context__identifier__assigner__identifier__period {
   }
 }
 
-view: procedure__context__identifier__assigner__identifier {
+view: medication_request__context__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1852,7 +2190,7 @@ view: procedure__context__identifier__assigner__identifier {
   }
 }
 
-view: procedure__context__identifier__assigner__identifier__assigner {
+view: medication_request__context__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1874,7 +2212,7 @@ view: procedure__context__identifier__assigner__identifier__assigner {
   }
 }
 
-view: procedure__context__identifier__assigner__identifier__assigner__identifier__period {
+view: medication_request__context__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -1886,7 +2224,7 @@ view: procedure__context__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: procedure__context__identifier__assigner__identifier__assigner__identifier {
+view: medication_request__context__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -1918,7 +2256,7 @@ view: procedure__context__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: procedure__context__identifier__assigner__identifier__assigner__identifier__assigner {
+view: medication_request__context__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -1935,7 +2273,7 @@ view: procedure__context__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: procedure__context__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: medication_request__context__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -1962,7 +2300,7 @@ view: procedure__context__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: procedure__context__identifier__assigner__identifier__assigner__identifier__type {
+view: medication_request__context__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -1974,7 +2312,7 @@ view: procedure__context__identifier__assigner__identifier__assigner__identifier
   }
 }
 
-view: procedure__context__identifier__assigner__identifier__type__coding {
+view: medication_request__context__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2001,7 +2339,7 @@ view: procedure__context__identifier__assigner__identifier__type__coding {
   }
 }
 
-view: procedure__context__identifier__assigner__identifier__type {
+view: medication_request__context__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2013,7 +2351,7 @@ view: procedure__context__identifier__assigner__identifier__type {
   }
 }
 
-view: procedure__context__identifier__type__coding {
+view: medication_request__context__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2040,7 +2378,7 @@ view: procedure__context__identifier__type__coding {
   }
 }
 
-view: procedure__context__identifier__type {
+view: medication_request__context__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2052,7 +2390,7 @@ view: procedure__context__identifier__type {
   }
 }
 
-view: procedure__definition {
+view: medication_request__definition {
   dimension: activity_definition_id {
     type: string
     sql: ${TABLE}.activityDefinitionId ;;
@@ -2061,11 +2399,6 @@ view: procedure__definition {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
-  }
-
-  dimension: healthcare_service_id {
-    type: string
-    sql: ${TABLE}.healthcareServiceId ;;
   }
 
   dimension: identifier {
@@ -2084,7 +2417,7 @@ view: procedure__definition {
   }
 }
 
-view: procedure__definition__identifier__period {
+view: medication_request__definition__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -2096,7 +2429,7 @@ view: procedure__definition__identifier__period {
   }
 }
 
-view: procedure__definition__identifier {
+view: medication_request__definition__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2128,7 +2461,7 @@ view: procedure__definition__identifier {
   }
 }
 
-view: procedure__definition__identifier__assigner {
+view: medication_request__definition__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2150,7 +2483,7 @@ view: procedure__definition__identifier__assigner {
   }
 }
 
-view: procedure__definition__identifier__assigner__identifier__period {
+view: medication_request__definition__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -2162,7 +2495,7 @@ view: procedure__definition__identifier__assigner__identifier__period {
   }
 }
 
-view: procedure__definition__identifier__assigner__identifier {
+view: medication_request__definition__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2194,7 +2527,7 @@ view: procedure__definition__identifier__assigner__identifier {
   }
 }
 
-view: procedure__definition__identifier__assigner__identifier__assigner {
+view: medication_request__definition__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2216,7 +2549,7 @@ view: procedure__definition__identifier__assigner__identifier__assigner {
   }
 }
 
-view: procedure__definition__identifier__assigner__identifier__assigner__identifier__period {
+view: medication_request__definition__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -2228,7 +2561,7 @@ view: procedure__definition__identifier__assigner__identifier__assigner__identif
   }
 }
 
-view: procedure__definition__identifier__assigner__identifier__assigner__identifier {
+view: medication_request__definition__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2260,7 +2593,7 @@ view: procedure__definition__identifier__assigner__identifier__assigner__identif
   }
 }
 
-view: procedure__definition__identifier__assigner__identifier__assigner__identifier__assigner {
+view: medication_request__definition__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2277,7 +2610,7 @@ view: procedure__definition__identifier__assigner__identifier__assigner__identif
   }
 }
 
-view: procedure__definition__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: medication_request__definition__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2304,7 +2637,7 @@ view: procedure__definition__identifier__assigner__identifier__assigner__identif
   }
 }
 
-view: procedure__definition__identifier__assigner__identifier__assigner__identifier__type {
+view: medication_request__definition__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2316,7 +2649,7 @@ view: procedure__definition__identifier__assigner__identifier__assigner__identif
   }
 }
 
-view: procedure__definition__identifier__assigner__identifier__type__coding {
+view: medication_request__definition__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2343,7 +2676,7 @@ view: procedure__definition__identifier__assigner__identifier__type__coding {
   }
 }
 
-view: procedure__definition__identifier__assigner__identifier__type {
+view: medication_request__definition__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2355,7 +2688,7 @@ view: procedure__definition__identifier__assigner__identifier__type {
   }
 }
 
-view: procedure__definition__identifier__type__coding {
+view: medication_request__definition__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2382,7 +2715,7 @@ view: procedure__definition__identifier__type__coding {
   }
 }
 
-view: procedure__definition__identifier__type {
+view: medication_request__definition__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2394,7 +2727,7 @@ view: procedure__definition__identifier__type {
   }
 }
 
-view: procedure__used_code__coding {
+view: medication_request__reason_code__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2421,7 +2754,7 @@ view: procedure__used_code__coding {
   }
 }
 
-view: procedure__used_code {
+view: medication_request__reason_code {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2433,46 +2766,7 @@ view: procedure__used_code {
   }
 }
 
-view: procedure__reason_code__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: procedure__reason_code {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: procedure__text {
+view: medication_request__text {
   dimension: div {
     type: string
     sql: ${TABLE}.div ;;
@@ -2484,7 +2778,7 @@ view: procedure__text {
   }
 }
 
-view: procedure__based_on {
+view: medication_request__based_on {
   dimension: care_plan_id {
     type: string
     sql: ${TABLE}.carePlanId ;;
@@ -2498,6 +2792,11 @@ view: procedure__based_on {
   dimension: identifier {
     hidden: yes
     sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: medication_request_id {
+    type: string
+    sql: ${TABLE}.medicationRequestId ;;
   }
 
   dimension: procedure_request_id {
@@ -2516,7 +2815,7 @@ view: procedure__based_on {
   }
 }
 
-view: procedure__based_on__identifier__period {
+view: medication_request__based_on__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -2528,7 +2827,7 @@ view: procedure__based_on__identifier__period {
   }
 }
 
-view: procedure__based_on__identifier {
+view: medication_request__based_on__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2560,7 +2859,7 @@ view: procedure__based_on__identifier {
   }
 }
 
-view: procedure__based_on__identifier__assigner {
+view: medication_request__based_on__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2582,7 +2881,7 @@ view: procedure__based_on__identifier__assigner {
   }
 }
 
-view: procedure__based_on__identifier__assigner__identifier__period {
+view: medication_request__based_on__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -2594,7 +2893,7 @@ view: procedure__based_on__identifier__assigner__identifier__period {
   }
 }
 
-view: procedure__based_on__identifier__assigner__identifier {
+view: medication_request__based_on__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2626,7 +2925,7 @@ view: procedure__based_on__identifier__assigner__identifier {
   }
 }
 
-view: procedure__based_on__identifier__assigner__identifier__assigner {
+view: medication_request__based_on__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2648,7 +2947,7 @@ view: procedure__based_on__identifier__assigner__identifier__assigner {
   }
 }
 
-view: procedure__based_on__identifier__assigner__identifier__assigner__identifier__period {
+view: medication_request__based_on__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -2660,7 +2959,7 @@ view: procedure__based_on__identifier__assigner__identifier__assigner__identifie
   }
 }
 
-view: procedure__based_on__identifier__assigner__identifier__assigner__identifier {
+view: medication_request__based_on__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -2692,7 +2991,7 @@ view: procedure__based_on__identifier__assigner__identifier__assigner__identifie
   }
 }
 
-view: procedure__based_on__identifier__assigner__identifier__assigner__identifier__assigner {
+view: medication_request__based_on__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -2709,7 +3008,7 @@ view: procedure__based_on__identifier__assigner__identifier__assigner__identifie
   }
 }
 
-view: procedure__based_on__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: medication_request__based_on__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2736,7 +3035,7 @@ view: procedure__based_on__identifier__assigner__identifier__assigner__identifie
   }
 }
 
-view: procedure__based_on__identifier__assigner__identifier__assigner__identifier__type {
+view: medication_request__based_on__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2748,7 +3047,7 @@ view: procedure__based_on__identifier__assigner__identifier__assigner__identifie
   }
 }
 
-view: procedure__based_on__identifier__assigner__identifier__type__coding {
+view: medication_request__based_on__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2775,7 +3074,7 @@ view: procedure__based_on__identifier__assigner__identifier__type__coding {
   }
 }
 
-view: procedure__based_on__identifier__assigner__identifier__type {
+view: medication_request__based_on__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2787,7 +3086,7 @@ view: procedure__based_on__identifier__assigner__identifier__type {
   }
 }
 
-view: procedure__based_on__identifier__type__coding {
+view: medication_request__based_on__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -2814,7 +3113,7 @@ view: procedure__based_on__identifier__type__coding {
   }
 }
 
-view: procedure__based_on__identifier__type {
+view: medication_request__based_on__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -2826,688 +3125,7 @@ view: procedure__based_on__identifier__type {
   }
 }
 
-view: procedure__outcome__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: procedure__outcome {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: procedure__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: procedure__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: procedure__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: procedure__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: procedure__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: procedure__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: procedure__identifier__assigner__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: procedure__identifier__assigner__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: procedure__identifier__assigner__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: procedure__identifier__assigner__identifier__assigner__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: procedure__identifier__assigner__identifier__assigner__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: procedure__identifier__assigner__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: procedure__identifier__assigner__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: procedure__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: procedure__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: procedure__complication_detail {
-  dimension: condition_id {
-    type: string
-    sql: ${TABLE}.conditionId ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: procedure__complication_detail__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: procedure__complication_detail__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: procedure__complication_detail__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: procedure__complication_detail__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: procedure__complication_detail__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: procedure__complication_detail__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: procedure__complication_detail__identifier__assigner__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: procedure__complication_detail__identifier__assigner__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
-    type: string
-    sql: ${TABLE}.use ;;
-  }
-
-  dimension: value {
-    type: string
-    sql: ${TABLE}.value ;;
-  }
-}
-
-view: procedure__complication_detail__identifier__assigner__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: procedure__complication_detail__identifier__assigner__identifier__assigner__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: procedure__complication_detail__identifier__assigner__identifier__assigner__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: procedure__complication_detail__identifier__assigner__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: procedure__complication_detail__identifier__assigner__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: procedure__complication_detail__identifier__type__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: procedure__complication_detail__identifier__type {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: procedure__performer__actor {
+view: medication_request__requester__agent {
   dimension: device_id {
     type: string
     sql: ${TABLE}.deviceId ;;
@@ -3549,7 +3167,7 @@ view: procedure__performer__actor {
   }
 }
 
-view: procedure__performer__actor__identifier__period {
+view: medication_request__requester__agent__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -3561,7 +3179,7 @@ view: procedure__performer__actor__identifier__period {
   }
 }
 
-view: procedure__performer__actor__identifier {
+view: medication_request__requester__agent__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -3593,7 +3211,7 @@ view: procedure__performer__actor__identifier {
   }
 }
 
-view: procedure__performer__actor__identifier__assigner {
+view: medication_request__requester__agent__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -3615,7 +3233,7 @@ view: procedure__performer__actor__identifier__assigner {
   }
 }
 
-view: procedure__performer__actor__identifier__assigner__identifier__period {
+view: medication_request__requester__agent__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -3627,7 +3245,7 @@ view: procedure__performer__actor__identifier__assigner__identifier__period {
   }
 }
 
-view: procedure__performer__actor__identifier__assigner__identifier {
+view: medication_request__requester__agent__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -3659,7 +3277,7 @@ view: procedure__performer__actor__identifier__assigner__identifier {
   }
 }
 
-view: procedure__performer__actor__identifier__assigner__identifier__assigner {
+view: medication_request__requester__agent__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -3681,7 +3299,7 @@ view: procedure__performer__actor__identifier__assigner__identifier__assigner {
   }
 }
 
-view: procedure__performer__actor__identifier__assigner__identifier__assigner__identifier__period {
+view: medication_request__requester__agent__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -3693,7 +3311,7 @@ view: procedure__performer__actor__identifier__assigner__identifier__assigner__i
   }
 }
 
-view: procedure__performer__actor__identifier__assigner__identifier__assigner__identifier {
+view: medication_request__requester__agent__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -3725,7 +3343,7 @@ view: procedure__performer__actor__identifier__assigner__identifier__assigner__i
   }
 }
 
-view: procedure__performer__actor__identifier__assigner__identifier__assigner__identifier__assigner {
+view: medication_request__requester__agent__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -3742,7 +3360,7 @@ view: procedure__performer__actor__identifier__assigner__identifier__assigner__i
   }
 }
 
-view: procedure__performer__actor__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: medication_request__requester__agent__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -3769,7 +3387,7 @@ view: procedure__performer__actor__identifier__assigner__identifier__assigner__i
   }
 }
 
-view: procedure__performer__actor__identifier__assigner__identifier__assigner__identifier__type {
+view: medication_request__requester__agent__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -3781,7 +3399,7 @@ view: procedure__performer__actor__identifier__assigner__identifier__assigner__i
   }
 }
 
-view: procedure__performer__actor__identifier__assigner__identifier__type__coding {
+view: medication_request__requester__agent__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -3808,7 +3426,7 @@ view: procedure__performer__actor__identifier__assigner__identifier__type__codin
   }
 }
 
-view: procedure__performer__actor__identifier__assigner__identifier__type {
+view: medication_request__requester__agent__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -3820,7 +3438,7 @@ view: procedure__performer__actor__identifier__assigner__identifier__type {
   }
 }
 
-view: procedure__performer__actor__identifier__type__coding {
+view: medication_request__requester__agent__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -3847,7 +3465,7 @@ view: procedure__performer__actor__identifier__type__coding {
   }
 }
 
-view: procedure__performer__actor__identifier__type {
+view: medication_request__requester__agent__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -3859,46 +3477,7 @@ view: procedure__performer__actor__identifier__type {
   }
 }
 
-view: procedure__performer__role__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: procedure__performer__role {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: procedure__performer__on_behalf_of {
+view: medication_request__requester__on_behalf_of {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -3920,7 +3499,7 @@ view: procedure__performer__on_behalf_of {
   }
 }
 
-view: procedure__performer__on_behalf_of__identifier__period {
+view: medication_request__requester__on_behalf_of__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -3932,7 +3511,7 @@ view: procedure__performer__on_behalf_of__identifier__period {
   }
 }
 
-view: procedure__performer__on_behalf_of__identifier {
+view: medication_request__requester__on_behalf_of__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -3964,7 +3543,7 @@ view: procedure__performer__on_behalf_of__identifier {
   }
 }
 
-view: procedure__performer__on_behalf_of__identifier__assigner {
+view: medication_request__requester__on_behalf_of__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -3986,7 +3565,7 @@ view: procedure__performer__on_behalf_of__identifier__assigner {
   }
 }
 
-view: procedure__performer__on_behalf_of__identifier__assigner__identifier__period {
+view: medication_request__requester__on_behalf_of__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -3998,7 +3577,7 @@ view: procedure__performer__on_behalf_of__identifier__assigner__identifier__peri
   }
 }
 
-view: procedure__performer__on_behalf_of__identifier__assigner__identifier {
+view: medication_request__requester__on_behalf_of__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -4030,7 +3609,7 @@ view: procedure__performer__on_behalf_of__identifier__assigner__identifier {
   }
 }
 
-view: procedure__performer__on_behalf_of__identifier__assigner__identifier__assigner {
+view: medication_request__requester__on_behalf_of__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -4052,7 +3631,7 @@ view: procedure__performer__on_behalf_of__identifier__assigner__identifier__assi
   }
 }
 
-view: procedure__performer__on_behalf_of__identifier__assigner__identifier__assigner__identifier__period {
+view: medication_request__requester__on_behalf_of__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -4064,7 +3643,7 @@ view: procedure__performer__on_behalf_of__identifier__assigner__identifier__assi
   }
 }
 
-view: procedure__performer__on_behalf_of__identifier__assigner__identifier__assigner__identifier {
+view: medication_request__requester__on_behalf_of__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -4096,7 +3675,7 @@ view: procedure__performer__on_behalf_of__identifier__assigner__identifier__assi
   }
 }
 
-view: procedure__performer__on_behalf_of__identifier__assigner__identifier__assigner__identifier__assigner {
+view: medication_request__requester__on_behalf_of__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -4113,7 +3692,7 @@ view: procedure__performer__on_behalf_of__identifier__assigner__identifier__assi
   }
 }
 
-view: procedure__performer__on_behalf_of__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: medication_request__requester__on_behalf_of__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -4140,7 +3719,7 @@ view: procedure__performer__on_behalf_of__identifier__assigner__identifier__assi
   }
 }
 
-view: procedure__performer__on_behalf_of__identifier__assigner__identifier__assigner__identifier__type {
+view: medication_request__requester__on_behalf_of__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -4152,7 +3731,7 @@ view: procedure__performer__on_behalf_of__identifier__assigner__identifier__assi
   }
 }
 
-view: procedure__performer__on_behalf_of__identifier__assigner__identifier__type__coding {
+view: medication_request__requester__on_behalf_of__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -4179,7 +3758,7 @@ view: procedure__performer__on_behalf_of__identifier__assigner__identifier__type
   }
 }
 
-view: procedure__performer__on_behalf_of__identifier__assigner__identifier__type {
+view: medication_request__requester__on_behalf_of__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -4191,7 +3770,7 @@ view: procedure__performer__on_behalf_of__identifier__assigner__identifier__type
   }
 }
 
-view: procedure__performer__on_behalf_of__identifier__type__coding {
+view: medication_request__requester__on_behalf_of__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -4218,7 +3797,7 @@ view: procedure__performer__on_behalf_of__identifier__type__coding {
   }
 }
 
-view: procedure__performer__on_behalf_of__identifier__type {
+view: medication_request__requester__on_behalf_of__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -4230,12 +3809,1313 @@ view: procedure__performer__on_behalf_of__identifier__type {
   }
 }
 
-view: procedure__used_reference {
-  dimension: device_id {
+view: medication_request__identifier__period {
+  dimension: end {
     type: string
-    sql: ${TABLE}.deviceId ;;
+    sql: ${TABLE}.``end`` ;;
   }
 
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: medication_request__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: medication_request__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: medication_request__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: medication_request__identifier__assigner__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: medication_request__identifier__assigner__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__identifier__assigner__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: medication_request__identifier__assigner__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: medication_request__identifier__assigner__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: medication_request__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: medication_request__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: medication_request__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: medication_request__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: medication_request__recorder {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: practitioner_id {
+    type: string
+    sql: ${TABLE}.practitionerId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: medication_request__recorder__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: medication_request__recorder__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__recorder__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: medication_request__recorder__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: medication_request__recorder__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__recorder__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: medication_request__recorder__identifier__assigner__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: medication_request__recorder__identifier__assigner__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__recorder__identifier__assigner__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: medication_request__recorder__identifier__assigner__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: medication_request__recorder__identifier__assigner__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: medication_request__recorder__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: medication_request__recorder__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: medication_request__recorder__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: medication_request__recorder__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: medication_request__detected_issue {
+  dimension: detected_issue_id {
+    type: string
+    sql: ${TABLE}.detectedIssueId ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: medication_request__detected_issue__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: medication_request__detected_issue__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__detected_issue__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: medication_request__detected_issue__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: medication_request__detected_issue__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__detected_issue__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: medication_request__detected_issue__identifier__assigner__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: medication_request__detected_issue__identifier__assigner__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__detected_issue__identifier__assigner__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: medication_request__detected_issue__identifier__assigner__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: medication_request__detected_issue__identifier__assigner__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: medication_request__detected_issue__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: medication_request__detected_issue__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: medication_request__detected_issue__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: medication_request__detected_issue__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: medication_request__supporting_information {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+
+  dimension: resource_id {
+    type: string
+    sql: ${TABLE}.resourceId ;;
+  }
+}
+
+view: medication_request__supporting_information__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: medication_request__supporting_information__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__supporting_information__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: medication_request__supporting_information__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: medication_request__supporting_information__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__supporting_information__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: medication_request__supporting_information__identifier__assigner__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: medication_request__supporting_information__identifier__assigner__identifier__assigner__identifier {
+  dimension: assigner {
+    hidden: yes
+    sql: ${TABLE}.assigner ;;
+  }
+
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__supporting_information__identifier__assigner__identifier__assigner__identifier__assigner {
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    sql: ${TABLE}.organizationId ;;
+  }
+
+  dimension: reference {
+    type: string
+    sql: ${TABLE}.reference ;;
+  }
+}
+
+view: medication_request__supporting_information__identifier__assigner__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: medication_request__supporting_information__identifier__assigner__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: medication_request__supporting_information__identifier__assigner__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: medication_request__supporting_information__identifier__assigner__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: medication_request__supporting_information__identifier__type__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: medication_request__supporting_information__identifier__type {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: medication_request__medication__reference {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -4255,14 +5135,9 @@ view: procedure__used_reference {
     type: string
     sql: ${TABLE}.reference ;;
   }
-
-  dimension: substance_id {
-    type: string
-    sql: ${TABLE}.substanceId ;;
-  }
 }
 
-view: procedure__used_reference__identifier__period {
+view: medication_request__medication__reference__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -4274,7 +5149,7 @@ view: procedure__used_reference__identifier__period {
   }
 }
 
-view: procedure__used_reference__identifier {
+view: medication_request__medication__reference__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -4306,7 +5181,7 @@ view: procedure__used_reference__identifier {
   }
 }
 
-view: procedure__used_reference__identifier__assigner {
+view: medication_request__medication__reference__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -4328,7 +5203,7 @@ view: procedure__used_reference__identifier__assigner {
   }
 }
 
-view: procedure__used_reference__identifier__assigner__identifier__period {
+view: medication_request__medication__reference__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -4340,7 +5215,7 @@ view: procedure__used_reference__identifier__assigner__identifier__period {
   }
 }
 
-view: procedure__used_reference__identifier__assigner__identifier {
+view: medication_request__medication__reference__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -4372,7 +5247,7 @@ view: procedure__used_reference__identifier__assigner__identifier {
   }
 }
 
-view: procedure__used_reference__identifier__assigner__identifier__assigner {
+view: medication_request__medication__reference__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -4394,7 +5269,7 @@ view: procedure__used_reference__identifier__assigner__identifier__assigner {
   }
 }
 
-view: procedure__used_reference__identifier__assigner__identifier__assigner__identifier__period {
+view: medication_request__medication__reference__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -4406,7 +5281,7 @@ view: procedure__used_reference__identifier__assigner__identifier__assigner__ide
   }
 }
 
-view: procedure__used_reference__identifier__assigner__identifier__assigner__identifier {
+view: medication_request__medication__reference__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -4438,7 +5313,7 @@ view: procedure__used_reference__identifier__assigner__identifier__assigner__ide
   }
 }
 
-view: procedure__used_reference__identifier__assigner__identifier__assigner__identifier__assigner {
+view: medication_request__medication__reference__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -4455,7 +5330,7 @@ view: procedure__used_reference__identifier__assigner__identifier__assigner__ide
   }
 }
 
-view: procedure__used_reference__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: medication_request__medication__reference__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -4482,7 +5357,7 @@ view: procedure__used_reference__identifier__assigner__identifier__assigner__ide
   }
 }
 
-view: procedure__used_reference__identifier__assigner__identifier__assigner__identifier__type {
+view: medication_request__medication__reference__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -4494,7 +5369,7 @@ view: procedure__used_reference__identifier__assigner__identifier__assigner__ide
   }
 }
 
-view: procedure__used_reference__identifier__assigner__identifier__type__coding {
+view: medication_request__medication__reference__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -4521,7 +5396,7 @@ view: procedure__used_reference__identifier__assigner__identifier__type__coding 
   }
 }
 
-view: procedure__used_reference__identifier__assigner__identifier__type {
+view: medication_request__medication__reference__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -4533,7 +5408,7 @@ view: procedure__used_reference__identifier__assigner__identifier__type {
   }
 }
 
-view: procedure__used_reference__identifier__type__coding {
+view: medication_request__medication__reference__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -4560,7 +5435,7 @@ view: procedure__used_reference__identifier__type__coding {
   }
 }
 
-view: procedure__used_reference__identifier__type {
+view: medication_request__medication__reference__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -4572,7 +5447,7 @@ view: procedure__used_reference__identifier__type {
   }
 }
 
-view: procedure__focal_device__action__coding {
+view: medication_request__medication__codeable_concept__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -4599,7 +5474,7 @@ view: procedure__focal_device__action__coding {
   }
 }
 
-view: procedure__focal_device__action {
+view: medication_request__medication__codeable_concept {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -4611,49 +5486,10 @@ view: procedure__focal_device__action {
   }
 }
 
-view: procedure__focal_device__manipulated {
-  dimension: device_id {
+view: medication_request__dosage_instruction__max_dose_per_lifetime {
+  dimension: code {
     type: string
-    sql: ${TABLE}.deviceId ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: procedure__focal_device__manipulated__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: procedure__focal_device__manipulated__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
+    sql: ${TABLE}.code ;;
   }
 
   dimension: system {
@@ -4661,65 +5497,26 @@ view: procedure__focal_device__manipulated__identifier {
     sql: ${TABLE}.system ;;
   }
 
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
+  dimension: unit {
     type: string
-    sql: ${TABLE}.use ;;
+    sql: ${TABLE}.unit ;;
   }
 
   dimension: value {
-    type: string
+    type: number
     sql: ${TABLE}.value ;;
   }
 }
 
-view: procedure__focal_device__manipulated__identifier__assigner {
+view: medication_request__dosage_instruction__additional_instruction__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: procedure__focal_device__manipulated__identifier__assigner__identifier__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: procedure__focal_device__manipulated__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
   }
 
   dimension: system {
@@ -4727,45 +5524,212 @@ view: procedure__focal_device__manipulated__identifier__assigner__identifier {
     sql: ${TABLE}.system ;;
   }
 
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
   }
 
-  dimension: use {
+  dimension: version {
     type: string
-    sql: ${TABLE}.use ;;
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: medication_request__dosage_instruction__additional_instruction {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: medication_request__dosage_instruction__method__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: medication_request__dosage_instruction__method {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: medication_request__dosage_instruction__timing__code__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: display {
+    type: string
+    sql: ${TABLE}.display ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
+  }
+
+  dimension: version {
+    type: string
+    sql: ${TABLE}.version ;;
+  }
+}
+
+view: medication_request__dosage_instruction__timing__code {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: medication_request__dosage_instruction__timing__repeat {
+  dimension: bounds {
+    hidden: yes
+    sql: ${TABLE}.bounds ;;
+  }
+
+  dimension: count {
+    type: number
+    sql: ${TABLE}.count ;;
+  }
+
+  dimension: count_max {
+    type: number
+    sql: ${TABLE}.countMax ;;
+  }
+
+  dimension: day_of_week {
+    type: string
+    sql: ${TABLE}.dayOfWeek ;;
+  }
+
+  dimension: duration {
+    type: number
+    sql: ${TABLE}.duration ;;
+  }
+
+  dimension: duration_max {
+    type: number
+    sql: ${TABLE}.durationMax ;;
+  }
+
+  dimension: duration_unit {
+    type: string
+    sql: ${TABLE}.durationUnit ;;
+  }
+
+  dimension: frequency {
+    type: number
+    sql: ${TABLE}.frequency ;;
+  }
+
+  dimension: frequency_max {
+    type: number
+    sql: ${TABLE}.frequencyMax ;;
+  }
+
+  dimension: offset {
+    type: number
+    sql: ${TABLE}.offset ;;
+  }
+
+  dimension: period {
+    type: number
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: period_max {
+    type: number
+    sql: ${TABLE}.periodMax ;;
+  }
+
+  dimension: period_unit {
+    type: string
+    sql: ${TABLE}.periodUnit ;;
+  }
+
+  dimension: time_of_day {
+    type: string
+    sql: ${TABLE}.timeOfDay ;;
+  }
+
+  dimension: when {
+    type: string
+    sql: ${TABLE}.``when`` ;;
+  }
+}
+
+view: medication_request__dosage_instruction__timing__repeat__bounds__duration {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: comparator {
+    type: string
+    sql: ${TABLE}.comparator ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: unit {
+    type: string
+    sql: ${TABLE}.unit ;;
   }
 
   dimension: value {
-    type: string
+    type: number
     sql: ${TABLE}.value ;;
   }
 }
 
-view: procedure__focal_device__manipulated__identifier__assigner__identifier__assigner {
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
-  }
-
-  dimension: organization_id {
-    type: string
-    sql: ${TABLE}.organizationId ;;
-  }
-
-  dimension: reference {
-    type: string
-    sql: ${TABLE}.reference ;;
-  }
-}
-
-view: procedure__focal_device__manipulated__identifier__assigner__identifier__assigner__identifier__period {
+view: medication_request__dosage_instruction__timing__repeat__bounds__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -4777,15 +5741,10 @@ view: procedure__focal_device__manipulated__identifier__assigner__identifier__as
   }
 }
 
-view: procedure__focal_device__manipulated__identifier__assigner__identifier__assigner__identifier {
-  dimension: assigner {
-    hidden: yes
-    sql: ${TABLE}.assigner ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
+view: medication_request__dosage_instruction__timing__repeat__bounds__range__high {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
   }
 
   dimension: system {
@@ -4793,40 +5752,69 @@ view: procedure__focal_device__manipulated__identifier__assigner__identifier__as
     sql: ${TABLE}.system ;;
   }
 
-  dimension: type {
-    hidden: yes
-    sql: ${TABLE}.type ;;
-  }
-
-  dimension: use {
+  dimension: unit {
     type: string
-    sql: ${TABLE}.use ;;
+    sql: ${TABLE}.unit ;;
   }
 
   dimension: value {
-    type: string
+    type: number
     sql: ${TABLE}.value ;;
   }
 }
 
-view: procedure__focal_device__manipulated__identifier__assigner__identifier__assigner__identifier__assigner {
-  dimension: display {
+view: medication_request__dosage_instruction__timing__repeat__bounds__range__low {
+  dimension: code {
     type: string
-    sql: ${TABLE}.display ;;
+    sql: ${TABLE}.code ;;
   }
 
-  dimension: organization_id {
+  dimension: system {
     type: string
-    sql: ${TABLE}.organizationId ;;
+    sql: ${TABLE}.system ;;
   }
 
-  dimension: reference {
+  dimension: unit {
     type: string
-    sql: ${TABLE}.reference ;;
+    sql: ${TABLE}.unit ;;
+  }
+
+  dimension: value {
+    type: number
+    sql: ${TABLE}.value ;;
   }
 }
 
-view: procedure__focal_device__manipulated__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: medication_request__dosage_instruction__timing {
+  dimension: code {
+    hidden: yes
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: event {
+    type: string
+    sql: ${TABLE}.event ;;
+  }
+
+  dimension: repeat {
+    hidden: yes
+    sql: ${TABLE}.repeat ;;
+  }
+}
+
+view: medication_request__dosage_instruction__as_needed {
+  dimension: boolean {
+    type: yesno
+    sql: ${TABLE}.boolean ;;
+  }
+
+  dimension: codeable_concept {
+    hidden: yes
+    sql: ${TABLE}.codeableConcept ;;
+  }
+}
+
+view: medication_request__dosage_instruction__as_needed__codeable_concept__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -4853,7 +5841,7 @@ view: procedure__focal_device__manipulated__identifier__assigner__identifier__as
   }
 }
 
-view: procedure__focal_device__manipulated__identifier__assigner__identifier__assigner__identifier__type {
+view: medication_request__dosage_instruction__as_needed__codeable_concept {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -4865,7 +5853,213 @@ view: procedure__focal_device__manipulated__identifier__assigner__identifier__as
   }
 }
 
-view: procedure__focal_device__manipulated__identifier__assigner__identifier__type__coding {
+view: medication_request__dosage_instruction {
+  dimension: additional_instruction {
+    hidden: yes
+    sql: ${TABLE}.additionalInstruction ;;
+  }
+
+  dimension: as_needed {
+    hidden: yes
+    sql: ${TABLE}.asNeeded ;;
+  }
+
+  dimension: dose {
+    hidden: yes
+    sql: ${TABLE}.dose ;;
+  }
+
+  dimension: max_dose_per_administration {
+    hidden: yes
+    sql: ${TABLE}.maxDosePerAdministration ;;
+  }
+
+  dimension: max_dose_per_lifetime {
+    hidden: yes
+    sql: ${TABLE}.maxDosePerLifetime ;;
+  }
+
+  dimension: max_dose_per_period {
+    hidden: yes
+    sql: ${TABLE}.maxDosePerPeriod ;;
+  }
+
+  dimension: method {
+    hidden: yes
+    sql: ${TABLE}.method ;;
+  }
+
+  dimension: patient_instruction {
+    type: string
+    sql: ${TABLE}.patientInstruction ;;
+  }
+
+  dimension: rate {
+    hidden: yes
+    sql: ${TABLE}.rate ;;
+  }
+
+  dimension: route {
+    hidden: yes
+    sql: ${TABLE}.route ;;
+  }
+
+  dimension: sequence {
+    type: number
+    sql: ${TABLE}.sequence ;;
+  }
+
+  dimension: site {
+    hidden: yes
+    sql: ${TABLE}.site ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+
+  dimension: timing {
+    hidden: yes
+    sql: ${TABLE}.timing ;;
+  }
+
+  ###Appending information###
+  dimension: dosage_as_needed {
+    view_label: "Medication Request: Dose Appendees"
+    type: yesno
+    sql: ${TABLE}.asneeded.boolean ;;
+  }
+
+  dimension: dosage_quantity {
+    view_label: "Medication Request: Dose Appendees"
+    type: number
+    sql: ${TABLE}.dose.quantity.value ;;
+  }
+
+  dimension: dosage_sequence {
+    view_label: "Medication Request: Dose Appendees"
+    type: number
+    sql: ${TABLE}.sequence ;;
+  }
+
+  dimension: dosage_frequency {
+    view_label: "Medication Request: Dose Appendees"
+    type: number
+    sql: ${TABLE}.timing.repeat.frequency ;;
+  }
+
+  dimension: dosage_period {
+    view_label: "Medication Request: Dose Appendees"
+    type: number
+    sql: ${TABLE}.timing.repeat.period ;;
+  }
+
+  dimension: dosage_period_unit {
+    view_label: "Medication Request: Dose Appendees"
+    hidden: yes
+    type: string
+    sql: ${TABLE}.timing.repeat.periodunit ;;
+  }
+
+  dimension: dosage_period_unit_explained {
+    view_label: "Medication Request: Dose Appendees"
+    type: string
+    sql:
+      case
+        when ${dosage_period_unit} = 's'
+          then 'Second'
+        when ${dosage_period_unit} = 'min'
+          then 'Minute'
+        when ${dosage_period_unit} = 'h'
+          then 'Hour'
+        when ${dosage_period_unit} = 'd'
+          then 'Day'
+        when ${dosage_period_unit} = 'wk'
+          then 'Week'
+        when ${dosage_period_unit} = 'mo'
+          then 'Month'
+        when ${dosage_period_unit} = 'a'
+          then 'Year'
+        else null
+      end;;
+  }
+
+  dimension: dosage_duration {
+    view_label: "Medication Request: Dose Appendees"
+    type: number
+    sql: ${TABLE}.timing.repeat.duration ;;
+  }
+
+  dimension: dosage_duration_max {
+    view_label: "Medication Request: Dose Appendees"
+    type: number
+    sql: ${TABLE}.timing.repeat.durationmax ;;
+  }
+
+  dimension: dosage_duration_unit {
+    view_label: "Medication Request: Dose Appendees"
+    type: string
+    sql: ${TABLE}.timing.repeat.durationunit ;;
+  }
+
+  dimension: dosage_frequency_max {
+    view_label: "Medication Request: Dose Appendees"
+    type: number
+    sql: ${TABLE}.timing.repeat.frequencyMax ;;
+  }
+
+  dimension: dosage_period_max {
+    type: number
+    sql: ${TABLE}.timing.repeat.periodMax ;;
+  }
+
+  dimension: dosage_repeat_frequency {
+    view_label: "Medication Request: Dose Appendees"
+    type: number
+    sql: ${TABLE}.timing.repeat.frequency ;;
+  }
+
+  dimension: dosage_repeat_period {
+    view_label: "Medication Request: Dose Appendees"
+    type: number
+    sql: ${TABLE}.timing.repeat.period ;;
+  }
+
+  dimension: dosage_repeat_period_unit {
+    view_label: "Medication Request: Dose Appendees"
+    hidden: yes
+    type: string
+    sql: ${TABLE}.timing.repeat.periodUnit ;;
+  }
+
+  dimension: dosage_repeat_period_unit_explained {
+    view_label: "Medication Request: Dose Appendees"
+    type: string
+    sql:
+      case
+        when ${dosage_repeat_period_unit} = 's'
+          then 'Second'
+        when ${dosage_repeat_period_unit} = 'min'
+          then 'Minute'
+        when ${dosage_repeat_period_unit} = 'h'
+          then 'Hour'
+        when ${dosage_repeat_period_unit} = 'd'
+          then 'Day'
+        when ${dosage_repeat_period_unit} = 'wk'
+          then 'Week'
+        when ${dosage_repeat_period_unit} = 'mo'
+          then 'Month'
+        when ${dosage_repeat_period_unit} = 'a'
+          then 'Year'
+        else null
+      end
+    ;;
+  }
+  ###Appending complete###
+}
+
+view: medication_request__dosage_instruction__site__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -4892,7 +6086,7 @@ view: procedure__focal_device__manipulated__identifier__assigner__identifier__ty
   }
 }
 
-view: procedure__focal_device__manipulated__identifier__assigner__identifier__type {
+view: medication_request__dosage_instruction__site {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -4904,7 +6098,73 @@ view: procedure__focal_device__manipulated__identifier__assigner__identifier__ty
   }
 }
 
-view: procedure__focal_device__manipulated__identifier__type__coding {
+view: medication_request__dosage_instruction__dose__quantity {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: unit {
+    type: string
+    sql: ${TABLE}.unit ;;
+  }
+
+  dimension: value {
+    type: number
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__dosage_instruction__dose__range__high {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: unit {
+    type: string
+    sql: ${TABLE}.unit ;;
+  }
+
+  dimension: value {
+    type: number
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__dosage_instruction__dose__range__low {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: unit {
+    type: string
+    sql: ${TABLE}.unit ;;
+  }
+
+  dimension: value {
+    type: number
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__dosage_instruction__route__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -4931,7 +6191,7 @@ view: procedure__focal_device__manipulated__identifier__type__coding {
   }
 }
 
-view: procedure__focal_device__manipulated__identifier__type {
+view: medication_request__dosage_instruction__route {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -4943,39 +6203,10 @@ view: procedure__focal_device__manipulated__identifier__type {
   }
 }
 
-view: procedure__performed {
-  dimension: date_time {
-    type: string
-    sql: ${TABLE}.dateTime ;;
-  }
-
-  dimension: period {
-    hidden: yes
-    sql: ${TABLE}.period ;;
-  }
-}
-
-view: procedure__performed__period {
-  dimension: end {
-    type: string
-    sql: ${TABLE}.``end`` ;;
-  }
-
-  dimension: start {
-    type: string
-    sql: ${TABLE}.start ;;
-  }
-}
-
-view: procedure__body_site__coding {
+view: medication_request__dosage_instruction__rate__quantity {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
   }
 
   dimension: system {
@@ -4983,30 +6214,192 @@ view: procedure__body_site__coding {
     sql: ${TABLE}.system ;;
   }
 
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
+  dimension: unit {
+    type: string
+    sql: ${TABLE}.unit ;;
   }
 
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
+  dimension: value {
+    type: number
+    sql: ${TABLE}.value ;;
   }
 }
 
-view: procedure__body_site {
-  dimension: coding {
-    hidden: yes
-    sql: ${TABLE}.coding ;;
+view: medication_request__dosage_instruction__rate__range__high {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
   }
 
-  dimension: text {
+  dimension: system {
     type: string
-    sql: ${TABLE}.text ;;
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: unit {
+    type: string
+    sql: ${TABLE}.unit ;;
+  }
+
+  dimension: value {
+    type: number
+    sql: ${TABLE}.value ;;
   }
 }
 
-view: procedure__meta {
+view: medication_request__dosage_instruction__rate__range__low {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: unit {
+    type: string
+    sql: ${TABLE}.unit ;;
+  }
+
+  dimension: value {
+    type: number
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__dosage_instruction__rate__ratio__numerator {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: comparator {
+    type: string
+    sql: ${TABLE}.comparator ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: unit {
+    type: string
+    sql: ${TABLE}.unit ;;
+  }
+
+  dimension: value {
+    type: number
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__dosage_instruction__rate__ratio__denominator {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: comparator {
+    type: string
+    sql: ${TABLE}.comparator ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: unit {
+    type: string
+    sql: ${TABLE}.unit ;;
+  }
+
+  dimension: value {
+    type: number
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__dosage_instruction__max_dose_per_administration {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: unit {
+    type: string
+    sql: ${TABLE}.unit ;;
+  }
+
+  dimension: value {
+    type: number
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__dosage_instruction__max_dose_per_period__numerator {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: comparator {
+    type: string
+    sql: ${TABLE}.comparator ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: unit {
+    type: string
+    sql: ${TABLE}.unit ;;
+  }
+
+  dimension: value {
+    type: number
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__dosage_instruction__max_dose_per_period__denominator {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
+  dimension: comparator {
+    type: string
+    sql: ${TABLE}.comparator ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: unit {
+    type: string
+    sql: ${TABLE}.unit ;;
+  }
+
+  dimension: value {
+    type: number
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__meta {
   dimension_group: last_updated {
     type: time
     timeframes: [
@@ -5042,7 +6435,7 @@ view: procedure__meta {
   }
 }
 
-view: procedure__meta__security {
+view: medication_request__meta__security {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -5069,7 +6462,7 @@ view: procedure__meta__security {
   }
 }
 
-view: procedure__meta__tag {
+view: medication_request__meta__tag {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -5096,12 +6489,7 @@ view: procedure__meta__tag {
   }
 }
 
-view: procedure__report {
-  dimension: diagnostic_report_id {
-    type: string
-    sql: ${TABLE}.diagnosticReportId ;;
-  }
-
+view: medication_request__event_history {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -5112,13 +6500,18 @@ view: procedure__report {
     sql: ${TABLE}.identifier ;;
   }
 
+  dimension: provenance_id {
+    type: string
+    sql: ${TABLE}.provenanceId ;;
+  }
+
   dimension: reference {
     type: string
     sql: ${TABLE}.reference ;;
   }
 }
 
-view: procedure__report__identifier__period {
+view: medication_request__event_history__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -5130,7 +6523,7 @@ view: procedure__report__identifier__period {
   }
 }
 
-view: procedure__report__identifier {
+view: medication_request__event_history__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -5162,7 +6555,7 @@ view: procedure__report__identifier {
   }
 }
 
-view: procedure__report__identifier__assigner {
+view: medication_request__event_history__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -5184,7 +6577,7 @@ view: procedure__report__identifier__assigner {
   }
 }
 
-view: procedure__report__identifier__assigner__identifier__period {
+view: medication_request__event_history__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -5196,7 +6589,7 @@ view: procedure__report__identifier__assigner__identifier__period {
   }
 }
 
-view: procedure__report__identifier__assigner__identifier {
+view: medication_request__event_history__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -5228,7 +6621,7 @@ view: procedure__report__identifier__assigner__identifier {
   }
 }
 
-view: procedure__report__identifier__assigner__identifier__assigner {
+view: medication_request__event_history__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -5250,7 +6643,7 @@ view: procedure__report__identifier__assigner__identifier__assigner {
   }
 }
 
-view: procedure__report__identifier__assigner__identifier__assigner__identifier__period {
+view: medication_request__event_history__identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -5262,7 +6655,7 @@ view: procedure__report__identifier__assigner__identifier__assigner__identifier_
   }
 }
 
-view: procedure__report__identifier__assigner__identifier__assigner__identifier {
+view: medication_request__event_history__identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -5294,7 +6687,7 @@ view: procedure__report__identifier__assigner__identifier__assigner__identifier 
   }
 }
 
-view: procedure__report__identifier__assigner__identifier__assigner__identifier__assigner {
+view: medication_request__event_history__identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -5311,7 +6704,7 @@ view: procedure__report__identifier__assigner__identifier__assigner__identifier_
   }
 }
 
-view: procedure__report__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: medication_request__event_history__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -5338,7 +6731,7 @@ view: procedure__report__identifier__assigner__identifier__assigner__identifier_
   }
 }
 
-view: procedure__report__identifier__assigner__identifier__assigner__identifier__type {
+view: medication_request__event_history__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -5350,7 +6743,7 @@ view: procedure__report__identifier__assigner__identifier__assigner__identifier_
   }
 }
 
-view: procedure__report__identifier__assigner__identifier__type__coding {
+view: medication_request__event_history__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -5377,7 +6770,7 @@ view: procedure__report__identifier__assigner__identifier__type__coding {
   }
 }
 
-view: procedure__report__identifier__assigner__identifier__type {
+view: medication_request__event_history__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -5389,7 +6782,7 @@ view: procedure__report__identifier__assigner__identifier__type {
   }
 }
 
-view: procedure__report__identifier__type__coding {
+view: medication_request__event_history__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -5416,7 +6809,7 @@ view: procedure__report__identifier__type__coding {
   }
 }
 
-view: procedure__report__identifier__type {
+view: medication_request__event_history__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -5428,29 +6821,46 @@ view: procedure__report__identifier__type {
   }
 }
 
-view: procedure__location {
+view: medication_request__category__coding {
+  dimension: code {
+    type: string
+    sql: ${TABLE}.code ;;
+  }
+
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
   }
 
-  dimension: identifier {
-    hidden: yes
-    sql: ${TABLE}.identifier ;;
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
   }
 
-  dimension: location_id {
-    type: string
-    sql: ${TABLE}.locationId ;;
+  dimension: user_selected {
+    type: yesno
+    sql: ${TABLE}.userSelected ;;
   }
 
-  dimension: reference {
+  dimension: version {
     type: string
-    sql: ${TABLE}.reference ;;
+    sql: ${TABLE}.version ;;
   }
 }
 
-view: procedure__location__identifier__period {
+view: medication_request__category {
+  dimension: coding {
+    hidden: yes
+    sql: ${TABLE}.coding ;;
+  }
+
+  dimension: text {
+    type: string
+    sql: ${TABLE}.text ;;
+  }
+}
+
+view: medication_request__group_identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -5462,7 +6872,7 @@ view: procedure__location__identifier__period {
   }
 }
 
-view: procedure__location__identifier {
+view: medication_request__group_identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -5494,7 +6904,7 @@ view: procedure__location__identifier {
   }
 }
 
-view: procedure__location__identifier__assigner {
+view: medication_request__group_identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -5516,7 +6926,7 @@ view: procedure__location__identifier__assigner {
   }
 }
 
-view: procedure__location__identifier__assigner__identifier__period {
+view: medication_request__group_identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -5528,7 +6938,7 @@ view: procedure__location__identifier__assigner__identifier__period {
   }
 }
 
-view: procedure__location__identifier__assigner__identifier {
+view: medication_request__group_identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -5560,7 +6970,7 @@ view: procedure__location__identifier__assigner__identifier {
   }
 }
 
-view: procedure__location__identifier__assigner__identifier__assigner {
+view: medication_request__group_identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
@@ -5582,7 +6992,7 @@ view: procedure__location__identifier__assigner__identifier__assigner {
   }
 }
 
-view: procedure__location__identifier__assigner__identifier__assigner__identifier__period {
+view: medication_request__group_identifier__assigner__identifier__assigner__identifier__period {
   dimension: end {
     type: string
     sql: ${TABLE}.``end`` ;;
@@ -5594,7 +7004,7 @@ view: procedure__location__identifier__assigner__identifier__assigner__identifie
   }
 }
 
-view: procedure__location__identifier__assigner__identifier__assigner__identifier {
+view: medication_request__group_identifier__assigner__identifier__assigner__identifier {
   dimension: assigner {
     hidden: yes
     sql: ${TABLE}.assigner ;;
@@ -5626,10 +7036,15 @@ view: procedure__location__identifier__assigner__identifier__assigner__identifie
   }
 }
 
-view: procedure__location__identifier__assigner__identifier__assigner__identifier__assigner {
+view: medication_request__group_identifier__assigner__identifier__assigner__identifier__assigner {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
+  }
+
+  dimension: identifier {
+    hidden: yes
+    sql: ${TABLE}.identifier ;;
   }
 
   dimension: organization_id {
@@ -5643,7 +7058,46 @@ view: procedure__location__identifier__assigner__identifier__assigner__identifie
   }
 }
 
-view: procedure__location__identifier__assigner__identifier__assigner__identifier__type__coding {
+view: medication_request__group_identifier__assigner__identifier__assigner__identifier__assigner__identifier__period {
+  dimension: end {
+    type: string
+    sql: ${TABLE}.``end`` ;;
+  }
+
+  dimension: start {
+    type: string
+    sql: ${TABLE}.start ;;
+  }
+}
+
+view: medication_request__group_identifier__assigner__identifier__assigner__identifier__assigner__identifier {
+  dimension: period {
+    hidden: yes
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: system {
+    type: string
+    sql: ${TABLE}.system ;;
+  }
+
+  dimension: type {
+    hidden: yes
+    sql: ${TABLE}.type ;;
+  }
+
+  dimension: use {
+    type: string
+    sql: ${TABLE}.use ;;
+  }
+
+  dimension: value {
+    type: string
+    sql: ${TABLE}.value ;;
+  }
+}
+
+view: medication_request__group_identifier__assigner__identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -5670,7 +7124,7 @@ view: procedure__location__identifier__assigner__identifier__assigner__identifie
   }
 }
 
-view: procedure__location__identifier__assigner__identifier__assigner__identifier__type {
+view: medication_request__group_identifier__assigner__identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -5682,7 +7136,7 @@ view: procedure__location__identifier__assigner__identifier__assigner__identifie
   }
 }
 
-view: procedure__location__identifier__assigner__identifier__type__coding {
+view: medication_request__group_identifier__assigner__identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -5709,7 +7163,7 @@ view: procedure__location__identifier__assigner__identifier__type__coding {
   }
 }
 
-view: procedure__location__identifier__assigner__identifier__type {
+view: medication_request__group_identifier__assigner__identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -5721,7 +7175,7 @@ view: procedure__location__identifier__assigner__identifier__type {
   }
 }
 
-view: procedure__location__identifier__type__coding {
+view: medication_request__group_identifier__assigner__identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -5748,7 +7202,7 @@ view: procedure__location__identifier__type__coding {
   }
 }
 
-view: procedure__location__identifier__type {
+view: medication_request__group_identifier__assigner__identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -5760,7 +7214,7 @@ view: procedure__location__identifier__type {
   }
 }
 
-view: procedure__not_done_reason__coding {
+view: medication_request__group_identifier__type__coding {
   dimension: code {
     type: string
     sql: ${TABLE}.code ;;
@@ -5787,7 +7241,7 @@ view: procedure__not_done_reason__coding {
   }
 }
 
-view: procedure__not_done_reason {
+view: medication_request__group_identifier__type {
   dimension: coding {
     hidden: yes
     sql: ${TABLE}.coding ;;
@@ -5799,70 +7253,132 @@ view: procedure__not_done_reason {
   }
 }
 
-view: procedure__category__coding {
-  dimension: code {
-    type: string
-    sql: ${TABLE}.code ;;
-  }
-
-  dimension: display {
-    type: string
-    sql: ${TABLE}.display ;;
-  }
-
-  dimension: system {
-    type: string
-    sql: ${TABLE}.system ;;
-  }
-
-  dimension: user_selected {
-    type: yesno
-    sql: ${TABLE}.userSelected ;;
-  }
-
-  dimension: version {
-    type: string
-    sql: ${TABLE}.version ;;
-  }
-}
-
-view: procedure__category {
-  dimension: coding {
+view: medication_request__requester {
+  dimension: agent {
     hidden: yes
-    sql: ${TABLE}.coding ;;
-  }
-
-  dimension: text {
-    type: string
-    sql: ${TABLE}.text ;;
-  }
-}
-
-view: procedure__performer {
-  dimension: actor {
-    hidden: yes
-    sql: ${TABLE}.actor ;;
+    sql: ${TABLE}.agent ;;
   }
 
   dimension: on_behalf_of {
     hidden: yes
     sql: ${TABLE}.onBehalfOf ;;
   }
+}
 
-  dimension: role {
-    hidden: yes
-    sql: ${TABLE}.role ;;
+view: medication_request__medication {
+  dimension: codeable_concept {
+    #hidden: yes
+    sql: ${TABLE}.codeableConcept ;;
+  }
+
+  dimension: reference {
+    #hidden: yes
+    sql: ${TABLE}.reference ;;
   }
 }
 
-view: procedure__focal_device {
-  dimension: action {
+view: medication_request__dosage_instruction__timing__repeat__bounds {
+  dimension: duration {
     hidden: yes
-    sql: ${TABLE}.action ;;
+    sql: ${TABLE}.duration ;;
   }
 
-  dimension: manipulated {
+  dimension: period {
     hidden: yes
-    sql: ${TABLE}.manipulated ;;
+    sql: ${TABLE}.period ;;
+  }
+
+  dimension: range {
+    hidden: yes
+    sql: ${TABLE}.``range`` ;;
+  }
+}
+
+view: medication_request__dosage_instruction__timing__repeat__bounds__range {
+  dimension: high {
+    hidden: yes
+    sql: ${TABLE}.high ;;
+  }
+
+  dimension: low {
+    hidden: yes
+    sql: ${TABLE}.low ;;
+  }
+}
+
+view: medication_request__dosage_instruction__dose {
+  dimension: quantity {
+    hidden: yes
+    sql: ${TABLE}.quantity ;;
+  }
+
+  dimension: range {
+    hidden: yes
+    sql: ${TABLE}.``range`` ;;
+  }
+}
+
+view: medication_request__dosage_instruction__dose__range {
+  dimension: high {
+    hidden: yes
+    sql: ${TABLE}.high ;;
+  }
+
+  dimension: low {
+    hidden: yes
+    sql: ${TABLE}.low ;;
+  }
+}
+
+view: medication_request__dosage_instruction__rate {
+  dimension: quantity {
+    hidden: yes
+    sql: ${TABLE}.quantity ;;
+  }
+
+  dimension: range {
+    hidden: yes
+    sql: ${TABLE}.``range`` ;;
+  }
+
+  dimension: ratio {
+    hidden: yes
+    sql: ${TABLE}.ratio ;;
+  }
+}
+
+view: medication_request__dosage_instruction__rate__range {
+  dimension: high {
+    hidden: yes
+    sql: ${TABLE}.high ;;
+  }
+
+  dimension: low {
+    hidden: yes
+    sql: ${TABLE}.low ;;
+  }
+}
+
+view: medication_request__dosage_instruction__rate__ratio {
+  dimension: denominator {
+    hidden: yes
+    sql: ${TABLE}.denominator ;;
+  }
+
+  dimension: numerator {
+    hidden: yes
+    sql: ${TABLE}.numerator ;;
+  }
+}
+
+view: medication_request__dosage_instruction__max_dose_per_period {
+  dimension: denominator {
+    hidden: yes
+    sql: ${TABLE}.denominator ;;
+  }
+
+  dimension: numerator {
+    hidden: yes
+    sql: ${TABLE}.numerator ;;
   }
 }

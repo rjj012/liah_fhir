@@ -596,11 +596,11 @@ explore: patient_1559757824302963 {
 # END OF EXPLORE
  }
 
-explore: immunization {
+explore: immunization_1000_fh {
 
   join: immunization__note {
     view_label: "Immunization: Note"
-    sql: left join unnest(${immunization.note}) as immunization__note;;
+    sql: left join unnest(${immunization_1000_fh.note}) as immunization__note;;
     relationship: one_to_many
   }
 
@@ -674,56 +674,74 @@ explore: immunization {
   }
 }
 
-explore: patient_100_fh {
+explore: patient_1000_fh {
   label: "Patient Full History"
 
   join: patient__name {
     view_label: "Patient: Name"
-    sql: left join unnest(${patient_100_fh.name}) as patient__name ;;
+    sql: left join unnest(${patient_1000_fh.name}) as patient__name ;;
     relationship: one_to_many
   }
 
-  join: encounter_100_fh {
+  join: encounter_1000_fh {
     view_label: "Encounter"
     type: left_outer
-    sql_on: ${encounter_100_fh.subject}.patientid = ${patient_100_fh.id};;
+    sql_on: ${encounter_1000_fh.subject}.patientid = ${patient_1000_fh.id};;
     relationship: many_to_one
   }
 
   join: encounter__type {
     view_label: "Encounter: Type"
-    sql: left join unnest(${encounter_100_fh.type}) as encounter__type ;;
+    sql: left join unnest(${encounter_1000_fh.type}) as encounter__type ;;
     relationship: one_to_many
   }
 
   join: encounter__participant {
     view_label: "Encounter: Participant"
-    sql: left join unnest(${encounter_100_fh.participant}) as encounter__participant ;;
+    sql: left join unnest(${encounter_1000_fh.participant}) as encounter__participant ;;
     relationship: one_to_many
   }
 
   join: encounter__diagnosis {
     view_label: "Encounter: Diagnosis"
     relationship: one_to_many
-    sql: left join unnest(${encounter_100_fh.diagnosis}) as encounter__diagnosis ;;
+    sql: left join unnest(${encounter_1000_fh.diagnosis}) as encounter__diagnosis ;;
   }
+
+  join: encounter__hospitalization__discharge_disposition__coding {
+    view_label: "Encounter: Hospitalization Discharge"
+    relationship: one_to_many
+    sql: left join unnest(${encounter_1000_fh.hospitalization}.dischargedisposition.coding) as encounter__hospitalization__discharge_disposition__coding ;;
+  }
+
+#   join: encounter__hospitalization__discharge_disposition {
+#     view_label: "Encounter: Hospitalization Discharge Disposition"
+#     relationship: one_to_many
+#     sql: left join unnest(${encounter__hospitalization.discharge_disposition}) as encounter__hospitalization__discharge_disposition  ;;
+#   }
+#
+#   join: encounter__hospitalization__discharge_disposition__coding {
+#     view_label: "Encounter: Hospitalization Discharge Disposition Coding"
+#     relationship: one_to_many
+#     sql: left join unnest(${encounter__hospitalization__discharge_disposition.coding}) as encounter__hospitalization__discharge_disposition__coding ;;
+#   }
 
   join: encounter__reason {
     view_label: "Encounter: Reason"
     relationship: one_to_many
-    sql: left join unnest(${encounter_100_fh.reason}) as encounter__reason ;;
+    sql: left join unnest(${encounter_1000_fh.reason}) as encounter__reason ;;
   }
 
   join: encounter__reason__coding {
-    view_label: "Enounter: Reason Coding"
+    view_label: "Encounter: Reason Coding"
     relationship: one_to_many
     sql: left join unnest(${encounter__reason.coding}) as encounter__reason__coding ;;
   }
 
-  join: condition_100_fh {
+  join: condition_1000_fh {
     view_label: "Condition"
     type: left_outer
-    sql_on: ${encounter_100_fh.id} = ${condition_100_fh.context}.encounterId ;;
+    sql_on: ${encounter_1000_fh.id} = ${condition_1000_fh.context}.encounterId ;;
     relationship: one_to_many
   }
 
@@ -739,18 +757,18 @@ explore: patient_100_fh {
 #     relationship: one_to_many
 #   }
 
-  join: observation_100_fh {
+  join: observation_1000_fh {
     view_label: "Observation"
     type: left_outer
-    sql_on: ${observation_100_fh.context}.encounterId = ${encounter_100_fh.id}
-            /*and ${observation_100_fh.subject}.patientid = ${patient_100_fh.id}*/;;
+    sql_on: ${observation_1000_fh.context}.encounterId = ${encounter_1000_fh.id}
+            /*and ${observation_1000_fh.subject}.patientid = ${patient_1000_fh.id}*/;;
     relationship: one_to_many
   }
 
   join: observation__category {
     view_label: "Observation: Category"
     relationship: one_to_many
-    sql: left join unnest(${observation_100_fh.category}) as observation__category ;;
+    sql: left join unnest(${observation_1000_fh.category}) as observation__category ;;
   }
 
   join: observation__category__coding {
@@ -762,71 +780,71 @@ explore: patient_100_fh {
   join: observation__code {
     view_label: "Observation: Code"
     relationship: one_to_many
-    sql: left join unnest(${observation_100_fh.code}) as observation__code ;;
+    sql: left join unnest(${observation_1000_fh.code}) as observation__code ;;
   }
 
   join: dt_condition_and_medication_link_rj {
     type: left_outer
     relationship: many_to_many
-    sql_on: ${dt_condition_and_medication_link_rj.condition_id} = ${condition_100_fh.id} ;;
+    sql_on: ${dt_condition_and_medication_link_rj.condition_id} = ${condition_1000_fh.id} ;;
   }
 
-  join: medication_request_100_fh {
+  join: medication_request_1000_fh {
     view_label: "Medication"
     type: left_outer
     relationship: many_to_many
-    sql_on: ${medication_request_100_fh.context}.encounterid = ${encounter_100_fh.id}
-            and ${dt_condition_and_medication_link_rj.medication_id} = ${medication_request_100_fh.id};;
+    sql_on: ${medication_request_1000_fh.context}.encounterid = ${encounter_1000_fh.id}
+            and ${dt_condition_and_medication_link_rj.medication_id} = ${medication_request_1000_fh.id};;
   }
 
   join: medication_request__dosage_instruction {
     view_label: "Medication Request: Instruction"
     relationship: one_to_many
-    sql: left join unnest(${medication_request_100_fh.dosage_instruction}) as medication_request__dosage_instruction ;;
+    sql: left join unnest(${medication_request_1000_fh.dosage_instruction}) as medication_request__dosage_instruction ;;
   }
 
   join: medication_request__reason_reference {
     view_label: "Medication Request: Reason Reference"
     relationship: one_to_many
-    sql: left join unnest(${medication_request_100_fh.reason_reference}) as medication_request__reason_reference ;;
+    sql: left join unnest(${medication_request_1000_fh.reason_reference}) as medication_request__reason_reference ;;
   }
 
-  join: procedure_100_fh {
+  join: procedure_1000_fh {
     type: left_outer
     relationship: one_to_many
-    sql_on: ${encounter_100_fh.id} = ${procedure_100_fh.context}.encounterid ;;
+    sql_on: ${encounter_1000_fh.id} = ${procedure_1000_fh.context}.encounterid ;;
   }
 
   join: procedure__reason_reference {
     view_label: "Procedure: Reason Reference"
     relationship: one_to_many
-    sql: left join unnest(${procedure_100_fh.reason_reference}) as procedure__reason_reference  ;;
+    sql: left join unnest(${procedure_1000_fh.reason_reference}) as procedure__reason_reference  ;;
   }
 
   join: procedure__complication_detail {
     view_label: "Procedure: Complication"
     relationship: one_to_many
-    sql: left join unnest(${procedure_100_fh.complication_detail}) as procedure__complication_detail ;;
+    sql: left join unnest(${procedure_1000_fh.complication_detail}) as procedure__complication_detail ;;
   }
 }
 
-explore: procedure_100_fh {
+explore: procedure_1000_fh {
   label: "Procedure"
 
   join: procedure__reason_reference {
     view_label: "Procedure: Reason Reference"
     relationship: one_to_many
-    sql: left join unnest(${procedure_100_fh.reason_reference}) as procedure__reason_reference  ;;
+    sql: left join unnest(${procedure_1000_fh.reason_reference}) as procedure__reason_reference  ;;
   }
 
   join: procedure__complication_detail {
     view_label: "Procedure: Complication"
     relationship: one_to_many
-    sql: left join unnest(${procedure_100_fh.complication_detail}) as procedure__complication_detail ;;
+    sql: left join unnest(${procedure_1000_fh.complication_detail}) as procedure__complication_detail ;;
   }
 
   join: condition_reason_for_procedure {
-    from: condition_100_fh
+    from: condition_1000_fh
     view_label: "Condition: Reason for Procedure"
     type: left_outer
     relationship: many_to_many
@@ -834,23 +852,23 @@ explore: procedure_100_fh {
   }
 
   join: condition_procedure_complications {
-    from: condition_100_fh
+    from: condition_1000_fh
     view_label: "Condition: Complication in Procedure"
     type: left_outer
     relationship: many_to_many
     sql_on: ${condition_procedure_complications.id} = ${procedure__complication_detail.condition_id} ;;
   }
 
-  join: patient_100_fh {
+  join: patient_1000_fh {
     view_label: "Patient"
     type: left_outer
     relationship: many_to_many
-    sql_on: ${patient_100_fh.id} = ${procedure_100_fh.subject}.patientid ;;
+    sql_on: ${patient_1000_fh.id} = ${procedure_1000_fh.subject}.patientid ;;
   }
 
   join: patient__name {
     view_label: "Patient: Name"
-    sql: left join unnest(${patient_100_fh.name}) as patient__name ;;
+    sql: left join unnest(${patient_1000_fh.name}) as patient__name ;;
     relationship: one_to_many
   }
 }
