@@ -4137,6 +4137,7 @@ view: observation__meta__tag {
 
 view: observation__category__coding {
   dimension: code {
+    hidden: yes
     type: string
     sql: ${TABLE}.code ;;
   }
@@ -4147,11 +4148,13 @@ view: observation__category__coding {
   }
 
   dimension: system {
+    hidden: yes
     type: string
     sql: ${TABLE}.system ;;
   }
 
   dimension: user_selected {
+    hidden: yes
     type: yesno
     sql: ${TABLE}.userSelected ;;
   }

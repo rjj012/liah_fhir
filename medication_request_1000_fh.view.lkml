@@ -146,6 +146,12 @@ view: medication_request_1000_fh {
   dimension: status {
     type: string
     sql: ${TABLE}.status ;;
+    drill_fields: [
+      patient_1000_fh.patient_set*
+      , encounter_1000_fh.encounter_set*
+      , medication_request_1000_fh.medication_request_set*
+      , procedure_1000_fh.procedure_set*
+    ]
   }
 
   dimension: subject {
@@ -178,9 +184,16 @@ view: medication_request_1000_fh {
   dimension: medication_type {
     type: string
     sql: ${TABLE}.medication.codeableconcept.text ;;
+    drill_fields: [
+      patient_1000_fh.patient_set*
+      , encounter_1000_fh.encounter_set*
+      , medication_request_1000_fh.medication_request_set*
+      , procedure_1000_fh.procedure_set*
+    ]
   }
 
   measure: test_medication_type {
+    hidden: yes
     type: string
     sql: string_agg(distinct ${medication_type} order by ${medication_type} asc) ;;
   }
@@ -199,6 +212,13 @@ view: medication_request_1000_fh {
   measure: count {
     type: count
     drill_fields: [id]
+  }
+
+  set: medication_request_set {
+    fields: [
+      medication_type
+      , status
+    ]
   }
 }
 
@@ -5890,6 +5910,7 @@ view: medication_request__dosage_instruction {
   }
 
   dimension: patient_instruction {
+    hidden: yes
     type: string
     sql: ${TABLE}.patientInstruction ;;
   }
@@ -5915,6 +5936,7 @@ view: medication_request__dosage_instruction {
   }
 
   dimension: text {
+    hidden: yes
     type: string
     sql: ${TABLE}.text ;;
   }
@@ -5987,29 +6009,34 @@ view: medication_request__dosage_instruction {
 
   dimension: dosage_duration {
     view_label: "Medication Request: Dose Appendees"
+    hidden: yes
     type: number
     sql: ${TABLE}.timing.repeat.duration ;;
   }
 
   dimension: dosage_duration_max {
     view_label: "Medication Request: Dose Appendees"
+    hidden: yes
     type: number
     sql: ${TABLE}.timing.repeat.durationmax ;;
   }
 
   dimension: dosage_duration_unit {
     view_label: "Medication Request: Dose Appendees"
+    hidden: yes
     type: string
     sql: ${TABLE}.timing.repeat.durationunit ;;
   }
 
   dimension: dosage_frequency_max {
     view_label: "Medication Request: Dose Appendees"
+    hidden: yes
     type: number
     sql: ${TABLE}.timing.repeat.frequencyMax ;;
   }
 
   dimension: dosage_period_max {
+    hidden: yes
     type: number
     sql: ${TABLE}.timing.repeat.periodMax ;;
   }

@@ -4,6 +4,7 @@ view: procedure_1000_fh {
   drill_fields: [id]
 
   dimension: id {
+    label: "Procedure ID"
     primary_key: yes
     type: string
     sql: ${TABLE}.id ;;
@@ -65,11 +66,13 @@ view: procedure_1000_fh {
   }
 
   dimension: implicit_rules {
+    hidden: yes
     type: string
     sql: ${TABLE}.implicitRules ;;
   }
 
   dimension: language {
+    hidden: yes
     type: string
     sql: ${TABLE}.language ;;
   }
@@ -189,6 +192,12 @@ view: procedure_1000_fh {
   dimension: procedure_name {
     type: string
     sql: ${TABLE}.code.text ;;
+    drill_fields: [
+      patient_1000_fh.patient_set*
+      , encounter_1000_fh.encounter_set*
+      , medication_request_1000_fh.medication_request_set*
+      , procedure_1000_fh.procedure_set*
+    ]
   }
 
   #PARSE_TIMESTAMP(format_string, string[, time_zone])
@@ -210,6 +219,15 @@ view: procedure_1000_fh {
 #     ]
 #     sql: current_timestamp() ;;
 #   }
+
+  set: procedure_set {
+    fields: [
+      not_done
+      , not_done_reason
+      , procedure_name
+      , procedure__reason_reference.display
+    ]
+  }
 }
 
 view: procedure__note__author__reference {
@@ -1347,6 +1365,7 @@ view: procedure__reason_reference {
   }
 
   dimension: display {
+    label: "Procedure Reason"
     type: string
     sql: ${TABLE}.display ;;
   }
@@ -1362,6 +1381,7 @@ view: procedure__reason_reference {
   }
 
   dimension: reference {
+    hidden: yes
     type: string
     sql: ${TABLE}.reference ;;
   }
@@ -3183,6 +3203,7 @@ view: procedure__complication_detail {
   }
 
   dimension: display {
+    hidden: yes
     type: string
     sql: ${TABLE}.display ;;
   }
@@ -3193,6 +3214,7 @@ view: procedure__complication_detail {
   }
 
   dimension: reference {
+    hidden: yes
     type: string
     sql: ${TABLE}.reference ;;
   }

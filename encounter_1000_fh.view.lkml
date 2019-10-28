@@ -172,6 +172,14 @@ view: encounter_1000_fh {
   }
 
 ###End appended###
+
+  set: encounter_set {
+    fields: [
+      encounter__reason__coding.display
+      , encounter__hospitalization__discharge_disposition__coding.display
+      , encounter__type.encounter_reason
+    ]
+  }
 }
 
 view: encounter__part_of {
@@ -516,6 +524,12 @@ view: encounter__reason__coding {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
+    drill_fields: [
+      patient_1000_fh.patient_set*
+      , encounter_1000_fh.encounter_set*
+      , medication_request_1000_fh.medication_request_set*
+      , procedure_1000_fh.procedure_set*
+      ]
   }
 
   dimension: system {
@@ -1259,7 +1273,10 @@ view: encounter__type {
     label: "Encounter Type"
     type: string
     sql: ${TABLE}.text ;;
-    drill_fields: [patient_100_fh.gender,encounter__reason__coding.display,observation__category__coding.display,procedure_100_fh.procedure_name]
+    drill_fields: [patient_1000_fh.patient_set*
+                  , encounter_1000_fh.encounter_set*
+                  , medication_request_1000_fh.medication_request_set*
+                  , procedure_1000_fh.procedure_set*]
   }
 
   dimension: encounter_reason {
@@ -1267,6 +1284,10 @@ view: encounter__type {
     type: string
     sql: ${TABLE}.text ;;
     html: {{rendered_value}} || {{encounter__reason__coding.display._rendered_value}} ;;
+    drill_fields: [patient_1000_fh.patient_set*
+      , encounter_1000_fh.encounter_set*
+      , medication_request_1000_fh.medication_request_set*
+      , procedure_1000_fh.procedure_set*]
   }
 }
 
@@ -3937,6 +3958,7 @@ view: encounter__hospitalization__special_courtesy {
 
 view: encounter__hospitalization__discharge_disposition__coding {
   dimension: code {
+    hidden: yes
     type: string
     sql: ${TABLE}.code ;;
   }
@@ -3944,19 +3966,28 @@ view: encounter__hospitalization__discharge_disposition__coding {
   dimension: display {
     type: string
     sql: ${TABLE}.display ;;
+    drill_fields: [
+      patient_1000_fh.patient_set*
+      , encounter_1000_fh.encounter_set*
+      , medication_request_1000_fh.medication_request_set*
+      , procedure_1000_fh.procedure_set*
+    ]
   }
 
   dimension: system {
+    hidden: yes
     type: string
     sql: ${TABLE}.system ;;
   }
 
   dimension: user_selected {
+    hidden: yes
     type: yesno
     sql: ${TABLE}.userSelected ;;
   }
 
   dimension: version {
+    hidden: yes
     type: string
     sql: ${TABLE}.version ;;
   }

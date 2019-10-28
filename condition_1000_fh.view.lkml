@@ -16,13 +16,14 @@ view: condition_1000_fh {
 
   dimension_group: asserted_date {
     type: time
+    datatype: date
     timeframes: [
       date
       , week
       , month
       , year
     ]
-    sql: timestamp (${TABLE}.assertedDate) ;;
+    sql: ${TABLE}.assertedDate ;;
     #substr(${TABLE}.assertedDate,1,10)
   }
 
@@ -44,6 +45,12 @@ view: condition_1000_fh {
   dimension: clinical_status {
     type: string
     sql: ${TABLE}.clinicalStatus ;;
+    drill_fields: [
+      patient_1000_fh.patient_set*
+      , encounter_1000_fh.encounter_set*
+      , medication_request_1000_fh.medication_request_set*
+      , procedure_1000_fh.procedure_set*
+    ]
   }
 
   dimension: code {
@@ -145,6 +152,12 @@ view: condition_1000_fh {
     label: "Condition Name"
     type: string
     sql: ${TABLE}.code.text ;;
+    drill_fields: [
+      patient_1000_fh.patient_set*
+      , encounter_1000_fh.encounter_set*
+      , medication_request_1000_fh.medication_request_set*
+      , procedure_1000_fh.procedure_set*
+    ]
   }
 
 #   dimension: condition_grouping {
@@ -247,7 +260,12 @@ view: condition_1000_fh {
         else 'Not Grouped'
       end
       ;;
-      drill_fields: [condition_text, patient_100_fh.gender, patient_100_fh.age]
+    drill_fields: [
+      patient_1000_fh.patient_set*
+      , encounter_1000_fh.encounter_set*
+      , medication_request_1000_fh.medication_request_set*
+      , procedure_1000_fh.procedure_set*
+    ]
   }
 
 #   dimension: condition_grouping_2 {
@@ -286,14 +304,25 @@ view: condition_1000_fh {
 
   dimension_group: condition_onset {
     type: time
+    datatype: date
     timeframes: [
       date
       , month
       , week
       , year
     ]
-    sql: timestamp(${TABLE}.onset.datetime) ;;
+    sql: ${TABLE}.onset.datetime ;;
   # substr(${TABLE}.onset.dateTime,1,10)
+  }
+
+  dimension: age_at_onset {
+    type: number
+    sql: date_diff(${condition_onset_date}, ${patient_1000_fh.birth_date}, year) ;;
+  }
+
+  dimension: age_at_abatement {
+    type: number
+    sql: datediff(${condition_abatement_date}, ${condition_onset_date}, year) ;;
   }
 ###End of append###
 

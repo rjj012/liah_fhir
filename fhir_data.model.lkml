@@ -677,6 +677,8 @@ explore: immunization_1000_fh {
 explore: patient_1000_fh {
   label: "Patient Full History"
 
+  sql_always_where: ${patient__name.use} = 'official' ;;
+
   join: patient__name {
     view_label: "Patient: Name"
     sql: left join unnest(${patient_1000_fh.name}) as patient__name ;;
@@ -863,7 +865,8 @@ explore: procedure_1000_fh {
     view_label: "Patient"
     type: left_outer
     relationship: many_to_many
-    sql_on: ${patient_1000_fh.id} = ${procedure_1000_fh.subject}.patientid ;;
+    sql_on: ${patient_1000_fh.id} = ${procedure_1000_fh.subject}.patientid
+            and ${patient__name.use} = 'official';;
   }
 
   join: patient__name {

@@ -4,6 +4,7 @@ view: patient_1000_fh {
   drill_fields: [id]
 
   dimension: id {
+    label: "Patient ID"
     primary_key: yes
     type: string
     sql: ${TABLE}.id ;;
@@ -26,23 +27,38 @@ view: patient_1000_fh {
 
   dimension_group: birth {
     type: time
+    datatype: date
     timeframes: [
       date
       , month
       , year
     ]
-    sql: timestamp (concat(birthdate," ",'11:11:11')) ;;
-    #cast(parse_datetime('%Y-%m-%d %H:%M:%S', concat(birthdate," ",'11:11:11')) as time)
+    sql: ${TABLE}.birthdate ;;
+    #timestamp (concat(birthdate," ",'11:11:11'))
+    drill_fields: [
+      patient_1000_fh.patient_set*
+      , encounter_1000_fh.encounter_set*
+      , medication_request_1000_fh.medication_request_set*
+      , procedure_1000_fh.procedure_set*
+    ]
   }
 
   dimension: age {
     type: number
-    sql: date_diff(current_date(), ${birth_date}, year)  ;;
-  }
-
-  dimension: test_birth_date {
-    type: string
-    sql: ${TABLE}.birthdate ;;
+    sql:
+      case
+        when ${deceased_date} is null
+          then date_diff(current_date(), ${birth_date}, year)
+        when ${deceased_date} is not null
+          then date_diff(${deceased_date}, ${birth_date}, year)
+        else 999
+      end;;
+    drill_fields: [
+      patient_1000_fh.patient_set*
+      , encounter_1000_fh.encounter_set*
+      , medication_request_1000_fh.medication_request_set*
+      , procedure_1000_fh.procedure_set*
+    ]
   }
 
   dimension: birth_place {
@@ -73,6 +89,12 @@ view: patient_1000_fh {
   dimension: gender {
     type: string
     sql: ${TABLE}.gender ;;
+    drill_fields: [
+      patient_1000_fh.patient_set*
+      , encounter_1000_fh.encounter_set*
+      , medication_request_1000_fh.medication_request_set*
+      , procedure_1000_fh.procedure_set*
+    ]
   }
 
   dimension: general_practitioner {
@@ -86,11 +108,13 @@ view: patient_1000_fh {
   }
 
   dimension: implicit_rules {
+    hidden: yes
     type: string
     sql: ${TABLE}.implicitRules ;;
   }
 
   dimension: language {
+    hidden: yes
     type: string
     sql: ${TABLE}.language ;;
   }
@@ -168,6 +192,43 @@ view: patient_1000_fh {
   measure: count {
     type: count
     drill_fields: [id, name, patient_mothers_maiden_name]
+  }
+
+  ###Appended Fields###
+  dimension: deceased_boolean {
+    label: "Deceased"
+    type: yesno
+    sql: ${TABLE}.deceased.datetime is not null ;;
+    drill_fields: [
+      patient_1000_fh.patient_set*
+      , encounter_1000_fh.encounter_set*
+      , medication_request_1000_fh.medication_request_set*
+      , procedure_1000_fh.procedure_set*
+    ]
+  }
+
+  dimension_group: deceased {
+    type: time
+    datatype: date
+    timeframes: [
+      date
+      , month
+      , year
+    ]
+    sql: ${TABLE}.deceased.datetime ;;
+    drill_fields: [
+      patient_1000_fh.patient_set*
+      , encounter_1000_fh.encounter_set*
+      , medication_request_1000_fh.medication_request_set*
+      , procedure_1000_fh.procedure_set*
+    ]
+  }
+
+  set: patient_set {
+    fields: [age
+            , birth_date
+            , gender
+            , deceased_boolean]
   }
 }
 
@@ -2513,16 +2574,20 @@ view: patient__meta__tag {
 
 view: patient__name {
   dimension: family {
+    description: "Displayed patient name is the name that has been marked 'official'"
     type: string
     sql: ${TABLE}.family ;;
   }
 
   dimension: given {
+    description: "Displayed patient name is the name that has been marked 'official'"
     type: string
     sql: array_to_string(${TABLE}.given," ") ;;
+    drill_fields: [patient_1000_fh.patient_set]
   }
 
   dimension: full_name {
+    description: "Displayed patient name is the name that has been marked 'official'"
     type: string
     sql: concat(${given}," ",${family}) ;;
   }
