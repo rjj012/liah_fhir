@@ -5,6 +5,7 @@ view: observation_1000_fh {
   dimension: id {
     label: "Observation ID"
     primary_key: yes
+    hidden: yes
     type: string
     sql: ${TABLE}.id ;;
   }
@@ -153,23 +154,26 @@ view: observation_1000_fh {
 
 ###Appended from the value.quantity view###
   dimension: value_quantity_unit {
+    hidden: yes
     type: string
     sql: ${TABLE}.value.quantity.unit ;;
   }
 
   dimension: value_quantity_value {
     label: "Value Quantity"
+    hidden: yes
     type: number
     sql: ${TABLE}.value.quantity.value ;;
   }
 
   measure: sum_quantity_value {
+    hidden: yes
     type: sum
     sql: ${value_quantity_value} ;;
   }
 
   measure: weight_and_medication {
-    #hidden: yes
+    hidden: yes
     type: average
     sql: ${value_quantity_value} ;;
     html: {{rendered_value}} || {{medication_request_100_fh.medication_type._rendered_value}} ;;
@@ -180,6 +184,7 @@ view: observation_1000_fh {
   }
 
   measure: weight {
+    label: "Average Weight"
     type: average
     sql: ${value_quantity_value} ;;
     filters: {
@@ -189,6 +194,7 @@ view: observation_1000_fh {
   }
 
   measure: height {
+    label: "Average Height"
     type: average
     sql: ${value_quantity_value} ;;
     filters: {
@@ -198,6 +204,7 @@ view: observation_1000_fh {
   }
 
   measure: body_mass_index {
+    label: "Average BMI"
     type: average
     sql: ${value_quantity_value} ;;
     filters: {
@@ -207,6 +214,7 @@ view: observation_1000_fh {
   }
 
   measure: blood_pressure {
+    label: "Average Blood Pressure"
     type: average
     sql: ${value_quantity_value} ;;
     filters: {
@@ -216,6 +224,7 @@ view: observation_1000_fh {
   }
 
   measure: glucose {
+    label: "Average Glucose"
     type: average
     sql: ${value_quantity_value} ;;
     filters: {
@@ -225,6 +234,7 @@ view: observation_1000_fh {
   }
 
   measure: cholesterol {
+    label: "Average Cholesterol"
     type: average
     sql: ${value_quantity_value} ;;
     filters: {
@@ -4144,6 +4154,8 @@ view: observation__category__coding {
   }
 
   dimension: display {
+    view_label: "Observation"
+    label: "Observation Category"
     type: string
     sql: ${TABLE}.display ;;
   }

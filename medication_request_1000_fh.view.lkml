@@ -5932,6 +5932,7 @@ view: medication_request__dosage_instruction {
   }
 
   dimension: sequence {
+    hidden: yes
     type: number
     sql: ${TABLE}.sequence ;;
   }
@@ -5954,44 +5955,44 @@ view: medication_request__dosage_instruction {
 
   ###Appending information###
   dimension: dosage_as_needed {
-    view_label: "Medication Request: Dose Appendees"
+    view_label: "Medication Request: Dosage Information"
     type: yesno
     sql: ${TABLE}.asneeded.boolean ;;
   }
 
   dimension: dosage_quantity {
-    view_label: "Medication Request: Dose Appendees"
+    view_label: "Medication Request: Dosage Information"
     type: number
     sql: ${TABLE}.dose.quantity.value ;;
   }
 
   dimension: dosage_sequence {
-    view_label: "Medication Request: Dose Appendees"
+    view_label: "Medication Request: Dosage Information"
     type: number
     sql: ${TABLE}.sequence ;;
   }
 
   dimension: dosage_frequency {
-    view_label: "Medication Request: Dose Appendees"
+    view_label: "Medication Request: Dosage Information"
     type: number
     sql: ${TABLE}.timing.repeat.frequency ;;
   }
 
   dimension: dosage_period {
-    view_label: "Medication Request: Dose Appendees"
+    view_label: "Medication Request: Dosage Information"
     type: number
     sql: ${TABLE}.timing.repeat.period ;;
   }
 
   dimension: dosage_period_unit {
-    view_label: "Medication Request: Dose Appendees"
+    view_label: "Medication Request: Dosage Information"
     hidden: yes
     type: string
     sql: ${TABLE}.timing.repeat.periodunit ;;
   }
 
   dimension: dosage_period_unit_explained {
-    view_label: "Medication Request: Dose Appendees"
+    view_label: "Medication Request: Dosage Information"
     type: string
     sql:
       case
@@ -6014,28 +6015,28 @@ view: medication_request__dosage_instruction {
   }
 
   dimension: dosage_duration {
-    view_label: "Medication Request: Dose Appendees"
+    view_label: "Medication Request: Dosage Information"
     hidden: yes
     type: number
     sql: ${TABLE}.timing.repeat.duration ;;
   }
 
   dimension: dosage_duration_max {
-    view_label: "Medication Request: Dose Appendees"
+    view_label: "Medication Request: Dosage Information"
     hidden: yes
     type: number
     sql: ${TABLE}.timing.repeat.durationmax ;;
   }
 
   dimension: dosage_duration_unit {
-    view_label: "Medication Request: Dose Appendees"
+    view_label: "Medication Request: Dosage Information"
     hidden: yes
     type: string
     sql: ${TABLE}.timing.repeat.durationunit ;;
   }
 
   dimension: dosage_frequency_max {
-    view_label: "Medication Request: Dose Appendees"
+    view_label: "Medication Request: Dosage Information"
     hidden: yes
     type: number
     sql: ${TABLE}.timing.repeat.frequencyMax ;;
@@ -6048,26 +6049,26 @@ view: medication_request__dosage_instruction {
   }
 
   dimension: dosage_repeat_frequency {
-    view_label: "Medication Request: Dose Appendees"
+    view_label: "Medication Request: Dosage Information"
     type: number
     sql: ${TABLE}.timing.repeat.frequency ;;
   }
 
   dimension: dosage_repeat_period {
-    view_label: "Medication Request: Dose Appendees"
+    view_label: "Medication Request: Dosage Information"
     type: number
     sql: ${TABLE}.timing.repeat.period ;;
   }
 
   dimension: dosage_repeat_period_unit {
-    view_label: "Medication Request: Dose Appendees"
+    view_label: "Medication Request: Dosage Information"
     hidden: yes
     type: string
     sql: ${TABLE}.timing.repeat.periodUnit ;;
   }
 
   dimension: dosage_repeat_period_unit_explained {
-    view_label: "Medication Request: Dose Appendees"
+    view_label: "Medication Request: Dosage Information"
     type: string
     sql:
       case

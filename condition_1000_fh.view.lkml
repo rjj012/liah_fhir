@@ -15,7 +15,7 @@ view: condition_1000_fh {
     sql: ${TABLE}.abatement ;;
   }
 
-  dimension_group: asserted {
+  dimension_group: condition_asserted {
     type: time
     timeframes: [
       date
@@ -139,6 +139,7 @@ view: condition_1000_fh {
   }
 
   dimension: condition_abatement_timeline {
+    hidden: yes
     type: date
     sql:
       case

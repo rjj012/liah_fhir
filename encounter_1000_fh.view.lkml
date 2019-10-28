@@ -524,6 +524,8 @@ view: encounter__reason__coding {
   }
 
   dimension: display {
+    view_label: "Encounter"
+    label: "Encounter Detail"
     type: string
     sql: ${TABLE}.display ;;
     drill_fields: [
@@ -1272,6 +1274,7 @@ view: encounter__type {
   }
 
   dimension: text {
+    view_label: "Encounter"
     label: "Encounter Type"
     type: string
     sql: ${TABLE}.text ;;
@@ -1282,7 +1285,8 @@ view: encounter__type {
   }
 
   dimension: encounter_reason {
-    label: "Encounter Type Detailed"
+    view_label: "Encounter"
+    label: "Encounter Type with Details"
     type: string
     sql: ${TABLE}.text ;;
     html: {{rendered_value}} || {{encounter__reason__coding.display._rendered_value}} ;;
@@ -3966,6 +3970,8 @@ view: encounter__hospitalization__discharge_disposition__coding {
   }
 
   dimension: display {
+    view_label: "Encounter"
+    label: "Discharge Type"
     type: string
     sql: ${TABLE}.display ;;
     drill_fields: [

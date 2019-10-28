@@ -2575,12 +2575,16 @@ view: patient__meta__tag {
 
 view: patient__name {
   dimension: family {
+    view_label: "Patient"
+    label: "Family Name"
     description: "Displayed patient name is the name that has been marked 'official'"
     type: string
     sql: ${TABLE}.family ;;
   }
 
   dimension: given {
+    view_label: "Patient"
+    label: "Given Name"
     description: "Displayed patient name is the name that has been marked 'official'"
     type: string
     sql: array_to_string(${TABLE}.given," ") ;;
@@ -2588,6 +2592,7 @@ view: patient__name {
   }
 
   dimension: full_name {
+    view_label: "Patient"
     description: "Displayed patient name is the name that has been marked 'official'"
     type: string
     sql: concat(${given}," ",${family}) ;;
@@ -2599,11 +2604,15 @@ view: patient__name {
   }
 
   dimension: prefix {
+    view_label: "Patient"
+    label: "Name Prefix"
     type: string
     sql: array_to_string(${TABLE}.prefix," ") ;;
   }
 
   dimension: suffix {
+    view_label: "Patient"
+    label: "Name Suffix"
     type: string
     sql: array_to_string(${TABLE}.suffix," ") ;;
   }

@@ -1367,6 +1367,7 @@ view: procedure__reason_reference {
   }
 
   dimension: display {
+    view_label: "Procedure"
     label: "Procedure Reason"
     type: string
     sql: ${TABLE}.display ;;
