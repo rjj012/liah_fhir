@@ -5,6 +5,7 @@ view: condition_1000_fh {
   dimension: id {
     label: "Condition ID"
     primary_key: yes
+    hidden: yes
     type: string
     sql: ${TABLE}.id ;;
   }
@@ -14,16 +15,15 @@ view: condition_1000_fh {
     sql: ${TABLE}.abatement ;;
   }
 
-  dimension_group: asserted_date {
+  dimension_group: asserted {
     type: time
-    datatype: date
     timeframes: [
       date
       , week
       , month
       , year
     ]
-    sql: ${TABLE}.assertedDate ;;
+    sql: timestamp(${TABLE}.assertedDate) ;;
     #substr(${TABLE}.assertedDate,1,10)
   }
 
@@ -322,7 +322,7 @@ view: condition_1000_fh {
 
   dimension: age_at_abatement {
     type: number
-    sql: datediff(${condition_abatement_date}, ${condition_onset_date}, year) ;;
+    sql: date_diff(${condition_abatement_date}, ${condition_onset_date}, year) ;;
   }
 ###End of append###
 

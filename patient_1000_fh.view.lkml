@@ -6,6 +6,7 @@ view: patient_1000_fh {
   dimension: id {
     label: "Patient ID"
     primary_key: yes
+    hidden: yes
     type: string
     sql: ${TABLE}.id ;;
   }
@@ -2608,11 +2609,13 @@ view: patient__name {
   }
 
   dimension: text {
+    hidden: yes
     type: string
     sql: ${TABLE}.text ;;
   }
 
   dimension: use {
+    hidden: yes
     type: string
     sql: ${TABLE}.use ;;
   }

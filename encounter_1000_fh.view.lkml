@@ -5,6 +5,7 @@ view: encounter_1000_fh {
   dimension: id {
     label: "Encounter ID"
     primary_key: yes
+    hidden: yes
     type: string
     sql: ${TABLE}.id ;;
   }
@@ -167,6 +168,7 @@ view: encounter_1000_fh {
   }
 
   dimension: service_provider_organization_id {
+    hidden: yes
     type: string
     sql: ${TABLE}.serviceprovider.organizationid ;;
   }
@@ -5666,6 +5668,7 @@ view: encounter__participant {
 
   ###Appended Dimensions###
   dimension: encounter_practitioner_id {
+    hidden: yes
     type: string
     sql: ${TABLE}.individual.practitionerid ;;
   }

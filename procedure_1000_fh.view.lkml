@@ -6,6 +6,7 @@ view: procedure_1000_fh {
   dimension: id {
     label: "Procedure ID"
     primary_key: yes
+    hidden: yes
     type: string
     sql: ${TABLE}.id ;;
   }
@@ -1360,6 +1361,7 @@ view: procedure__subject__identifier__type {
 
 view: procedure__reason_reference {
   dimension: condition_id {
+    hidden: yes
     type: string
     sql: ${TABLE}.conditionId ;;
   }
@@ -1376,6 +1378,7 @@ view: procedure__reason_reference {
   }
 
   dimension: observation_id {
+    hidden: yes
     type: string
     sql: ${TABLE}.observationId ;;
   }
@@ -3198,6 +3201,7 @@ view: procedure__identifier__type {
 
 view: procedure__complication_detail {
   dimension: condition_id {
+    hidden: yes
     type: string
     sql: ${TABLE}.conditionId ;;
   }

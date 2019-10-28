@@ -9,19 +9,19 @@ view: medication_request_1000_fh {
 #     sql: ${TABLE}.basedOn.medicationRequestId ;;
 #   }
 
-  dimension: authored_on {
-    type: string
-#     type: time
-#     timeframes: [
-#       raw,
-#       time,
-#       date,
-#       week,
-#       month,
-#       quarter,
-#       year
-#     ]
-    sql: ${TABLE}.authoredOn ;;
+  dimension_group: authored_on {
+#     type: string
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: timestamp(${TABLE}.authoredOn) ;;
   }
 
   dimension: based_on {
@@ -70,7 +70,9 @@ view: medication_request_1000_fh {
   }
 
   dimension: id {
+    label: "Medication Request ID"
     primary_key: yes
+    hidden: yes
     type: string
     sql: ${TABLE}.id ;;
   }
@@ -177,6 +179,7 @@ view: medication_request_1000_fh {
   ###Appended fields###
   dimension: subject_patient_id {
     label: "Patient ID"
+    hidden: yes
     type: string
     sql: ${TABLE}.subject.patientid ;;
   }
@@ -199,11 +202,13 @@ view: medication_request_1000_fh {
   }
 
   dimension: requester_on_behalf_of_organization_id {
+    hidden: yes
     type: string
     sql: ${TABLE}.requester.onbehalfof.organizationId ;;
   }
 
   dimension: requester_practitioner_id {
+    hidden: yes
     type: string
     sql: ${TABLE}.requester.agent.practitionerId ;;
   }
@@ -1315,6 +1320,7 @@ view: medication_request__subject__identifier__type {
 
 view: medication_request__reason_reference {
   dimension: condition_id {
+    hidden: yes
     type: string
     sql: ${TABLE}.conditionId ;;
   }

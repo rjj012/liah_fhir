@@ -794,7 +794,7 @@ explore: patient_1000_fh {
   }
 
   join: medication_request_1000_fh {
-    view_label: "Medication"
+    view_label: "Medication Request"
     type: left_outer
     relationship: many_to_many
     sql_on: ${medication_request_1000_fh.context}.encounterid = ${encounter_1000_fh.id}

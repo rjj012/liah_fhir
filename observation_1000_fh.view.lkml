@@ -3,6 +3,7 @@ view: observation_1000_fh {
   drill_fields: [id]
 
   dimension: id {
+    label: "Observation ID"
     primary_key: yes
     type: string
     sql: ${TABLE}.id ;;
