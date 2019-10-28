@@ -833,6 +833,8 @@ explore: patient_1000_fh {
 explore: procedure_1000_fh {
   label: "Procedure"
 
+  hidden: yes
+
   join: procedure__reason_reference {
     view_label: "Procedure: Reason Reference"
     relationship: one_to_many
