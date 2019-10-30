@@ -163,6 +163,28 @@ view: procedure_1000_fh {
     sql: ${TABLE}.usedReference ;;
   }
 
+  dimension: procedure_name_dummy {
+    label: "Procedure Name"
+    type: string
+    sql: ${procedure_name} ;;
+    drill_fields: [
+      patient_1000_fh.patient_set*
+      , encounter_1000_fh.encounter_set*
+      , medication_request_1000_fh.medication_request_set*
+      , procedure_1000_fh.procedure_set*
+    ]
+    link: {
+      label: "Exploration Dashboard"
+      url: "/dashboards/11?Procedure%20Name={{ value }}
+      &Age={{ _filters['patient_1000_fh.age'] | url_encode }}
+      &Gender={{ _filters['patient_1000_fh.gender'] | url_encode }}
+      &Patient={{ _filters['patient__name.full_name'] | url_encode }}
+      &Condition%20Grouping={{ _filters['condition_1000_fh.condition_grouping'] | url_encode }}
+      &Encounter%20Type={{ _filters['encounter__type.text'] | url_encode }}
+      &Medication%20Type={{ _filters['medication_request_1000_fh.medication_type_dummy'] | url_encode }}"
+    }
+  }
+
   measure: count {
     type: count
     drill_fields: [id]
@@ -191,14 +213,25 @@ view: procedure_1000_fh {
   }
 
   dimension: procedure_name {
+    label: "REPLACE AND HIDE Procedure Name"
     type: string
     sql: ${TABLE}.code.text ;;
-    drill_fields: [
-      patient_1000_fh.patient_set*
-      , encounter_1000_fh.encounter_set*
-      , medication_request_1000_fh.medication_request_set*
-      , procedure_1000_fh.procedure_set*
-    ]
+#     drill_fields: [
+#       patient_1000_fh.patient_set*
+#       , encounter_1000_fh.encounter_set*
+#       , medication_request_1000_fh.medication_request_set*
+#       , procedure_1000_fh.procedure_set*
+#     ]
+#     link: {
+#       label: "Exploration Dashboard"
+#       url: "/dashboards/11?Procedure%20Name={{ value }}
+#             &Encounter%20Type={{ _filters['encounter__type.text'] | url_encode }}
+#             &Age={{ _filters['patient_1000_fh.age'] | url_encode }}
+#             &Gender={{ _filters['patient_1000_fh.gender'] | url_encode }}
+#             &Patient={{ _filters['patient__name.full_name'] | url_encode }}
+#             &Medication%20Type={{ _filters['medication_request_1000_fh.medication.codeableconcept.text'] | url_encode }}
+#             "
+#     }
   }
 
   #PARSE_TIMESTAMP(format_string, string[, time_zone])

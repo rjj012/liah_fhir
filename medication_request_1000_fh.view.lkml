@@ -176,6 +176,28 @@ view: medication_request_1000_fh {
     sql: ${TABLE}.text ;;
   }
 
+  dimension: medication_type_dummy {
+    label: "Medication Type"
+    type: string
+    sql: ${medication_type} ;;
+    drill_fields: [
+      patient_1000_fh.patient_set*
+      , encounter_1000_fh.encounter_set*
+      , medication_request_1000_fh.medication_request_set*
+      , procedure_1000_fh.procedure_set*
+    ]
+    link: {
+      label: "Exploration Dashboard"
+      url: "/dashboards/11?Medication%20Type={{ value }}
+      &Age={{ _filters['patient_1000_fh.age'] | url_encode }}
+      &Gender={{ _filters['patient_1000_fh.gender'] | url_encode }}
+      &Patient={{ _filters['patient__name.full_name'] | url_encode }}
+      &Condition%20Grouping={{ _filters['condition_1000_fh.condition_grouping'] | url_encode }}
+      &Encounter%20Type={{ _filters['encounter__type.text'] | url_encode }}
+      &Procedure%20Name={{ _filters['procedure_1000_fh.procedure_name_dummy'] | url_encode }}"
+    }
+  }
+
   ###Appended fields###
   dimension: subject_patient_id {
     label: "Patient ID"
@@ -185,14 +207,19 @@ view: medication_request_1000_fh {
   }
 
   dimension: medication_type {
+    label: "REPLACE AND HIDE Medication Type"
     type: string
     sql: ${TABLE}.medication.codeableconcept.text ;;
-    drill_fields: [
-      patient_1000_fh.patient_set*
-      , encounter_1000_fh.encounter_set*
-      , medication_request_1000_fh.medication_request_set*
-      , procedure_1000_fh.procedure_set*
-    ]
+#     drill_fields: [
+#       patient_1000_fh.patient_set*
+#       , encounter_1000_fh.encounter_set*
+#       , medication_request_1000_fh.medication_request_set*
+#       , procedure_1000_fh.procedure_set*
+#     ]
+#     link: {
+#       label: "Exploration Dashboard"
+#       url: "/dashboards/11?Medication%20Type={{ value }}"
+#     }
   }
 
   measure: test_medication_type {

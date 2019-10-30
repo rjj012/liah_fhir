@@ -34,7 +34,7 @@ view: patient_1000_fh {
       , month
       , year
     ]
-    sql: ${TABLE}.birthdate ;;
+    sql: cast(${TABLE}.birthdate as date);;
     #timestamp (concat(birthdate," ",'11:11:11'))
     drill_fields: [
       patient_1000_fh.patient_set*
@@ -60,6 +60,16 @@ view: patient_1000_fh {
       , medication_request_1000_fh.medication_request_set*
       , procedure_1000_fh.procedure_set*
     ]
+    link: {
+      label: "Exploration Dashboard"
+      url: "/dashboards/11?Age={{ value }}
+      &Gender={{ _filters['patient_1000_fh.gender'] | url_encode }}
+      &Patient={{ _filters['patient__name.full_name'] | url_encode }}
+      &Condition%20Grouping={{ _filters['condition_1000_fh.condition_grouping'] | url_encode }}
+      &Encounter%20Type={{ _filters['encounter__type.text'] | url_encode }}
+      &Procedure%20Name={{ _filters['procedure_1000_fh.procedure_name_dummy'] | url_encode }}
+      &Medication%20Type={{ _filters['medication_request_1000_fh.medication_type_dummy'] | url_encode }}"
+    }
   }
 
   dimension: birth_place {
@@ -96,6 +106,16 @@ view: patient_1000_fh {
       , medication_request_1000_fh.medication_request_set*
       , procedure_1000_fh.procedure_set*
     ]
+    link: {
+      label: "Exploration Dashboard"
+      url: "/dashboards/11?Gender={{ value }}
+      &Age={{ _filters['patient_1000_fh.age'] | url_encode }}
+      &Patient={{ _filters['patient__name.full_name'] | url_encode }}
+      &Condition%20Grouping={{ _filters['condition_1000_fh.condition_grouping'] | url_encode }}
+      &Encounter%20Type={{ _filters['encounter__type.text'] | url_encode }}
+      &Procedure%20Name={{ _filters['procedure_1000_fh.procedure_name_dummy'] | url_encode }}
+      &Medication%20Type={{ _filters['medication_request_1000_fh.medication_type_dummy'] | url_encode }}"
+    }
   }
 
   dimension: general_practitioner {
@@ -2596,6 +2616,17 @@ view: patient__name {
     description: "Displayed patient name is the name that has been marked 'official'"
     type: string
     sql: concat(${given}," ",${family}) ;;
+    drill_fields: [patient_1000_fh.patient_set*]
+    link: {
+      label: "Exploration Dashboard"
+      url: "/dashboards/11?Patient={{ value }}
+      &Age={{ _filters['patient_1000_fh.age'] | url_encode }}
+      &Gender={{ _filters['patient_1000_fh.gender'] | url_encode }}
+      &Condition%20Grouping={{ _filters['condition_1000_fh.condition_grouping'] | url_encode }}
+      &Encounter%20Type={{ _filters['encounter__type.text'] | url_encode }}
+      &Procedure%20Name={{ _filters['procedure_1000_fh.procedure_name_dummy'] | url_encode }}
+      &Medication%20Type={{ _filters['medication_request_1000_fh.medication_type_dummy'] | url_encode }}"
+    }
   }
 
   dimension: period {
