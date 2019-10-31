@@ -1289,6 +1289,7 @@ view: encounter__type {
       &Gender={{ _filters['patient_1000_fh.gender'] | url_encode }}
       &Patient={{ _filters['patient__name.full_name'] | url_encode }}
       &Condition%20Grouping={{ _filters['condition_1000_fh.condition_grouping'] | url_encode }}
+      &Condition%20Name={{ _filters['condition_1000_fh.condition_text_dummy'] | url_encode }}
       &Procedure%20Name={{ _filters['procedure_1000_fh.procedure_name_dummy'] | url_encode }}
       &Medication%20Type={{ _filters['medication_request_1000_fh.medication_type_dummy'] | url_encode }}"
     }
