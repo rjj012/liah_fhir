@@ -186,8 +186,9 @@ view: procedure_1000_fh {
   }
 
   measure: count {
+    label: "Count of Procedures"
     type: count
-    drill_fields: [id]
+    drill_fields: [procedure_set*]
   }
 
   ###Appended Fields###
@@ -214,6 +215,7 @@ view: procedure_1000_fh {
 
   dimension: procedure_name {
     label: "REPLACE AND HIDE Procedure Name"
+    hidden: yes
     type: string
     sql: ${TABLE}.code.text ;;
 #     drill_fields: [

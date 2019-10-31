@@ -138,6 +138,18 @@ view: condition_1000_fh {
     #substr(${TABLE}.abatement.dateTime,1,10)
   }
 
+  dimension: condition_abated {
+    label: "Condition Abated (Yes/No)"
+    type: string
+    sql:
+      case
+        when ${TABLE}.abatement.datetime is not null
+          then 'Yes'
+        else 'No'
+      end
+    ;;
+  }
+
   dimension: condition_abatement_timeline {
     hidden: yes
     type: date
@@ -266,6 +278,7 @@ view: condition_1000_fh {
       , encounter_1000_fh.encounter_set*
       , medication_request_1000_fh.medication_request_set*
       , procedure_1000_fh.procedure_set*
+      , condition_text
     ]
     link: {
       label: "Exploration Dashboard"
@@ -335,21 +348,75 @@ view: condition_1000_fh {
 
   dimension: age_at_abatement {
     type: number
-    sql: date_diff(${condition_abatement_date}, ${condition_onset_date}, year) ;;
+    sql: date_diff(${condition_abatement_date}, ${patient_1000_fh.birth_date}, year) ;;
+  }
+
+  dimension: condition_duration_months {
+    label: "Condition Duration (Months)"
+    type: number
+    sql: date_diff(${condition_abatement_date}, ${condition_onset_date}, month) ;;
   }
 
   measure: median_age_at_onset {
+    label: "Onset: Median Age"
     type: median
     sql: ${age_at_onset} ;;
   }
 
+  measure: min_age_at_onset {
+    label: "Onset: Min Age"
+    type: min
+    sql: ${age_at_onset};;
+  }
+
+  measure: max_age_at_onset {
+    label: "Onset: Max Age"
+    type: max
+    sql: ${age_at_onset} ;;
+  }
+
+  dimension: median_age_at_onset_groups {
+    type: tier
+    tiers: [0,10,20,30,40,50,60,70,80,90]
+    style: interval
+    sql: ${age_at_onset} ;;
+  }
+
   measure: median_age_at_abatement {
+    label: "Abatement: Median Age"
     type: median
     sql: ${age_at_abatement} ;;
+  }
+
+  measure: min_age_at_abatement {
+    label: "Abatement: Min Age"
+    type: min
+    sql: ${age_at_abatement} ;;
+  }
+
+  measure: max_age_at_abatement {
+    label: "Abatement: Max Age"
+    type: max
+    sql: ${age_at_abatement} ;;
+  }
+
+  dimension: median_age_at_abatement_groups {
+    type: tier
+    tiers: [0,10,20,30,40,50,60,70,80,90]
+    style: interval
+    sql: ${age_at_abatement} ;;
+  }
+
+  measure: condition_duration_average_months {
+    label: "Duration: Average in Months"
+    type: average
+    sql: ${condition_duration_months} ;;
+    value_format_name: decimal_1
   }
 ###End of append###
 
   measure: count {
+    label: "Condition Occurrences"
     type: count
     drill_fields: [id]
   }

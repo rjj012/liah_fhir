@@ -210,9 +210,19 @@ view: patient_1000_fh {
     sql: ${TABLE}.us_core_race ;;
   }
 
+  dimension: patient_age_groups {
+    type: tier
+    tiers: [0,10,20,30,40,50,60,70,80,90]
+    style: interval
+    sql: ${age} ;;
+  }
+
   measure: count {
+    label: "Count of Patients"
     type: count
-    drill_fields: [id, name, patient_mothers_maiden_name]
+    drill_fields: [
+      patient_set*
+      ]
   }
 
   ###Appended Fields###

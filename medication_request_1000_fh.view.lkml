@@ -208,6 +208,7 @@ view: medication_request_1000_fh {
 
   dimension: medication_type {
     label: "REPLACE AND HIDE Medication Type"
+    hidden: yes
     type: string
     sql: ${TABLE}.medication.codeableconcept.text ;;
 #     drill_fields: [
@@ -242,6 +243,7 @@ view: medication_request_1000_fh {
   ###Appended fields end###
 
   measure: count {
+    label: "Count of Medication Requests"
     type: count
     drill_fields: [id]
   }
