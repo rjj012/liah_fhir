@@ -4148,7 +4148,7 @@ view: observation__meta__tag {
 
 view: observation__category__coding {
   dimension: code {
-    hidden: yes
+    #hidden: yes
     type: string
     sql: ${TABLE}.code ;;
   }
