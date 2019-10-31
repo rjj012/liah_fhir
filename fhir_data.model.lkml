@@ -787,6 +787,12 @@ explore: patient_1000_fh {
     sql: left join unnest(${observation_1000_fh.code}) as observation__code ;;
   }
 
+  join: observation__component {
+    view_label: "Observation: Component"
+    relationship: one_to_many
+    sql: left join unnest(${observation_1000_fh.component}) as observation__component ;;
+  }
+
   join: dt_condition_and_medication_link_rj {
     type: left_outer
     relationship: many_to_many

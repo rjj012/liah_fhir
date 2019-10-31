@@ -213,15 +213,15 @@ view: observation_1000_fh {
     }
   }
 
-  measure: blood_pressure {
-    label: "Average Blood Pressure"
-    type: average
-    sql: ${value_quantity_value} ;;
-    filters: {
-      field: observation_code_text
-      value: "Blood Pressure"
-    }
-  }
+#   measure: blood_pressure {
+#     label: "Average Blood Pressure"
+#     type: average
+#     sql: ${value_quantity_value} ;;
+#     filters: {
+#       field: observation_code_text
+#       value: "Blood Pressure"
+#     }
+#   }
 
   measure: glucose {
     label: "Average Glucose"
@@ -4567,6 +4567,12 @@ view: observation__reference_range__age {
 }
 
 view: observation__component {
+
+  dimension: row_id {
+    primary_key: yes
+    type: string
+    sql: concat(${observation_1000_fh.id},"-",${component_text}) ;;
+  }
   dimension: code {
     hidden: yes
     sql: ${TABLE}.code ;;
@@ -4590,6 +4596,37 @@ view: observation__component {
   dimension: value {
     hidden: yes
     sql: ${TABLE}.value ;;
+  }
+
+  ###Appended Fields###
+  dimension: component_text {
+    type: string
+    sql: ${TABLE}.code.text ;;
+  }
+
+  dimension: component_value {
+    type: number
+    sql: ${TABLE}.value.quantity.value ;;
+  }
+
+  measure: average_diastolic_blood_pressure {
+    type: average
+    sql: ${component_value} ;;
+    filters: {
+      field: component_text
+      value: "Diastolic Blood Pressure"
+    }
+    value_format_name: decimal_1
+  }
+
+  measure: average_systolic_blood_pressure {
+    type: average
+    sql: ${component_value} ;;
+    filters: {
+      field: component_text
+      value: "Systolic Blood Pressure"
+    }
+    value_format_name: decimal_1
   }
 }
 
