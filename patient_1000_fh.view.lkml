@@ -227,6 +227,38 @@ view: patient_1000_fh {
       ]
   }
 
+  measure: women_in_population {
+    type: count_distinct
+    sql: ${id} ;;
+    filters: {
+      field: gender
+      value: "female"
+    }
+  }
+
+  measure: women_proportion {
+    label: "Women as Proportion of Population"
+    type: number
+    sql: ${women_in_population} / ${count} ;;
+    value_format_name: percent_1
+  }
+
+  measure: men_in_population {
+    type: count_distinct
+    sql: ${id} ;;
+    filters: {
+      field: gender
+      value: "male"
+    }
+  }
+
+  measure: men_proportion {
+    label: "Men as Proportion of Population"
+    type: number
+    sql: ${men_in_population} / ${count} ;;
+    value_format_name: percent_1
+  }
+
   ###Appended Fields###
   dimension: deceased_boolean {
     label: "Deceased"
