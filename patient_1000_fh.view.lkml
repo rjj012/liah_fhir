@@ -6,7 +6,7 @@ view: patient_1000_fh {
   dimension: id {
     label: "Patient ID"
     primary_key: yes
-    hidden: yes
+    #hidden: yes
     type: string
     sql: ${TABLE}.id ;;
   }

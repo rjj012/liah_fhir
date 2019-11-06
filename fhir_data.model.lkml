@@ -177,12 +177,36 @@ explore: patient_1000_fh {
     sql: left join unnest(${procedure_1000_fh.complication_detail}) as procedure__complication_detail ;;
   }
 
-  join: immunization_1000_fh {
-    view_label: "Immunization"
+  join: dt_patient_immunization_lookup_rj {
     type: left_outer
     relationship: one_to_many
-    sql_on: ${immunization_1000_fh.encounter}.encounterid = ${encounter_1000_fh.id} ;;
+    sql_on: ${dt_patient_immunization_lookup_rj.patient_id} = ${patient_1000_fh.id} ;;
   }
+
+  join: dt_immunization_schedules {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${dt_immunization_schedules.vaccine_code} = ${dt_patient_immunization_lookup_rj.vaccine_code} ;;
+  }
+
+#   join: immunization_1000_fh {
+#     view_label: "Immunization"
+#     type: left_outer
+#     relationship: one_to_many
+#     sql_on: ${immunization_1000_fh.encounter}.encounterid = ${encounter_1000_fh.id} ;;
+#   }
+#
+#   join: immunization__vaccine_code {
+#     view_label: "Immunization: Vaccine Code"
+#     relationship: one_to_many
+#     sql: left join unnest(${immunization_1000_fh.vaccine_code}) as immunization__vaccine_code ;;
+#   }
+
+#   join: immunization__vaccine_code__coding {
+#     view_label: "Immunization: Vaccine Code Coding"
+#     relationship: one_to_many
+#     sql: left join unnest(${immunization_1000_fh.vaccine_code}.coding) as immunization__vaccine_code__coding ;;
+#   }
 }
 
 explore: procedure_1000_fh {
@@ -224,6 +248,34 @@ explore: procedure_1000_fh {
     relationship: many_to_many
     sql_on: ${patient_1000_fh.id} = ${procedure_1000_fh.subject}.patientid
             and ${patient__name.use} = 'official';;
+  }
+
+  join: patient__name {
+    view_label: "Patient: Name"
+    sql: left join unnest(${patient_1000_fh.name}) as patient__name ;;
+    relationship: one_to_many
+  }
+}
+
+explore: dt_immunization_schedules {
+  label: "Immunizations"
+
+  join: immunization_1000_fh {
+    type: full_outer
+    relationship: one_to_many
+    sql_on: ${immunization_1000_fh.vaccine_code}.text = ${dt_immunization_schedules.vaccine_text} ;;
+  }
+
+  join: encounter_1000_fh {
+    type: full_outer
+    relationship: many_to_one
+    sql_on: ${immunization_1000_fh.encounter}.encounterid = ${encounter_1000_fh.id} ;;
+  }
+
+  join: patient_1000_fh {
+    type: full_outer
+    relationship: many_to_one
+    sql_on: ${patient_1000_fh.id} = ${encounter_1000_fh.subject}.patientid;;
   }
 
   join: patient__name {

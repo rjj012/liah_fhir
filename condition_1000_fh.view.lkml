@@ -163,6 +163,7 @@ view: condition_1000_fh {
 
   dimension: condition_text {
     label: "REPLACE AND HIDE Condition Name"
+    hidden: yes
     type: string
     sql: ${TABLE}.code.text ;;
     drill_fields: [
