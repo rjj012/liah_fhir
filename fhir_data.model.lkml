@@ -189,24 +189,24 @@ explore: patient_1000_fh {
     sql_on: ${dt_immunization_schedules.vaccine_code} = ${dt_patient_immunization_lookup_rj.vaccine_code} ;;
   }
 
-#   join: immunization_1000_fh {
-#     view_label: "Immunization"
-#     type: left_outer
-#     relationship: one_to_many
-#     sql_on: ${immunization_1000_fh.encounter}.encounterid = ${encounter_1000_fh.id} ;;
-#   }
-#
-#   join: immunization__vaccine_code {
-#     view_label: "Immunization: Vaccine Code"
-#     relationship: one_to_many
-#     sql: left join unnest(${immunization_1000_fh.vaccine_code}) as immunization__vaccine_code ;;
-#   }
+  join: immunization_1000_fh {
+    view_label: "Immunization"
+    type: left_outer
+    relationship: one_to_many
+    sql_on: ${immunization_1000_fh.encounter}.encounterid = ${encounter_1000_fh.id} ;;
+  }
 
-#   join: immunization__vaccine_code__coding {
-#     view_label: "Immunization: Vaccine Code Coding"
-#     relationship: one_to_many
-#     sql: left join unnest(${immunization_1000_fh.vaccine_code}.coding) as immunization__vaccine_code__coding ;;
-#   }
+  join: immunization__vaccine_code {
+    view_label: "Immunization: Vaccine Code"
+    relationship: one_to_many
+    sql: left join unnest(${immunization_1000_fh.vaccine_code}) as immunization__vaccine_code ;;
+  }
+
+  join: immunization__vaccine_code__coding {
+    view_label: "Immunization: Vaccine Code Coding"
+    relationship: one_to_many
+    sql: left join unnest(${immunization_1000_fh.vaccine_code}.coding) as immunization__vaccine_code__coding ;;
+  }
 }
 
 explore: procedure_1000_fh {

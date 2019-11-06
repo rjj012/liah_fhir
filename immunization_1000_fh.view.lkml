@@ -8,10 +8,26 @@ view: immunization_1000_fh {
     sql: ${TABLE}.id ;;
   }
 
-  dimension: date {
-    type: string
+  dimension_group: immunization {
+    type: time
+    datatype: date
+    timeframes: [
+      date
+      , month
+      , year
+    ]
     sql: ${TABLE}.date ;;
   }
+
+#   dimension: age_at_immunization_months {
+#     type: number
+#     sql: date_diff(${immunization_date}, ${patient_1000_fh.birth_date}, month) ;;
+#   }
+#
+#   measure: most_recent_immunization_date {
+#     type: date
+#     sql: max(${immunization_date}) ;;
+#   }
 
   dimension: dose_quantity {
     hidden: yes
@@ -137,6 +153,18 @@ view: immunization_1000_fh {
     type: count
     drill_fields: [id]
   }
+
+  ###Appended Fields###
+
+  dimension: vaccine_text {
+    type: string
+    sql: ${TABLE}.vaccinecode.text ;;
+  }
+
+
+
+
+  ###Appended Fields end###
 }
 
 view: immunization__note__author__reference {
@@ -1310,6 +1338,86 @@ view: immunization__vaccine_code__coding {
   dimension: version {
     type: string
     sql: ${TABLE}.version ;;
+  }
+
+  ###Calculated Fields###
+  dimension: flu_shot_required {
+    description: "If patient is 50 or older and has not been vaccinated for the flu in past year."
+    type: string
+    sql:
+      case
+        when ${patient_1000_fh.age} > 49
+        and ${immunization_1000_fh.immunization_date} < date_sub(current_date(), interval 365 day)
+        and ${display} = 'Influenza, seasonal, injectable, preservative free'
+          then 'Yes'
+        else 'No'
+      end
+    ;;
+  }
+
+  dimension: vaccination_status {
+    type: string
+    sql:
+      case
+        when ${display} = 'Influenza, seasonal, injectable, preservative free'
+        and ${immunization_1000_fh.immunization_date} < date_sub(current_date(), interval 365 day)
+        and ${patient_1000_fh.age} > 49
+          then 'Yes'
+        when ${display} = 'DTaP'
+          then 'Undefined'
+        when ${display} = 'Hep A, adult'
+          then 'undefined'
+        when ${display} = 'Hep A, ped/adol, 2 dose'
+          then 'undefined'
+        when ${display} = 'Hep B, adolescent or pediatric'
+          then 'undefined'
+        when ${display} = 'Hep B, adult'
+          then 'undefined'
+        when ${display} = 'Hib (PRP-OMP)'
+          then 'undefined'
+        when ${display} = 'HPV, quadrivalent'
+          then 'undefined'
+        when ${display} = 'IPV'
+          then 'undefined'
+        when ${display} = 'meningococcal MCV4P'
+          then 'undefined'
+        when ${display} = 'MMR'
+          then 'undefined'
+        when ${display} = 'Pneumococcal conjugate PCV 13'
+          then 'undefined'
+        when ${display} = 'pneumococcal polysaccharide vaccine, 23 valent'
+          then 'undefined'
+        when ${display} = 'rotavirus, monovalent'
+          then 'undefined'
+        when ${display} = 'Td (adult) preservative free'
+          then 'undefined'
+        when ${display} = 'Tdap'
+          then 'undefined'
+        when ${display} = 'varicella'
+          then 'undefined'
+        when ${display} = 'zoster'
+          then 'undefined'
+        else 'Not Categorized'
+      end
+      ;;
+  }
+
+  measure: dtap_vaccine {
+    type: string
+    sql:
+      case
+        when ${patient_1000_fh.age} > 0.17
+          then 'Dose 1'
+        when ${patient_1000_fh.age} > 0.33
+          then 'Dose 1'
+        when ${patient_1000_fh.age} > 0.5
+          then 'Dose 1'
+        when ${patient_1000_fh.age} > 1.5
+          then 'Dose 1'
+        when ${patient_1000_fh.age} >
+          then 'Dose 1'
+      ;;
+
   }
 }
 
