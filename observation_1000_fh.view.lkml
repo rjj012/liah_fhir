@@ -204,7 +204,7 @@ view: observation_1000_fh {
   }
 
   measure: body_mass_index {
-    label: "Average BMI"
+    label: "Average BMI (kg/m2)"
     type: average
     sql: ${value_quantity_value} ;;
     filters: {
@@ -234,12 +234,42 @@ view: observation_1000_fh {
   }
 
   measure: cholesterol {
-    label: "Average Cholesterol"
+    label: "Average Total Cholesterol"
     type: average
     sql: ${value_quantity_value} ;;
     filters: {
       field: observation_code_text
       value: "Total Cholesterol"
+    }
+  }
+
+  measure: ldl_cholesterol {
+    label: "Average LDL Cholesterol (mg/Dl)"
+    type: average
+    sql: ${value_quantity_value} ;;
+    filters: {
+      field: observation_code_text
+      value: "Low Density Lipoprotein Cholesterol"
+    }
+  }
+
+  measure: hdl_cholesterol {
+    label: "Average HDL Cholesterol (mg/Dl)"
+    type: average
+    sql: ${value_quantity_value} ;;
+    filters: {
+      field: observation_code_text
+      value: "High Density Lipoprotein Cholesterol"
+    }
+  }
+
+  measure: hba1c {
+    label: "Average HbA1c (%)"
+    type: average
+    sql: ${value_quantity_value} ;;
+    filters: {
+      field: observation_code_text
+      value: "Hemoglobin A1c/Hemoglobin.total in Blood"
     }
   }
 
@@ -292,26 +322,31 @@ view: observation__data_absent_reason {
 
 view: observation__code__coding {
   dimension: code {
+    hidden: yes
     type: string
     sql: ${TABLE}.code ;;
   }
 
   dimension: display {
+    view_label: "Observation"
     type: string
     sql: ${TABLE}.display ;;
   }
 
   dimension: system {
+    hidden: yes
     type: string
     sql: ${TABLE}.system ;;
   }
 
   dimension: user_selected {
+    hidden: yes
     type: yesno
     sql: ${TABLE}.userSelected ;;
   }
 
   dimension: version {
+    hidden: yes
     type: string
     sql: ${TABLE}.version ;;
   }
@@ -4148,6 +4183,7 @@ view: observation__meta__tag {
 
 view: observation__category__coding {
   dimension: code {
+    view_label: "Observation"
     #hidden: yes
     type: string
     sql: ${TABLE}.code ;;
@@ -4570,6 +4606,7 @@ view: observation__component {
 
   dimension: row_id {
     primary_key: yes
+    hidden: yes
     type: string
     sql: concat(${observation_1000_fh.id},"-",${component_text}) ;;
   }
@@ -4600,16 +4637,21 @@ view: observation__component {
 
   ###Appended Fields###
   dimension: component_text {
+    label: "Blood Pressure Measurement Type"
+    view_label: "Observation"
     type: string
     sql: ${TABLE}.code.text ;;
   }
 
   dimension: component_value {
+    label: "Blood Pressure Measurement"
+    view_label: "Observation"
     type: number
     sql: ${TABLE}.value.quantity.value ;;
   }
 
   measure: average_diastolic_blood_pressure {
+    view_label: "Observation"
     type: average
     sql: ${component_value} ;;
     filters: {
@@ -4620,6 +4662,7 @@ view: observation__component {
   }
 
   measure: average_systolic_blood_pressure {
+    view_label: "Observation"
     type: average
     sql: ${component_value} ;;
     filters: {
@@ -4627,6 +4670,60 @@ view: observation__component {
       value: "Systolic Blood Pressure"
     }
     value_format_name: decimal_1
+    html:
+      {% if value < 120 %}
+        <font color = "darkgreen">{{ rendered_value }}</font>
+      {% elsif value < 130 %}
+        <font color = "yellow">{{ rendered_value }}</font>
+      {% elsif value < 140 %}
+        <font color = "orange">{{ rendered_value }}</font>
+      {% elsif value < 180 %}
+        <font color = "red">{{ rendered_value }}</font>
+      {% else %}
+        <font color = "darkred">{{ rendered_value }}</font>
+      {% endif %}
+      ;;
+  }
+
+  measure: blood_pressure {
+    type: string
+    sql:
+      case
+        when ${average_systolic_blood_pressure} < 120
+          and ${average_diastolic_blood_pressure} < 80
+            then "Normal"
+        when ${average_systolic_blood_pressure} >= 120
+          and ${average_systolic_blood_pressure} < 130
+          and ${average_diastolic_blood_pressure} < 80
+            then "Elevated"
+        when ((${average_systolic_blood_pressure} >= 130
+          and ${average_systolic_blood_pressure} < 140)
+          or (${average_diastolic_blood_pressure} >= 80
+          and ${average_diastolic_blood_pressure} < 90))
+            then "Hypertension Stage 1"
+        when ((${average_systolic_blood_pressure} >= 140
+          and ${average_systolic_blood_pressure} < 180)
+          or (${average_diastolic_blood_pressure} > 90
+          and ${average_diastolic_blood_pressure} <= 120))
+            then "Hypertension Stage 2"
+        when ${average_diastolic_blood_pressure} >= 180
+          and ${average_diastolic_blood_pressure} >= 120
+            then "Hypertensive Crisis|Seek Help"
+        else null
+      end
+    ;;
+    html:
+    {% if value == "Normal" %}
+    <font color = "darkgreen">{{ rendered_value }}</font>
+    {% elsif value == "Elevated" %}
+    <font color = "darkyellow">{{ rendered_value }}</font>
+    {% elsif value == "Hypertension Stage 1" %}
+    <p style="color: black; background-color: orange; font-size:100%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value == "Hypertension Stage 2" %}
+    <font color = "red">{{ rendered_value }}</font>
+    {% else %}
+    <font color = "darkred">{{ rendered_value }}</font>
+    {% endif %};;
   }
 }
 
