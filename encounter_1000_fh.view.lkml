@@ -155,6 +155,11 @@ view: encounter_1000_fh {
     #substr(${TABLE}.period.start,1,10)
   }
 
+  measure: most_recent_encounter {
+    type: date
+    sql: max(${encounter_start_date}) ;;
+  }
+
   dimension_group: encounter_end {
     type: time
     timeframes: [

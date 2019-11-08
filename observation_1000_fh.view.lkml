@@ -253,6 +253,12 @@ view: observation_1000_fh {
     }
   }
 
+  measure: hba1c_gauge {
+    type: number
+    sql: ${hba1c} ;;
+    html:   <img src="https://chart.googleapis.com/chart?chs=500x300&cht=gom&chma=10,0,0,0&chxt=y&chco=00ff00,ffff00,FF0000&chf=bg,s,FFFFFF00&chl={{ rendered_value }}&chd=t:{{ value }}">;;
+  }
+
   measure: hdl_cholesterol {
     label: "Average HDL Cholesterol (mg/Dl)"
     type: average
