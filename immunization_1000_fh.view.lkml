@@ -4,6 +4,7 @@ view: immunization_1000_fh {
 
   dimension: id {
     primary_key: yes
+    hidden: yes
     type: string
     sql: ${TABLE}.id ;;
   }
@@ -39,9 +40,15 @@ view: immunization_1000_fh {
     sql: ${TABLE}.encounter ;;
   }
 
-  dimension: expiration_date {
-    type: string
-    sql: ${TABLE}.expirationDate ;;
+  dimension_group: expiration {
+    hidden: yes
+    type: time
+    timeframes: [
+      date
+      , month
+      , year
+    ]
+    sql: timestamp(${TABLE}.expirationDate) ;;
   }
 
   dimension: explanation {
@@ -55,11 +62,13 @@ view: immunization_1000_fh {
   }
 
   dimension: implicit_rules {
+    hidden: yes
     type: string
     sql: ${TABLE}.implicitRules ;;
   }
 
   dimension: language {
+    hidden: yes
     type: string
     sql: ${TABLE}.language ;;
   }
@@ -70,6 +79,7 @@ view: immunization_1000_fh {
   }
 
   dimension: lot_number {
+    hidden: yes
     type: string
     sql: ${TABLE}.lotNumber ;;
   }
@@ -85,6 +95,7 @@ view: immunization_1000_fh {
   }
 
   dimension: not_given {
+    hidden: yes
     type: yesno
     sql: ${TABLE}.notGiven ;;
   }
@@ -105,6 +116,7 @@ view: immunization_1000_fh {
   }
 
   dimension: primary_source {
+    hidden: yes
     type: yesno
     sql: ${TABLE}.primarySource ;;
   }
@@ -1316,32 +1328,39 @@ view: immunization__text {
 
 view: immunization__vaccine_code__coding {
   dimension: code {
+    hidden: yes
     type: string
     sql: ${TABLE}.code ;;
   }
 
   dimension: display {
+    view_label: "Immunization"
+    label: "Vaccine Name"
     type: string
     sql: ${TABLE}.display ;;
   }
 
   dimension: system {
+    hidden: yes
     type: string
     sql: ${TABLE}.system ;;
   }
 
   dimension: user_selected {
+    hidden: yes
     type: yesno
     sql: ${TABLE}.userSelected ;;
   }
 
   dimension: version {
+    hidden: yes
     type: string
     sql: ${TABLE}.version ;;
   }
 
   ###Calculated Fields###
   dimension: flu_shot_required {
+    view_label: "Immunization"
     description: "If patient is 50 or older and has not been vaccinated for the flu in past year."
     type: string
     sql:
@@ -1356,6 +1375,7 @@ view: immunization__vaccine_code__coding {
   }
 
   dimension: vaccination_status {
+    hidden: yes
     type: string
     sql:
       case
@@ -1401,24 +1421,6 @@ view: immunization__vaccine_code__coding {
       end
       ;;
   }
-
-  measure: dtap_vaccine {
-    type: string
-    sql:
-      case
-        when ${patient_1000_fh.age} > 0.17
-          then 'Dose 1'
-        when ${patient_1000_fh.age} > 0.33
-          then 'Dose 1'
-        when ${patient_1000_fh.age} > 0.5
-          then 'Dose 1'
-        when ${patient_1000_fh.age} > 1.5
-          then 'Dose 1'
-        when ${patient_1000_fh.age} >
-          then 'Dose 1'
-      ;;
-
-  }
 }
 
 view: immunization__vaccine_code {
@@ -1428,6 +1430,7 @@ view: immunization__vaccine_code {
   }
 
   dimension: text {
+    hidden: yes
     type: string
     sql: ${TABLE}.text ;;
   }

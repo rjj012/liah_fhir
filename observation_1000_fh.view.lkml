@@ -4692,6 +4692,7 @@ view: observation__component {
   }
 
   measure: blood_pressure {
+    view_label: "Observation"
     type: string
     sql:
       case
