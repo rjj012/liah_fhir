@@ -234,20 +234,20 @@ explore: procedure_1000_fh {
     sql_on: ${condition_reason_for_procedure.id} = ${procedure__reason_reference.condition_id} ;;
   }
 
-  join: condition_procedure_complications {
-    from: condition_1000_fh
-    view_label: "Condition: Complication in Procedure"
-    type: left_outer
-    relationship: many_to_many
-    sql_on: ${condition_procedure_complications.id} = ${procedure__complication_detail.condition_id} ;;
-  }
+#  removing due to no data at this time
+#   join: condition_procedure_complications {
+#     from: condition_1000_fh
+#     view_label: "Condition: Complication in Procedure"
+#     type: left_outer
+#     relationship: many_to_many
+#     sql_on: ${condition_procedure_complications.id} = ${procedure__complication_detail.condition_id} ;;
+#   }
 
   join: patient_1000_fh {
     view_label: "Patient"
     type: left_outer
     relationship: many_to_many
-    sql_on: ${patient_1000_fh.id} = ${procedure_1000_fh.subject}.patientid
-            and ${patient__name.use} = 'official';;
+    sql_on: ${patient_1000_fh.id} = ${procedure_1000_fh.subject}.patientid;;
   }
 
   join: patient__name {
@@ -259,6 +259,8 @@ explore: procedure_1000_fh {
 
 explore: dt_immunization_schedules {
   label: "Immunizations"
+
+  hidden: yes
 
   join: immunization_1000_fh {
     type: full_outer
